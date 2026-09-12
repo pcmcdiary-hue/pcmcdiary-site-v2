@@ -110,8 +110,7 @@ businesses = results.flat();
     page: 1,
     filtered: [...ALL],
     nearMe: false,
-    userLocation: null,
-    distances: {}
+    userLocation: null
   };
 
   // ============ DISTANCE ============
@@ -126,16 +125,15 @@ businesses = results.flat();
   }
 
   function getLatLng(b) {
-  // Trim strings + parse float, handle commas
-  const clean = (v) => {
-    if (v === null || v === undefined) return NaN;
-    return parseFloat(String(v).replace(/[^0-9.\-]/g, '').trim());
-  };
-  const lat = clean(b.latitude ?? b.lat ?? b.Latitude ?? b.Lat);
-  const lng = clean(b.longitude ?? b.lng ?? b.Longitude ?? b.Lng);
-  if (!isFinite(lat) || !isFinite(lng) || lat === 0 || lng === 0) return null;
-  return { lat, lng };
-}
+    const clean = (v) => {
+      if (v === null || v === undefined) return NaN;
+      return parseFloat(String(v).replace(/[^0-9.\-]/g, '').trim());
+    };
+    const lat = clean(b.latitude ?? b.lat ?? b.Latitude ?? b.Lat);
+    const lng = clean(b.longitude ?? b.lng ?? b.Longitude ?? b.Lng);
+    if (!isFinite(lat) || !isFinite(lng) || lat === 0 || lng === 0) return null;
+    return { lat, lng };
+  }
 
   function formatDist(km) {
     if (km < 1) return `${Math.round(km * 1000)} m`;
@@ -211,10 +209,9 @@ businesses = results.flat();
     if (rating > 0) {
       statsHtml += `<div class="stat"><i class="fa-solid fa-star stat-star"></i><div class="stat-body"><span class="stat-val">${rating.toFixed(1)}</span>${reviews ? `<span class="stat-sub">${reviews} reviews</span>` : ''}</div></div>`;
     }
-    // Near Me active → show distance as second stat, else show area
-    if (state.nearMe && state.distances[b.businessId] != null) {
-      const d = state.distances[b.businessId];
-      statsHtml += `<div class="stat"><i class="fa-solid fa-location-crosshairs stat-loc"></i><div class="stat-body"><span class="stat-val">${formatDist(d)}</span><span class="stat-sub">away</span></div></div>`;
+    // Near Me ON → show distance
+    if (b._dist != null) {
+      statsHtml += `<div class="stat"><i class="fa-solid fa-location-crosshairs stat-loc"></i><div class="stat-body"><span class="stat-val">${formatDist(b._dist)}</span><span class="stat-sub">away</span></div></div>`;
     } else if (b.location) {
       statsHtml += `<div class="stat"><i class="fa-solid fa-location-dot stat-loc"></i><div class="stat-body"><span class="stat-val">${b.location}</span><span class="stat-sub">Area</span></div></div>`;
     }
@@ -270,17 +267,17 @@ businesses = results.flat();
   function applyFilters() {
     let list = [...ALL];
 
-    // Category
+    // Category filter
     if (state.category !== 'all') {
       list = list.filter(b => b.categoryId === state.category);
     }
 
-    // Location (skip when Near Me is on)
+    // Location filter (skip when Near Me is on)
     if (!state.nearMe && state.location !== 'all') {
       list = list.filter(b => (b.location || '') === state.location || (b.serviceArea || '').includes(state.location));
     }
 
-    // Search
+    // Search filter
     if (state.search) {
       const q = state.search.toLowerCase();
       list = list.filter(b =>
@@ -293,18 +290,20 @@ businesses = results.flat();
 
     // Sort
     if (state.nearMe && state.userLocation) {
-      // Compute distance for each
-      list.forEach(b => {
+      // Attach distance to each business (collision-proof)
+      const withDist = [];
+      const withoutDist = [];
+      for (const b of list) {
         const ll = getLatLng(b);
         if (ll) {
-          state.distances[b.businessId] = haversine(state.userLocation.lat, state.userLocation.lng, ll.lat, ll.lng);
+          const d = haversine(state.userLocation.lat, state.userLocation.lng, ll.lat, ll.lng);
+          withDist.push({ ...b, _dist: d });
         } else {
-          state.distances[b.businessId] = null;
+          withoutDist.push(b);
         }
-      });
-      // Only keep those with location, sort by distance
-      list = list.filter(b => state.distances[b.businessId] != null);
-      list.sort((a, b) => state.distances[a.businessId] - state.distances[b.businessId]);
+      }
+      withDist.sort((a, b) => a._dist - b._dist);
+      list = [...withDist, ...withoutDist];
     } else {
       if (state.sort === 'featured') {
         list.sort((a, b) => {
@@ -333,7 +332,8 @@ businesses = results.flat();
 
     const rcEl = document.getElementById('resultsCount');
     if (state.nearMe) {
-      rcEl.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> ${total} nearby`;
+      const withCoords = state.filtered.filter(b => b._dist != null).length;
+      rcEl.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> ${total} sorted by distance (${withCoords} with GPS)`;
     } else {
       rcEl.innerHTML = `<i class="fa-solid fa-store"></i> ${total} business${total !== 1 ? 'es' : ''}`;
     }
@@ -380,7 +380,6 @@ businesses = results.flat();
 
   document.getElementById('locFilter').addEventListener('change', e => {
     state.location = e.target.value;
-    // If user manually changes location, turn off Near Me
     if (state.location !== 'all' && state.nearMe) {
       state.nearMe = false;
       state.userLocation = null;
@@ -412,14 +411,12 @@ businesses = results.flat();
   document.getElementById('nearMeBtn').addEventListener('click', () => {
     const btn = document.getElementById('nearMeBtn');
 
-    // Toggle OFF if already ON
+    // Toggle OFF
     if (state.nearMe) {
       state.nearMe = false;
       state.userLocation = null;
-      state.distances = {};
       btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
       btn.classList.remove('active');
-      // Reset filters
       state.category = 'all';
       state.location = 'all';
       state.search = '';
@@ -440,11 +437,20 @@ businesses = results.flat();
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        state.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        state.nearMe = true;
-        state.distances = {};
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
 
-        // Reset all other filters
+        // Invalid location check
+        if (Math.abs(lat) < 0.01 && Math.abs(lng) < 0.01) {
+          btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
+          alert('Invalid location received. Please check your GPS and try again.');
+          return;
+        }
+
+        state.userLocation = { lat, lng };
+        state.nearMe = true;
+
+        // Reset filters
         state.category = 'all';
         state.location = 'all';
         state.search = '';
@@ -463,7 +469,7 @@ businesses = results.flat();
         btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
         btn.classList.remove('active');
         let msg = 'Could not get your location.';
-        if (err.code === 1) msg = 'Location permission denied. Please enable location access.';
+        if (err.code === 1) msg = 'Location permission denied. Please enable location access in your browser.';
         if (err.code === 2) msg = 'Location unavailable. Try again.';
         if (err.code === 3) msg = 'Location request timed out. Try again.';
         alert(msg);
@@ -504,12 +510,11 @@ businesses = results.flat();
 .near-btn i { margin-right: 6px; font-size: 12px; }
 .near-btn:hover { transform: translateY(-1px); }
 .near-btn.active { background: linear-gradient(135deg, #059669, #047857); }
-.results-count { font-size: 13px; color: #64748b; font-weight: 700; margin-left: auto; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; white-space: nowrap; display: inline-flex; align-items: center; }
+.results-count { font-size: 12.5px; color: #64748b; font-weight: 700; margin-left: auto; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; white-space: nowrap; display: inline-flex; align-items: center; }
 .results-count i { color: #dc2626; margin-right: 7px; }
 
 .biz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 
-/* ============ CARD ============ */
 .biz-grid .biz-card {
   position: relative;
   background: #ffffff;
@@ -527,45 +532,22 @@ businesses = results.flat();
   box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.12), 0 8px 16px -8px rgba(220, 38, 38, 0.08);
   transform: translateY(-4px);
 }
-
 .biz-grid .card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0.85; }
-
 .biz-grid .card-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
-.biz-grid .avatar {
-  width: 54px; height: 54px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 800; font-size: 22px; letter-spacing: -0.5px;
-  flex-shrink: 0;
-  box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-}
+.biz-grid .avatar { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; flex-shrink: 0; box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18); }
 .biz-grid .head-text { flex: 1; min-width: 0; padding-top: 2px; }
-.biz-grid .biz-name {
-  font-size: 16.5px; font-weight: 800; color: #0f172a;
-  margin: 0 0 5px 0; line-height: 1.28; letter-spacing: -0.4px;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
+.biz-grid .biz-name { font-size: 16.5px; font-weight: 800; color: #0f172a; margin: 0 0 5px 0; line-height: 1.28; letter-spacing: -0.4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .biz-grid .biz-sub { font-size: 12.5px; color: #64748b; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .biz-grid .card-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
-.biz-grid .badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 10px; border-radius: 6px;
-  font-size: 10px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  white-space: nowrap; line-height: 1;
-}
+.biz-grid .badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; line-height: 1; }
 .biz-grid .badge i { font-size: 10px; }
 .biz-grid .badge-featured { background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #78350f; box-shadow: 0 2px 6px -2px rgba(251, 191, 36, 0.5); }
 .biz-grid .badge-premium { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #854d0e; border: 1px solid #fcd34d; }
 .biz-grid .badge-verified { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; border: 1px solid #6ee7b7; }
 .biz-grid .badge-verified i { color: #059669; }
 
-.biz-grid .card-stats {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  padding: 14px 16px;
-  background: linear-gradient(180deg, #fafbfc 0%, #f8fafc 100%);
-  border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 16px;
-}
+.biz-grid .card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px; background: linear-gradient(180deg, #fafbfc 0%, #f8fafc 100%); border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 16px; }
 .biz-grid .stat { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .biz-grid .stat-star { color: #f59e0b; font-size: 16px; flex-shrink: 0; }
 .biz-grid .stat-loc { color: #dc2626; font-size: 14px; flex-shrink: 0; }
@@ -573,21 +555,9 @@ businesses = results.flat();
 .biz-grid .stat-val { font-size: 14px; font-weight: 800; color: #0f172a; letter-spacing: -0.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .biz-grid .stat-sub { font-size: 10.5px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
 
-.biz-grid .deal-box {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 14px 12px 16px;
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-  border: 1px solid #fde68a; border-radius: 12px;
-  margin-bottom: 16px; position: relative; overflow: hidden;
-}
+.biz-grid .deal-box { display: flex; align-items: center; gap: 12px; padding: 12px 14px 12px 16px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: 12px; margin-bottom: 16px; position: relative; overflow: hidden; }
 .biz-grid .deal-box::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, #f59e0b, #d97706); }
-.biz-grid .deal-icon {
-  width: 34px; height: 34px; border-radius: 9px;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 14px; flex-shrink: 0;
-  box-shadow: 0 4px 10px -3px rgba(217, 119, 6, 0.5);
-}
+.biz-grid .deal-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; flex-shrink: 0; box-shadow: 0 4px 10px -3px rgba(217, 119, 6, 0.5); }
 .biz-grid .deal-body { min-width: 0; flex: 1; }
 .biz-grid .deal-label { font-size: 9.5px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
 .biz-grid .deal-text { font-size: 12.5px; font-weight: 700; color: #78350f; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -597,22 +567,11 @@ businesses = results.flat();
 .biz-grid .meta-item i { color: #94a3b8; font-size: 12px; flex-shrink: 0; }
 .biz-grid .meta-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .biz-grid .meta-social { display: flex; gap: 6px; flex-shrink: 0; }
-.biz-grid .meta-social a {
-  width: 28px; height: 28px; border-radius: 8px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: #f8fafc; border: 1px solid #e2e8f0;
-  color: #64748b; font-size: 12px; text-decoration: none; transition: all 0.2s;
-}
+.biz-grid .meta-social a { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; font-size: 12px; text-decoration: none; transition: all 0.2s; }
 .biz-grid .meta-social a:hover { color: #fff; background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #dc2626; transform: translateY(-2px); }
 
 .biz-grid .card-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 0 16px; margin-top: auto; border-top: 1px solid #f1f5f9; }
-.biz-grid .act {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 13px; border-radius: 9px;
-  font-size: 12px; font-weight: 700;
-  text-decoration: none; border: 1px solid transparent;
-  transition: all 0.2s; white-space: nowrap; line-height: 1;
-}
+.biz-grid .act { display: inline-flex; align-items: center; gap: 6px; padding: 8px 13px; border-radius: 9px; font-size: 12px; font-weight: 700; text-decoration: none; border: 1px solid transparent; transition: all 0.2s; white-space: nowrap; line-height: 1; }
 .biz-grid .act i { font-size: 11px; }
 .biz-grid .act-call { background: #fff5f5; color: #991b1b; border-color: #fecaca; }
 .biz-grid .act-call i { color: #dc2626; }
@@ -657,7 +616,7 @@ businesses = results.flat();
   .filters { flex-direction: column; align-items: stretch; }
   .f-select, .f-input { width: 100%; margin-right: 0; }
   .near-btn { justify-content: center; margin-right: 0; }
-  .results-count { margin-left: 0; justify-content: center; }
+  .results-count { margin-left: 0; justify-content: center; white-space: normal; text-align: center; }
   .biz-grid { grid-template-columns: 1fr; gap: 14px; }
   .biz-grid .biz-card { padding: 18px 18px 0; }
   .biz-grid .card-stats { padding: 12px 14px; }
