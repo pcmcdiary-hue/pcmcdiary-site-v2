@@ -1,0 +1,96 @@
+---
+import '../styles/global.css';
+
+const {
+  title = 'PCMC Diary',
+  description = 'Find trusted local businesses in Pimpri-Chinchwad. Verified listings, exclusive coupons, expert advice.',
+} = Astro.props;
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Directory', href: '/directory' },
+  { label: 'Coupons', href: '/coupons' },
+  { label: 'Expert Salla', href: '/expert-salla' },
+  { label: 'Plans', href: '/plans' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} | PCMC Diary</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="canonical" href={Astro.url.href} />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="navbar-logo">
+        <img src="/logo.png" alt="PCMC Diary" />
+      </a>
+      <ul class="navbar-menu">
+        {navItems.map(item => (
+          <li>
+            <a href={item.href} class={currentPath === item.href ? 'active' : ''}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <h4>PCMC Diary</h4>
+          <p>Your trusted local directory for Pimpri-Chinchwad. Find verified businesses, exclusive coupons, and expert advice.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="/directory">Directory</a></li>
+            <li><a href="/coupons">Coupons</a></li>
+            <li><a href="/expert-salla">Expert Salla</a></li>
+            <li><a href="/plans">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/register">List Your Business</a></li>
+            <li><a href="/payment">Payment</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="/terms">Terms</a></li>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/refund">Refund</a></li>
+            <li><a href="/disclaimer">Disclaimer</a></li>
+            <li><a href="/grievance-officer">Grievance Officer</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 PCMC Diary · Made with ♥ for Pimpri-Chinchwad
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
