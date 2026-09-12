@@ -126,11 +126,16 @@ businesses = results.flat();
   }
 
   function getLatLng(b) {
-    const lat = parseFloat(b.latitude ?? b.lat ?? b.Latitude ?? b.Lat);
-    const lng = parseFloat(b.longitude ?? b.lng ?? b.Longitude ?? b.Lng);
-    if (!isFinite(lat) || !isFinite(lng) || lat === 0 || lng === 0) return null;
-    return { lat, lng };
-  }
+  // Trim strings + parse float, handle commas
+  const clean = (v) => {
+    if (v === null || v === undefined) return NaN;
+    return parseFloat(String(v).replace(/[^0-9.\-]/g, '').trim());
+  };
+  const lat = clean(b.latitude ?? b.lat ?? b.Latitude ?? b.Lat);
+  const lng = clean(b.longitude ?? b.lng ?? b.Longitude ?? b.Lng);
+  if (!isFinite(lat) || !isFinite(lng) || lat === 0 || lng === 0) return null;
+  return { lat, lng };
+}
 
   function formatDist(km) {
     if (km < 1) return `${Math.round(km * 1000)} m`;
