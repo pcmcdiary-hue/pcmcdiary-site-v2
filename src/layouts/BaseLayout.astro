@@ -59,13 +59,29 @@ const currentPath = Astro.url.pathname;
     <slot />
   </main>
 
+
   <footer class="footer">
     <div class="container">
       <div class="footer-inner">
-        <div>
+        <div class="footer-brand">
           <h4><i class="fa-solid fa-shield-halved"></i> PCMC Diary</h4>
           <p>Your trusted local directory for Pimpri-Chinchwad. Verified businesses, exclusive coupons &amp; expert advice.</p>
+          <div class="footer-contact">
+            <a href="mailto:info@pcmcdiary.com">
+              <i class="fa-solid fa-envelope"></i>
+              <span>info@pcmcdiary.com</span>
+            </a>
+            <a href="tel:+918793932827">
+              <i class="fa-solid fa-phone"></i>
+              <span>+91 87939 32827</span>
+            </a>
+            <span class="footer-loc">
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Nigdi, Pimpri-Chinchwad</span>
+            </span>
+          </div>
         </div>
+
         <div>
           <h4>Explore</h4>
           <ul>
@@ -75,8 +91,8 @@ const currentPath = Astro.url.pathname;
             <li><a href="/plans"><i class="fa-solid fa-crown"></i> Pricing</a></li>
           </ul>
         </div>
+
         <div>
-                 <div>
           <h4>Company</h4>
           <ul>
             <li><a href="/about"><i class="fa-solid fa-circle-info"></i> About</a></li>
@@ -84,12 +100,9 @@ const currentPath = Astro.url.pathname;
             <li><a href="/register"><i class="fa-solid fa-circle-plus"></i> List Your Business</a></li>
             <li><a href="/payment"><i class="fa-solid fa-credit-card"></i> Payment</a></li>
           </ul>
-          <p style="margin-top:14px;font-size:13px;line-height:1.7">
-            <i class="fa-solid fa-envelope" style="color:#f59e0b;margin-right:6px"></i>info@pcmcdiary.com<br>
-            <i class="fa-solid fa-phone" style="color:#f59e0b;margin-right:6px"></i>+91 87939 32827<br>
-            <i class="fa-solid fa-location-dot" style="color:#f59e0b;margin-right:6px"></i>Nigdi, PCMC
-          </p>
-        </div>        <div>
+        </div>
+
+        <div>
           <h4>Legal</h4>
           <ul>
             <li><a href="/terms"><i class="fa-solid fa-file-contract"></i> Terms</a></li>
@@ -107,6 +120,10 @@ const currentPath = Astro.url.pathname;
       </div>
     </div>
   </footer>
+
+
+
+
 
 </body>
 </html>
