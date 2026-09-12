@@ -2,51 +2,128 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const CDN = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data';
+
+// Map categories to FA icons
+const iconMap = {
+  'Food & Dining': 'fa-utensils',
+  'Grocery & Kirana': 'fa-cart-shopping',
+  'Health & Medical': 'fa-stethoscope',
+  'Beauty & Personal Care': 'fa-spa',
+  'Fitness & Wellness': 'fa-dumbbell',
+  'Education & Learning': 'fa-graduation-cap',
+  'Fashion & Apparel': 'fa-shirt',
+  'Jewelry & Gold': 'fa-gem',
+  'Electronics & Gadgets': 'fa-laptop',
+  'Home & Interior': 'fa-couch',
+  'Automotive': 'fa-car',
+  'Domestic Services': 'fa-broom',
+  'IT & Digital Services': 'fa-code',
+  'Logistics & Movers': 'fa-truck-fast',
+  'Hospitality & Travel': 'fa-plane',
+  'Entertainment & Events': 'fa-film',
+  'Kids & Baby': 'fa-child',
+  'Books & Stationery': 'fa-book',
+  'Gardening & Outdoor': 'fa-seedling',
+  'Pet Care': 'fa-paw',
+  'Real Estate & Property': 'fa-building',
+  'Finance & Legal': 'fa-coins',
+  'Packaging & Printing': 'fa-print',
+  'Cafes & Quick Bites': 'fa-mug-hot',
+  'Shopping & Retail': 'fa-bag-shopping',
+  'Communication & Internet': 'fa-wifi',
+  'Security Services': 'fa-shield-halved',
+  'Alternative Medicine': 'fa-leaf',
+  'Photography & Video': 'fa-camera',
+  'Celebrations & Gifts': 'fa-gift',
+  'Government Services': 'fa-landmark',
+  'Utilities': 'fa-bolt',
+  'Daily Use Services': 'fa-screwdriver-wrench',
+  'Fitness Equipment': 'fa-person-running',
+  'Ayurveda & Wellness': 'fa-mortar-pestle',
+  'Coaches & Trainers': 'fa-chalkboard-user',
+  'Interior & Exterior Design': 'fa-paint-roller',
+  'Consulting Services': 'fa-handshake',
+  'Specialty Stores': 'fa-store'
+};
+
 let categories = [];
 let locations = [];
 
 try {
   const catRes = await fetch(`${CDN}/categories.json`);
   const catData = await catRes.json();
-  categories = catData.categories || [];
-} catch (e) { console.error('Categories fetch failed', e); }
+  categories = (catData.categories || []).map(c => ({
+    ...c,
+    iconClass: iconMap[c.categoryName] || 'fa-folder'
+  }));
+} catch (e) { console.error(e); }
 
 try {
   const locRes = await fetch(`${CDN}/locations.json`);
   const locData = await locRes.json();
   locations = locData.locations || [];
-} catch (e) { console.error('Locations fetch failed', e); }
+} catch (e) { console.error(e); }
 ---
 
-<BaseLayout title="Home" description="PCMC Diary — Find trusted local businesses in Pimpri-Chinchwad. Verified listings, exclusive coupons, expert advice.">
+<BaseLayout title="Home" description="PCMC Diary — Find trusted local businesses in Pimpri-Chinchwad.">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="container">
-      <div class="hero-badge">PCMC's #1 Local Discovery Platform</div>
+      <div class="hero-badge">
+        <i class="fa-solid fa-crown"></i>
+        PCMC's #1 Local Discovery Platform
+      </div>
       <h1>Discover the best of <span>Pimpri-Chinchwad</span></h1>
       <p class="hero-sub">Verified businesses, exclusive coupons &amp; expert advice — curated for the people of PCMC.</p>
       <form class="hero-search" action="/directory" method="get">
-        <input type="search" name="q" placeholder="Search restaurants, gyms, doctors, CA…" />
-        <button type="submit">Search</button>
+        <div class="hs-field">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" name="q" placeholder="Search restaurants, gyms, doctors, CA…" />
+        </div>
+        <button type="submit">
+          <i class="fa-solid fa-arrow-right"></i>
+          Search
+        </button>
       </form>
       <div class="hero-stats">
-        <div><strong>{categories.length}+</strong><span>Categories</span></div>
-        <div><strong>{locations.length}</strong><span>Areas</span></div>
-        <div><strong>500+</strong><span>Businesses</span></div>
+        <div>
+          <strong>{categories.length}+</strong>
+          <span>Categories</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <strong>{locations.length}</strong>
+          <span>Areas</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <strong>500+</strong>
+          <span>Businesses</span>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- CATEGORIES -->
   <section class="section">
     <div class="container">
       <div class="sec-head">
-        <h2>Browse by Category</h2>
-        <a href="/directory">View All →</a>
+        <div>
+          <span class="sec-eyebrow">Explore</span>
+          <h2>Browse by Category</h2>
+        </div>
+        <a href="/directory" class="sec-link">
+          View All
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
       <div class="cat-grid">
         {categories.slice(0, 12).map(cat => (
           <a href={`/category/${cat.categoryId}`} class="cat-card">
-            <div class="cat-icon">{cat.icon}</div>
+            <div class="cat-icon">
+              <i class={`fa-solid ${cat.iconClass}`}></i>
+            </div>
             <div class="cat-name">{cat.categoryName}</div>
           </a>
         ))}
@@ -54,28 +131,48 @@ try {
     </div>
   </section>
 
+  <!-- LOCATIONS -->
   <section class="section">
     <div class="container">
       <div class="sec-head">
-        <h2>Popular Areas</h2>
-        <a href="/directory">All Areas →</a>
+        <div>
+          <span class="sec-eyebrow">Near You</span>
+          <h2>Popular Areas</h2>
+        </div>
+        <a href="/directory" class="sec-link">
+          All Areas
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
       <div class="loc-chips">
         {locations.slice(0, 18).map(loc => (
-          <a href={`/location/${loc.locationId}`} class="loc-chip">{loc.locationName}</a>
+          <a href={`/location/${loc.locationId}`} class="loc-chip">
+            <i class="fa-solid fa-location-dot"></i>
+            {loc.locationName}
+          </a>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- CTA -->
   <section class="section">
     <div class="container">
       <div class="cta">
+        <div class="cta-icon">
+          <i class="fa-solid fa-rocket"></i>
+        </div>
         <h2>Own a business? Get discovered.</h2>
         <p>Join hundreds of local businesses reaching thousands of customers across PCMC.</p>
         <div class="cta-btns">
-          <a href="/register" class="cta-primary">List Your Business — Free</a>
-          <a href="/plans" class="cta-outline">View Premium Plans</a>
+          <a href="/register" class="cta-primary">
+            <i class="fa-solid fa-circle-plus"></i>
+            List Your Business — Free
+          </a>
+          <a href="/plans" class="cta-outline">
+            <i class="fa-solid fa-crown"></i>
+            View Premium Plans
+          </a>
         </div>
       </div>
     </div>
@@ -84,209 +181,429 @@ try {
 </BaseLayout>
 
 <style>
+/* HERO */
 .hero {
   background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
   color: #fff;
-  padding: 60px 0;
+  padding: 72px 0 60px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
+              radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(253,224,71,0.12), transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero .container { position: relative; z-index: 2; }
+
 .hero-badge {
-  display: inline-block;
-  background: rgba(255,255,255,0.15);
-  padding: 6px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.12);
+  padding: 7px 16px;
   border-radius: 50px;
   font-size: 12px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
 }
+.hero-badge i { color: #fde047; font-size: 12px; }
+
 .hero h1 {
-  font-size: 42px;
+  font-size: 46px;
   font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.5px;
-  margin-bottom: 14px;
+  line-height: 1.12;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
 }
 .hero h1 span { color: #fde047; }
+
 .hero-sub {
   font-size: 16px;
   opacity: 0.9;
   max-width: 600px;
-  margin: 0 auto 28px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
 }
+
 .hero-search {
   display: flex;
-  max-width: 580px;
+  max-width: 620px;
   margin: 0 auto;
   background: #fff;
-  border-radius: 12px;
-  padding: 6px;
-  box-shadow: 0 12px 30px -8px rgba(0,0,0,0.3);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.4);
+  gap: 8px;
+}
+.hs-field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: #f8fafc;
+  border-radius: 10px;
+  min-width: 0;
+}
+.hs-field i {
+  color: #94a3b8;
+  font-size: 15px;
+  flex-shrink: 0;
 }
 .hero-search input {
   flex: 1;
   border: 0;
-  padding: 12px 16px;
+  padding: 14px 0;
   font-size: 15px;
   outline: none;
   border-radius: 8px;
   font-family: inherit;
+  background: transparent;
+  min-width: 0;
+  color: #0f172a;
+  font-weight: 500;
 }
+.hero-search input::placeholder { color: #94a3b8; }
 .hero-search button {
-  background: #b91c1c;
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
   color: #fff;
   border: 0;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 26px;
+  border-radius: 10px;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px -6px rgba(185,28,28,0.4);
 }
+.hero-search button i { font-size: 12px; }
+.hero-search button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -6px rgba(185,28,28,0.5);
+}
+
 .hero-stats {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 42px;
-  margin-top: 32px;
+  margin-top: 40px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
 }
-.hero-stats div { text-align: center; }
+.hero-stats > div:not(.stat-divider) { text-align: center; }
 .hero-stats strong {
   display: block;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1;
+  letter-spacing: -0.5px;
 }
 .hero-stats span {
-  font-size: 11px;
+  font-size: 10.5px;
   opacity: 0.75;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 4px;
+  letter-spacing: 1.5px;
+  margin-top: 6px;
   display: block;
+  font-weight: 700;
 }
-.section { padding: 50px 0; }
+.stat-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.18);
+}
+
+/* SECTIONS */
+.section { padding: 60px 0; }
+.section:nth-child(even) { background: #f8fafc; }
+
 .sec-head {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 22px;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sec-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #b91c1c;
+  margin-bottom: 6px;
 }
 .sec-head h2 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
   color: #0f172a;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
 }
-.sec-head a {
-  font-size: 14px;
+.sec-link {
+  font-size: 13.5px;
   font-weight: 700;
   color: #b91c1c;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 50px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  transition: all 0.2s;
+  text-decoration: none;
 }
+.sec-link:hover {
+  background: #b91c1c;
+  color: #fff;
+  border-color: #b91c1c;
+  text-decoration: none;
+  transform: translateX(3px);
+}
+.sec-link i { font-size: 11px; transition: transform 0.2s; }
+.sec-link:hover i { transform: translateX(2px); }
+
+/* CATEGORY GRID */
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 14px;
 }
 .cat-card {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 18px 10px;
+  border-radius: 14px;
+  padding: 20px 12px;
   text-align: center;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 .cat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px -8px rgba(185,28,28,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -12px rgba(185,28,28,0.2);
   border-color: #fca5a5;
   text-decoration: none;
 }
-.cat-icon { font-size: 26px; margin-bottom: 8px; line-height: 1; }
+.cat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  color: #b91c1c;
+  font-size: 22px;
+  transition: all 0.25s;
+}
+.cat-card:hover .cat-icon {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  color: #fff;
+  transform: scale(1.08) rotate(-5deg);
+}
 .cat-name {
   font-size: 12.5px;
   font-weight: 700;
   color: #334155;
   line-height: 1.3;
+  letter-spacing: -0.1px;
 }
+
+/* LOCATION CHIPS */
 .loc-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 .loc-chip {
   background: #fff;
   border: 1px solid #e2e8f0;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: 50px;
   font-size: 13px;
   font-weight: 600;
   color: #334155;
   text-decoration: none;
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+}
+.loc-chip i {
+  color: #b91c1c;
+  font-size: 11px;
+  transition: color 0.2s;
 }
 .loc-chip:hover {
   background: #b91c1c;
   color: #fff;
   border-color: #b91c1c;
   text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -8px rgba(185,28,28,0.4);
 }
+.loc-chip:hover i { color: #fde047; }
+
+/* CTA */
 .cta {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
   color: #fff;
-  border-radius: 20px;
-  padding: 48px 32px;
+  border-radius: 24px;
+  padding: 56px 40px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(185,28,28,0.35), transparent 65%);
+  border-radius: 50%;
+}
+.cta::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: -10%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(253,224,71,0.12), transparent 65%);
+  border-radius: 50%;
+}
+.cta-icon {
+  position: relative;
+  z-index: 2;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #fde047;
+  backdrop-filter: blur(10px);
 }
 .cta h2 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
-  margin-bottom: 10px;
-  letter-spacing: -0.3px;
+  margin-bottom: 12px;
+  letter-spacing: -0.6px;
+  position: relative;
+  z-index: 2;
 }
 .cta p {
-  font-size: 15px;
+  font-size: 15.5px;
   opacity: 0.85;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
 }
 .cta-btns {
   display: flex;
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
 }
 .cta-primary, .cta-outline {
-  padding: 13px 26px;
-  border-radius: 10px;
+  padding: 14px 28px;
+  border-radius: 12px;
   font-weight: 700;
   font-size: 14px;
   text-decoration: none;
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
 }
 .cta-primary {
-  background: #b91c1c;
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
   color: #fff;
+  box-shadow: 0 12px 28px -8px rgba(185,28,28,0.6);
 }
 .cta-primary:hover {
-  background: #991b1b;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -8px rgba(185,28,28,0.7);
   text-decoration: none;
-  transform: translateY(-2px);
 }
 .cta-outline {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   color: #fff;
   border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(10px);
 }
 .cta-outline:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.18);
   text-decoration: none;
+  transform: translateY(-3px);
 }
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
-  .hero h1 { font-size: 28px; }
-  .hero-search { flex-direction: column; }
-  .hero-search button { padding: 14px; }
+  .hero { padding: 48px 0 40px; }
+  .hero h1 { font-size: 30px; }
+  .hero-sub { font-size: 14.5px; }
+  .hero-search { flex-direction: column; padding: 10px; }
+  .hs-field { background: #f8fafc; }
+  .hero-search button { justify-content: center; padding: 14px 20px; }
   .hero-stats { gap: 24px; }
+  .hero-stats strong { font-size: 22px; }
+  .stat-divider { display: none; }
+  .section { padding: 44px 0; }
+  .sec-head h2 { font-size: 22px; }
+  .cat-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .cat-icon { width: 46px; height: 46px; font-size: 19px; }
+  .cat-name { font-size: 11.5px; }
+  .cta { padding: 40px 24px; border-radius: 18px; }
   .cta h2 { font-size: 22px; }
+  .cta p { font-size: 14px; }
+  .cta-icon { width: 54px; height: 54px; font-size: 22px; }
 }
 </style>
