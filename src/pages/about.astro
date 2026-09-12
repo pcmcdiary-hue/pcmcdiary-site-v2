@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About Us" description="Learn about PCMC Diary — Pimpri-Chinchwad's trusted local business directory.">
+
+  <div class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-icon"><i class="fa-solid fa-circle-info"></i></div>
+        <h1>About PCMC Diary</h1>
+        <p class="page-sub">Pimpri-Chinchwad's trusted local business directory</p>
+      </div>
+
+      <div class="page-body">
+        <section>
+          <h2><i class="fa-solid fa-bullseye"></i> Our Mission</h2>
+          <p>PCMC Diary is a hyperlocal directory built to help the residents of Pimpri-Chinchwad discover trusted local businesses, exclusive deals, and expert advice — all in one place. We connect families, homemakers, and young professionals with verified businesses in their own neighbourhood.</p>
+        </section>
+
+        <section>
+          <h2><i class="fa-solid fa-list-check"></i> What We Offer</h2>
+          <ul>
+            <li><strong>Verified Business Listings</strong> — 500+ businesses across 39 categories and 33 areas of PCMC</li>
+            <li><strong>Exclusive Coupons & Deals</strong> — Handpicked discounts from local businesses</li>
+            <li><strong>Expert Salla</strong> — Weekly articles from doctors, CAs, trainers, vastu consultants & more</li>
+            <li><strong>Free Listing</strong> — Every local business can list themselves for free</li>
+            <li><strong>Direct Contact</strong> — Call, WhatsApp, or navigate with one tap</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2><i class="fa-solid fa-map-location-dot"></i> Coverage</h2>
+          <p>We cover the entire PCMC belt including Hinjawadi, Wakad, Baner, Balewadi, Pimpri, Chinchwad, Nigdi, Akurdi, Ravet, Punawale, Tathawade, Talegaon, Chakan, and more — 33 areas total.</p>
+        </section>
+
+        <section>
+          <h2><i class="fa-solid fa-shield-halved"></i> Why Trust Us</h2>
+          <ul>
+            <li>Every premium business is manually verified</li>
+            <li>No fake reviews, no paid rankings without disclosure</li>
+            <li>Data stays fresh — synced from trusted sources daily</li>
+            <li>Local team based in Pimpri-Chinchwad</li>
+          </ul>
+        </section>
+
+        <section class="contact-cta">
+          <h2><i class="fa-solid fa-handshake"></i> Get In Touch</h2>
+          <p>Have a question, want to list your business, or spot an issue? We'd love to hear from you.</p>
+          <a href="/contact" class="cta-btn">
+            <i class="fa-solid fa-envelope"></i> Contact Us
+          </a>
+        </section>
+      </div>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style is:global>
+.page {
+  background: #f8fafc;
+  padding: 40px 20px 80px;
+  min-height: 60vh;
+}
+.page-container {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 48px 52px;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -16px rgba(15,23,42,0.08);
+  border: 1px solid #f1f5f9;
+}
+.page-header {
+  text-align: center;
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.page-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #fff;
+  box-shadow: 0 12px 24px -8px rgba(220,38,38,0.4);
+}
+.page-header h1 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.8px;
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+.page-sub {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+.page-body section { margin-bottom: 32px; }
+.page-body section:last-child { margin-bottom: 0; }
+.page-body h2 {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 14px;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-body h2 i { color: #dc2626; font-size: 17px; }
+.page-body p {
+  color: #334155;
+  line-height: 1.75;
+  font-size: 15px;
+  margin: 0;
+}
+.page-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.page-body ul li {
+  padding: 12px 16px 12px 44px;
+  position: relative;
+  color: #334155;
+  line-height: 1.6;
+  font-size: 14.5px;
+  background: #f8fafc;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border-left: 3px solid #dc2626;
+}
+.page-body ul li::before {
+  content: '\f058';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 16px;
+  top: 13px;
+  color: #dc2626;
+  font-size: 13px;
+}
+.page-body ul li strong { color: #0f172a; font-weight: 700; }
+.contact-cta {
+  text-align: center;
+  padding: 28px;
+  background: linear-gradient(135deg, #fef2f2, #fff);
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  margin-top: 24px !important;
+}
+.contact-cta h2 { justify-content: center; }
+.contact-cta p { margin-bottom: 18px; }
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 28px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #fff !important;
+  border-radius: 11px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 8px 20px -8px rgba(220,38,38,0.5);
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(220,38,38,0.6); text-decoration: none; }
+.cta-btn i { font-size: 13px; }
+
+@media (max-width: 640px) {
+  .page { padding: 20px 12px 60px; }
+  .page-container { padding: 32px 22px; border-radius: 16px; }
+  .page-header h1 { font-size: 24px; }
+  .page-icon { width: 54px; height: 54px; font-size: 22px; border-radius: 14px; }
+  .page-body h2 { font-size: 17px; }
+  .page-body p { font-size: 14px; }
+  .page-body ul li { font-size: 13.5px; padding: 10px 14px 10px 40px; }
+}
+</style>
