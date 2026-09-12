@@ -20,12 +20,19 @@ const iconMap = {
 };
 
 let categories = [];
+let locations = [];
 let deals = [];
 
 try {
   const catRes = await fetch(`${CDN}/categories.json`);
   const catData = await catRes.json();
   categories = (catData.categories || []).map(c => ({ ...c, iconClass: iconMap[c.categoryName] || 'fa-folder' }));
+} catch (e) { console.error(e); }
+
+try {
+  const locRes = await fetch(`${CDN}/locations.json`);
+  const locData = await locRes.json();
+  locations = locData.locations || [];
 } catch (e) { console.error(e); }
 
 const results = await Promise.all(
@@ -76,13 +83,35 @@ deals = results.flat();
     <section class="cp-body">
       <div class="cp-container">
 
-        <div class="results-bar">
-          <span class="results-count">
-            <i class="fa-solid fa-ticket"></i> {deals.length} {deals.length === 1 ? 'offer' : 'offers'} available
+        <!-- CATEGORY PILLS -->
+        <div class="cat-pills" id="catPills">
+          <button class="cat-pill active" data-cat="all">
+            <span class="cp-icon"><i class="fa-solid fa-border-all"></i></span>
+            <span class="cp-name">All</span>
+          </button>
+          {categories.map(c => (
+            <button class="cat-pill" data-cat={c.categoryId}>
+              <span class="cp-icon"><i class={`fa-solid ${c.iconClass}`}></i></span>
+              <span class="cp-name">{c.categoryName.length > 14 ? c.categoryName.substring(0, 12) + '…' : c.categoryName}</span>
+            </button>
+          ))}
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters">
+          <select id="locFilter" class="f-select">
+            <option value="all">All Locations</option>
+            {locations.map(l => <option value={l.locationName}>{l.locationName}</option>)}
+          </select>
+          <select id="sortFilter" class="f-select">
+            <option value="expiry">Expiring Soon</option>
+            <option value="name">Name A-Z</option>
+            <option value="category">Category A-Z</option>
+          </select>
+          <input type="text" id="searchInput" class="f-input" placeholder="Search deals, code, business…" />
+          <span class="results-count" id="resultsCount">
+            <i class="fa-solid fa-ticket"></i> {deals.length} offers
           </span>
-          <a href="/directory" class="back-link">
-            <i class="fa-solid fa-arrow-left"></i> Full Directory
-          </a>
         </div>
 
         <div class="coupon-grid" id="couponGrid"></div>
@@ -94,8 +123,18 @@ deals = results.flat();
 
 </BaseLayout>
 
-<script define:vars={{ deals }}>
+<script define:vars={{ deals, categories, locations }}>
   const ALL = deals || [];
+  const CATS = categories || [];
+  const LOCS = locations || [];
+
+  const state = {
+    search: '',
+    category: 'all',
+    location: 'all',
+    sort: 'expiry',
+    filtered: [...ALL]
+  };
 
   function avatarColors(name) {
     const pal = [['#dc2626','#991b1b'],['#ea580c','#c2410c'],['#d97706','#b45309'],['#ca8a04','#a16207'],['#65a30d','#4d7c0f'],['#059669','#047857'],['#0891b2','#0e7490'],['#0284c7','#0369a1'],['#4f46e5','#4338ca'],['#7c3aed','#6d28d9'],['#c026d3','#a21caf'],['#db2777','#be185d'],['#e11d48','#be123c'],['#9333ea','#7e22ce']];
@@ -115,6 +154,12 @@ deals = results.flat();
     } catch (e) { return ''; }
   }
 
+  function getExpiryTime(b) {
+    if (!b.dealExpiry) return Infinity;
+    const t = new Date(b.dealExpiry).getTime();
+    return isNaN(t) ? Infinity : t;
+  }
+
   function renderCoupon(b) {
     const name = b.businessName || 'Business';
     const initial = name.trim().charAt(0).toUpperCase();
@@ -125,6 +170,8 @@ deals = results.flat();
     const category = b.categoryName || '';
     const catIcon = b.categoryIcon || 'fa-folder';
     const location = b.location || '';
+
+    const waMsg = encodeURIComponent('Hi, I want to use the offer: ' + dealText + (code ? ' (Code: ' + code + ')' : ''));
 
     return `
       <article class="coupon-card">
@@ -168,26 +215,69 @@ deals = results.flat();
             ${expiry ? `<i class="fa-regular fa-clock"></i> Expires ${expiry}` : '<i class="fa-regular fa-clock"></i> Limited period'}
           </div>
           <div class="coupon-actions">
-            ${b.phone ? `<a href="tel:${clean(b.phone)}" class="cp-act cp-call"><i class="fa-solid fa-phone"></i></a>` : ''}
-            ${b.phone ? `<a href="https://wa.me/${clean(b.phone)}?text=${encodeURIComponent('Hi, I want to use the offer: ' + dealText + (code ? ' (Code: ' + code + ')' : ''))}" target="_blank" rel="noopener" class="cp-act cp-wa"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
+            ${b.phone ? `<a href="tel:${clean(b.phone)}" class="cp-act cp-call" title="Call"><i class="fa-solid fa-phone"></i></a>` : ''}
+            ${b.phone ? `<a href="https://wa.me/${clean(b.phone)}?text=${waMsg}" target="_blank" rel="noopener" class="cp-act cp-wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
           </div>
         </div>
       </article>
     `;
   }
 
-  function init() {
-    const grid = document.getElementById('couponGrid');
-    if (!grid) return;
+  function applyFilters() {
+    let list = [...ALL];
 
-    if (ALL.length === 0) {
-      grid.innerHTML = `<div class="empty"><i class="fa-solid fa-ticket"></i><h3>No coupons yet</h3><p>New offers are added regularly. Check back soon.</p></div>`;
-      return;
+    // Category
+    if (state.category !== 'all') {
+      list = list.filter(b => b.categoryId === state.category);
     }
 
-    grid.innerHTML = ALL.map(renderCoupon).join('');
+    // Location
+    if (state.location !== 'all') {
+      list = list.filter(b => {
+        if ((b.location || '') === state.location) return true;
+        const sa = (b.serviceArea || '').split(',').map(s => s.trim());
+        return sa.includes(state.location);
+      });
+    }
 
-    // Copy buttons
+    // Search
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      list = list.filter(b =>
+        (b.businessName || '').toLowerCase().includes(q) ||
+        (b.deals || '').toLowerCase().includes(q) ||
+        (b.dealCode || '').toLowerCase().includes(q) ||
+        (b.categoryName || '').toLowerCase().includes(q) ||
+        (b.location || '').toLowerCase().includes(q) ||
+        (b.tags || '').toLowerCase().includes(q)
+      );
+    }
+
+    // Sort
+    if (state.sort === 'expiry') {
+      list.sort((a, b) => getExpiryTime(a) - getExpiryTime(b));
+    } else if (state.sort === 'name') {
+      list.sort((a, b) => (a.businessName || '').localeCompare(b.businessName || ''));
+    } else if (state.sort === 'category') {
+      list.sort((a, b) => (a.categoryName || '').localeCompare(b.categoryName || ''));
+    }
+
+    state.filtered = list;
+    render();
+  }
+
+  function render() {
+    const total = state.filtered.length;
+    document.getElementById('resultsCount').innerHTML = `<i class="fa-solid fa-ticket"></i> ${total} offer${total !== 1 ? 's' : ''}`;
+
+    const grid = document.getElementById('couponGrid');
+    if (total === 0) {
+      grid.innerHTML = `<div class="empty"><i class="fa-solid fa-ticket"></i><h3>No coupons found</h3><p>Try adjusting your filters or search</p></div>`;
+      return;
+    }
+    grid.innerHTML = state.filtered.map(renderCoupon).join('');
+
+    // Wire copy buttons
     grid.querySelectorAll('.coupon-copy-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const code = btn.dataset.code;
@@ -207,11 +297,35 @@ deals = results.flat();
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // Category pills
+  document.getElementById('catPills').addEventListener('click', e => {
+    const btn = e.target.closest('.cat-pill');
+    if (!btn) return;
+    document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.category = btn.dataset.cat;
+    applyFilters();
+    window.scrollTo({ top: 320, behavior: 'smooth' });
+  });
+
+  document.getElementById('locFilter').addEventListener('change', e => {
+    state.location = e.target.value;
+    applyFilters();
+  });
+  document.getElementById('sortFilter').addEventListener('change', e => {
+    state.sort = e.target.value;
+    applyFilters();
+  });
+  document.getElementById('searchInput').addEventListener('input', e => {
+    clearTimeout(window._t);
+    window._t = setTimeout(() => {
+      state.search = e.target.value;
+      applyFilters();
+    }, 250);
+  });
+
+  // Initial render
+  applyFilters();
 </script>
 
 <style is:global>
@@ -238,11 +352,7 @@ deals = results.flat();
   font-size: 12.5px; color: rgba(255,255,255,0.7);
   margin-bottom: 20px; flex-wrap: wrap;
 }
-.breadcrumb a {
-  color: rgba(255,255,255,0.85); text-decoration: none;
-  font-weight: 600; display: inline-flex; align-items: center;
-  gap: 6px; transition: color 0.2s;
-}
+.breadcrumb a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
 .breadcrumb a:hover { color: #fde047; }
 .breadcrumb a i { font-size: 11px; }
 .breadcrumb .sep { font-size: 9px; opacity: 0.5; }
@@ -257,49 +367,60 @@ deals = results.flat();
   display: flex; align-items: center; justify-content: center;
   font-size: 32px; color: #fde047; flex-shrink: 0;
 }
-.cp-hero-text h1 {
-  font-size: 36px; font-weight: 800; letter-spacing: -1px;
-  line-height: 1.12; margin: 0 0 6px;
-}
+.cp-hero-text h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; line-height: 1.12; margin: 0 0 6px; }
 .cp-hero-text p { font-size: 14.5px; color: rgba(255,255,255,0.85); font-weight: 500; margin: 0; }
 
 .cp-body { padding: 32px 0 60px; }
 
-.results-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+/* CATEGORY PILLS */
+.cat-pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
+.cat-pill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 12px 6px; background: #fff; border: 1px solid #e2e8f0;
+  border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  min-height: 72px; font-family: inherit; text-align: center;
 }
+.cat-pill:hover { border-color: #dc2626; background: #fef2f2; transform: translateY(-2px); }
+.cat-pill.active { background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #dc2626; color: #fff; }
+.cp-icon { font-size: 18px; line-height: 1; color: #64748b; margin-bottom: 6px; }
+.cat-pill.active .cp-icon { color: #fff; }
+.cat-pill:hover .cp-icon { color: #dc2626; }
+.cat-pill.active:hover .cp-icon { color: #fff; }
+.cp-name { font-size: 11.5px; font-weight: 700; color: #334155; line-height: 1.2; }
+.cat-pill.active .cp-name { color: #fff; }
+
+/* FILTERS */
+.filters {
+  display: flex; flex-wrap: wrap; margin-bottom: 24px;
+  padding: 14px 0; border-bottom: 1px solid #e2e8f0; align-items: center;
+}
+.f-select, .f-input {
+  padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 13.5px; background: #fff; flex: 1; min-width: 140px;
+  font-family: inherit; color: #334155; font-weight: 600; outline: none;
+  margin-right: 10px; margin-bottom: 6px;
+}
+.f-select:focus, .f-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
 .results-count {
   font-size: 13px; color: #64748b; font-weight: 700;
-  padding: 8px 14px; background: #fff;
+  margin-left: auto; padding: 8px 14px; background: #fff;
   border: 1px solid #e2e8f0; border-radius: 8px;
-  display: inline-flex; align-items: center; gap: 7px;
+  white-space: nowrap; display: inline-flex; align-items: center;
 }
-.results-count i { color: #dc2626; }
-.back-link {
-  font-size: 13px; font-weight: 700; color: #dc2626;
-  text-decoration: none; display: inline-flex; align-items: center;
-  gap: 6px; padding: 8px 14px; border-radius: 8px;
-  background: #fff; border: 1px solid #e2e8f0; transition: all 0.2s;
-}
-.back-link:hover { background: #fef2f2; border-color: #fecaca; }
+.results-count i { color: #dc2626; margin-right: 7px; }
 
+/* GRID */
 .coupon-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 18px;
 }
 
+/* CARD */
 .coupon-card {
-  position: relative;
-  background: #fff;
-  border: 1px solid #e8ecf1;
-  border-radius: 16px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative; background: #fff; border: 1px solid #e8ecf1;
+  border-radius: 16px; padding: 22px; display: flex; flex-direction: column;
+  gap: 14px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 4px 12px -8px rgba(15, 23, 42, 0.04);
 }
@@ -308,10 +429,7 @@ deals = results.flat();
   box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.12), 0 8px 16px -8px rgba(220, 38, 38, 0.08);
   transform: translateY(-4px);
 }
-.coupon-accent {
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px; opacity: 0.85;
-}
+.coupon-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0.85; }
 
 .coupon-top { display: flex; align-items: flex-start; gap: 12px; }
 .coupon-avatar {
@@ -329,10 +447,7 @@ deals = results.flat();
   display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
 }
 .coupon-meta { display: flex; flex-wrap: wrap; gap: 10px; }
-.coupon-cat, .coupon-loc {
-  font-size: 11.5px; font-weight: 600; color: #64748b;
-  display: inline-flex; align-items: center; gap: 5px;
-}
+.coupon-cat, .coupon-loc { font-size: 11.5px; font-weight: 600; color: #64748b; display: inline-flex; align-items: center; gap: 5px; }
 .coupon-cat i { color: #dc2626; font-size: 10px; }
 .coupon-loc i { color: #94a3b8; font-size: 10px; }
 
@@ -340,14 +455,10 @@ deals = results.flat();
   display: flex; align-items: center; gap: 12px;
   padding: 14px 14px 14px 18px;
   background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-  border: 1px solid #fde68a;
-  border-radius: 12px;
+  border: 1px solid #fde68a; border-radius: 12px;
   position: relative; overflow: hidden;
 }
-.coupon-deal::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 4px; background: linear-gradient(180deg, #f59e0b, #d97706);
-}
+.coupon-deal::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, #f59e0b, #d97706); }
 .coupon-deal-icon {
   width: 38px; height: 38px; border-radius: 10px;
   background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -356,32 +467,22 @@ deals = results.flat();
   box-shadow: 0 4px 12px -3px rgba(217, 119, 6, 0.5);
 }
 .coupon-deal-text { min-width: 0; flex: 1; }
-.coupon-deal-label {
-  font-size: 9.5px; font-weight: 800; color: #b45309;
-  text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 4px;
-}
+.coupon-deal-label { font-size: 9.5px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 4px; }
 .coupon-deal-desc {
-  font-size: 13.5px; font-weight: 800; color: #78350f;
-  line-height: 1.35;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-size: 13.5px; font-weight: 800; color: #78350f; line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 
 .coupon-code-row { display: flex; gap: 8px; }
 .coupon-code-box {
   flex: 1; display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px;
-  background: #f8fafc; border: 1.5px dashed #cbd5e1;
-  border-radius: 10px;
+  padding: 10px 14px; background: #f8fafc;
+  border: 1.5px dashed #cbd5e1; border-radius: 10px;
 }
-.coupon-code-label {
-  font-size: 9px; font-weight: 800; color: #94a3b8;
-  letter-spacing: 1px;
-}
+.coupon-code-label { font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; }
 .coupon-code-val {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 14px; font-weight: 800; color: #0f172a;
-  letter-spacing: 0.5px;
+  font-size: 14px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px;
 }
 .coupon-copy-btn {
   display: inline-flex; align-items: center; gap: 6px;
@@ -402,17 +503,13 @@ deals = results.flat();
   gap: 10px; padding-top: 14px; border-top: 1px solid #f1f5f9;
   margin-top: auto;
 }
-.coupon-expiry {
-  font-size: 11.5px; color: #94a3b8; font-weight: 600;
-  display: inline-flex; align-items: center; gap: 6px;
-}
+.coupon-expiry { font-size: 11.5px; color: #94a3b8; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 .coupon-expiry i { font-size: 11px; }
 .coupon-actions { display: flex; gap: 6px; }
 .cp-act {
   width: 34px; height: 34px; border-radius: 9px;
   display: inline-flex; align-items: center; justify-content: center;
-  text-decoration: none; font-size: 13px;
-  transition: all 0.2s;
+  text-decoration: none; font-size: 13px; transition: all 0.2s;
   border: 1px solid transparent;
 }
 .cp-call { background: #fff5f5; color: #991b1b; border-color: #fecaca; }
@@ -420,19 +517,32 @@ deals = results.flat();
 .cp-wa { background: #f0fdf4; color: #14532d; border-color: #bbf7d0; }
 .cp-wa:hover { background: linear-gradient(135deg, #25d366, #15803d); color: #fff; border-color: #25d366; transform: translateY(-2px); text-decoration: none; }
 
-.cp-page .empty { grid-column: 1 / -1; text-align: center; padding: 80px 20px; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1; }
+.cp-page .empty {
+  grid-column: 1 / -1; text-align: center; padding: 80px 20px;
+  background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1;
+}
 .cp-page .empty i { font-size: 48px; color: #cbd5e1; margin-bottom: 16px; display: block; }
 .cp-page .empty h3 { font-size: 18px; font-weight: 800; color: #334155; margin: 0 0 6px; }
 .cp-page .empty p { font-size: 13.5px; color: #94a3b8; margin: 0; }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .cp-hero { padding: 24px 0 32px; }
   .cp-hero-inner { gap: 16px; }
   .cp-hero-icon { width: 60px; height: 60px; font-size: 26px; border-radius: 16px; }
   .cp-hero-text h1 { font-size: 24px; }
+  .cat-pills { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .cat-pill { min-height: 62px; padding: 8px 4px; }
+  .cp-icon { font-size: 16px; margin-bottom: 4px; }
+  .cp-name { font-size: 10.5px; }
+  .filters { flex-direction: column; align-items: stretch; }
+  .f-select, .f-input { width: 100%; margin-right: 0; }
+  .results-count { margin-left: 0; justify-content: center; }
   .coupon-grid { grid-template-columns: 1fr; gap: 14px; }
   .coupon-card { padding: 18px; }
   .coupon-code-row { flex-direction: column; }
   .coupon-copy-btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 400px) {
+  .cat-pills { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
