@@ -115,7 +115,7 @@ businesses = results.flat();
   }
 
   function avatarColor(name) {
-    const pal = ['#dc2626','#ea580c','#d97706','#ca8a04','#65a30d','#059669','#0891b2','#0284c7','#4f46e5','#7c3aed','#c026d3','#db2777','#e11d48','#be123c','#9333ea'];
+    const pal = [['#dc2626','#991b1b'],['#ea580c','#c2410c'],['#d97706','#b45309'],['#ca8a04','#a16207'],['#65a30d','#4d7c0f'],['#059669','#047857'],['#0891b2','#0e7490'],['#0284c7','#0369a1'],['#4f46e5','#4338ca'],['#7c3aed','#6d28d9'],['#c026d3','#a21caf'],['#db2777','#be185d'],['#e11d48','#be123c'],['#9333ea','#7e22ce']];
     let h = 0;
     for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
     return pal[Math.abs(h) % pal.length];
@@ -124,10 +124,10 @@ businesses = results.flat();
   function getBadges(b) {
     const t = (b.tier || '').toLowerCase();
     const out = [];
-    if (t === 'featured') out.push('<span class="tier tier-featured"><i class="fa-solid fa-star"></i>Featured</span>');
-    else if (t === 'premium_pro') out.push('<span class="tier tier-premium"><i class="fa-solid fa-crown"></i>Premium Pro</span>');
-    else if (t === 'premium') out.push('<span class="tier tier-premium"><i class="fa-solid fa-crown"></i>Premium</span>');
-    if (['featured','premium','premium_pro','vp','vb'].includes(t)) out.push('<span class="tier tier-verified"><i class="fa-solid fa-circle-check"></i>Verified</span>');
+    if (t === 'featured') out.push('<span class="badge badge-featured"><i class="fa-solid fa-star"></i><span>Featured</span></span>');
+    else if (t === 'premium_pro') out.push('<span class="badge badge-premium"><i class="fa-solid fa-crown"></i><span>Premium Pro</span></span>');
+    else if (t === 'premium') out.push('<span class="badge badge-premium"><i class="fa-solid fa-crown"></i><span>Premium</span></span>');
+    if (['featured','premium','premium_pro','vp','vb'].includes(t)) out.push('<span class="badge badge-verified"><i class="fa-solid fa-circle-check"></i><span>Verified</span></span>');
     return out.join('');
   }
 
@@ -139,62 +139,77 @@ businesses = results.flat();
     const isPro = t === 'premium_pro';
     const name = b.businessName || 'Business';
     const initial = name.trim().charAt(0).toUpperCase();
-    const color = avatarColor(name);
+    const [c1, c2] = avatarColor(name);
     const rating = parseFloat(b.rating) || 0;
     const reviews = parseInt(b.reviews) || 0;
 
-    let metaHtml = '';
+    const badgesHtml = getBadges(b);
+
+    let statsHtml = '';
     if (rating > 0) {
-      metaHtml += `<span class="meta meta-rating"><i class="fa-solid fa-star"></i>${rating.toFixed(1)}${reviews ? ` <span class="rev">(${reviews})</span>` : ''}</span>`;
+      statsHtml += `<div class="stat"><i class="fa-solid fa-star stat-star"></i><div class="stat-body"><span class="stat-val">${rating.toFixed(1)}</span>${reviews ? `<span class="stat-sub">${reviews} reviews</span>` : ''}</div></div>`;
     }
     if (b.location) {
-      metaHtml += `<span class="meta meta-loc"><i class="fa-solid fa-location-dot"></i>${b.location}</span>`;
+      statsHtml += `<div class="stat"><i class="fa-solid fa-location-dot stat-loc"></i><div class="stat-body"><span class="stat-val">${b.location}</span><span class="stat-sub">Area</span></div></div>`;
     }
 
     let dealHtml = '';
     if (isPremium && b.deals) {
-      dealHtml = `<div class="deal"><i class="fa-solid fa-gift"></i><span>${b.deals}</span></div>`;
+      dealHtml = `
+        <div class="deal-box">
+          <div class="deal-icon"><i class="fa-solid fa-gift"></i></div>
+          <div class="deal-body">
+            <div class="deal-label">Limited Offer</div>
+            <div class="deal-text">${b.deals}</div>
+          </div>
+        </div>`;
     }
 
-    let timingHtml = '';
-    if (isPremium && b.timing) {
-      timingHtml = `<div class="timing"><i class="fa-solid fa-clock"></i><span>${b.timing}</span></div>`;
-    }
-
-    let socialHtml = '';
-    if (isPro && b.socialLinks) {
-      const icons = { insta: 'fa-brands fa-instagram', fb: 'fa-brands fa-facebook-f', yt: 'fa-brands fa-youtube', tw: 'fa-brands fa-x-twitter', li: 'fa-brands fa-linkedin-in', wa: 'fa-brands fa-whatsapp' };
-      socialHtml = `<div class="social">${b.socialLinks.split('|').map(p => {
-        const [k, u] = p.split(':');
-        if (!u) return '';
-        return `<a href="${u.trim()}" target="_blank" rel="noopener" title="${k}"><i class="${icons[k.trim()] || 'fa-solid fa-link'}"></i></a>`;
-      }).join('')}</div>`;
+    let metaRowHtml = '';
+    if ((isPremium && b.timing) || (isPro && b.socialLinks)) {
+      const timing = (isPremium && b.timing) ? `<div class="meta-item"><i class="fa-regular fa-clock"></i><span>${b.timing}</span></div>` : '';
+      let social = '';
+      if (isPro && b.socialLinks) {
+        const icons = { insta: 'fa-brands fa-instagram', fb: 'fa-brands fa-facebook-f', yt: 'fa-brands fa-youtube', tw: 'fa-brands fa-x-twitter', li: 'fa-brands fa-linkedin-in', wa: 'fa-brands fa-whatsapp' };
+        social = `<div class="meta-social">${b.socialLinks.split('|').map(p => {
+          const [k, u] = p.split(':');
+          if (!u) return '';
+          return `<a href="${u.trim()}" target="_blank" rel="noopener" title="${k}"><i class="${icons[k.trim()] || 'fa-solid fa-link'}"></i></a>`;
+        }).join('')}</div>`;
+      }
+      metaRowHtml = `<div class="meta-row">${timing}${social}</div>`;
     }
 
     let actions = '';
-    if (b.phone) actions += `<a href="tel:${clean(b.phone)}" class="act act-call"><i class="fa-solid fa-phone"></i>Call</a>`;
-    if (isPremium && b.phone) actions += `<a href="https://wa.me/${clean(b.phone)}" target="_blank" rel="noopener" class="act act-wa"><i class="fa-brands fa-whatsapp"></i>WhatsApp</a>`;
-    if (isPremium && b.website) actions += `<a href="${b.website}" target="_blank" rel="noopener" class="act act-web"><i class="fa-solid fa-globe"></i>Website</a>`;
-    if (isPremium && b.googleMap) actions += `<a href="${b.googleMap}" target="_blank" rel="noopener" class="act act-map"><i class="fa-solid fa-map-location-dot"></i>Map</a>`;
-    if (isPro && b.email) actions += `<a href="mailto:${b.email}" class="act act-mail"><i class="fa-solid fa-envelope"></i>Email</a>`;
-
-    const badges = getBadges(b);
+    if (b.phone) actions += `<a href="tel:${clean(b.phone)}" class="act act-call"><i class="fa-solid fa-phone"></i><span>Call</span></a>`;
+    if (isPremium && b.phone) actions += `<a href="https://wa.me/${clean(b.phone)}" target="_blank" rel="noopener" class="act act-wa"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></a>`;
+    if (isPremium && b.website) actions += `<a href="${b.website}" target="_blank" rel="noopener" class="act act-web"><i class="fa-solid fa-globe"></i><span>Web</span></a>`;
+    if (isPremium && b.googleMap) actions += `<a href="${b.googleMap}" target="_blank" rel="noopener" class="act act-map"><i class="fa-solid fa-map-location-dot"></i><span>Map</span></a>`;
+    if (isPro && b.email) actions += `<a href="mailto:${b.email}" class="act act-mail"><i class="fa-solid fa-envelope"></i><span>Email</span></a>`;
 
     return `
       <article class="biz-card">
-        <div class="biz-head">
-          <div class="biz-av" style="background:${color}">${initial}</div>
-          <div class="biz-info">
-            <h3 class="biz-name">${name}</h3>
-            ${b.subCategory ? `<div class="biz-sub"><i class="fa-solid fa-tag"></i>${b.subCategory}</div>` : ''}
+        <div class="card-accent" style="background: linear-gradient(90deg, ${c1}, ${c2})"></div>
+
+        <header class="card-head">
+          <div class="avatar" style="background: linear-gradient(135deg, ${c1}, ${c2})">
+            <span>${initial}</span>
           </div>
-        </div>
-        ${badges ? `<div class="biz-badges">${badges}</div>` : ''}
-        ${metaHtml ? `<div class="biz-meta">${metaHtml}</div>` : ''}
+          <div class="head-text">
+            <h3 class="biz-name">${name}</h3>
+            ${b.subCategory ? `<div class="biz-sub">${b.subCategory}</div>` : ''}
+          </div>
+        </header>
+
+        ${badgesHtml ? `<div class="card-badges">${badgesHtml}</div>` : ''}
+
+        ${statsHtml ? `<div class="card-stats">${statsHtml}</div>` : ''}
+
         ${dealHtml}
-        ${timingHtml}
-        ${socialHtml}
-        ${actions ? `<div class="biz-actions">${actions}</div>` : ''}
+
+        ${metaRowHtml}
+
+        ${actions ? `<footer class="card-actions">${actions}</footer>` : ''}
       </article>
     `;
   }
@@ -322,17 +337,15 @@ businesses = results.flat();
 </script>
 
 <style>
-/* ============= LAYOUT ============= */
+/* ============ PAGE LAYOUT (unchanged) ============ */
 .dir-page { background: #f8fafc; min-height: 60vh; padding: 32px 0 60px; }
 .dir-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-/* HEADER */
 .dir-head { padding: 8px 0 18px; border-bottom: 3px solid #dc2626; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }
 .dir-head h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin: 0 8px 0 0; line-height: 1.2; letter-spacing: -0.5px; }
 .dir-head h1 span { color: #dc2626; }
 .dir-head p { color: #64748b; font-size: 14px; font-weight: 500; padding-bottom: 2px; }
 
-/* CATEGORY PILLS */
 .cat-pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
 .cat-pill { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 6px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.2s; min-height: 72px; font-family: inherit; text-align: center; }
 .cat-pill:hover { border-color: #dc2626; background: #fef2f2; transform: translateY(-2px); }
@@ -344,7 +357,6 @@ businesses = results.flat();
 .cp-name { font-size: 11.5px; font-weight: 700; color: #334155; line-height: 1.2; }
 .cat-pill.active .cp-name { color: #fff; }
 
-/* FILTERS */
 .filters { display: flex; flex-wrap: wrap; margin-bottom: 24px; padding: 14px 0; border-bottom: 1px solid #e2e8f0; align-items: center; }
 .f-select, .f-input { padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13.5px; background: #fff; flex: 1; min-width: 130px; font-family: inherit; color: #334155; font-weight: 600; outline: none; margin-right: 10px; margin-bottom: 6px; }
 .f-select:focus, .f-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
@@ -355,84 +367,390 @@ businesses = results.flat();
 .results-count { font-size: 13px; color: #64748b; font-weight: 700; margin-left: auto; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; white-space: nowrap; display: inline-flex; align-items: center; }
 .results-count i { color: #dc2626; margin-right: 7px; }
 
-/* ============= GRID — FORCE 2 COLUMNS ============= */
-.biz-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 16px !important; }
+.biz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 
-/* ============= CARD ============= */
-.biz-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; transition: all 0.25s; }
-.biz-card:hover { box-shadow: 0 12px 24px -8px rgba(220,38,38,0.12); border-color: #fca5a5; transform: translateY(-3px); }
+/* ============================================
+   PREMIUM CARD — COMPLETE REDESIGN
+   ============================================ */
+.biz-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e8ecf1;
+  border-radius: 16px;
+  padding: 22px 22px 0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 4px 12px -8px rgba(15, 23, 42, 0.04);
+}
+.biz-card:hover {
+  border-color: #fecaca;
+  box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.12), 0 8px 16px -8px rgba(220, 38, 38, 0.08);
+  transform: translateY(-4px);
+}
 
-/* HEAD */
-.biz-head { display: flex !important; align-items: flex-start; margin-bottom: 14px; }
-.biz-av { display: flex !important; align-items: center; justify-content: center; width: 48px !important; min-width: 48px !important; max-width: 48px !important; height: 48px !important; min-height: 48px !important; max-height: 48px !important; border-radius: 12px; color: #fff; font-weight: 800; font-size: 20px; margin-right: 12px; flex-shrink: 0; }
-.biz-info { flex: 1; min-width: 0; }
-.biz-name { font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; line-height: 1.3; letter-spacing: -0.3px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.biz-sub { font-size: 12.5px; color: #64748b; font-weight: 600; display: flex; align-items: center; }
-.biz-sub i { color: #94a3b8; font-size: 10px; margin-right: 6px; }
+/* Top accent gradient strip */
+.card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  opacity: 0.85;
+}
 
-/* ============= BADGES ROW ============= */
-.biz-badges { display: flex !important; flex-wrap: wrap !important; margin-bottom: 14px; }
-.tier { display: inline-flex !important; align-items: center; padding: 5px 10px; border-radius: 7px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; margin-right: 8px; margin-bottom: 4px; }
-.tier i { font-size: 9.5px; margin-right: 5px; }
-.tier-featured { background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #78350f; }
-.tier-premium { background: linear-gradient(135deg, #fef9c3, #fde68a); color: #854d0e; border: 1px solid #facc15; }
-.tier-verified { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; border: 1px solid #34d399; }
+/* ============ HEADER ============ */
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  position: relative;
+}
+.head-text { flex: 1; min-width: 0; padding-top: 2px; }
+.biz-name {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 5px 0;
+  line-height: 1.28;
+  letter-spacing: -0.4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.biz-sub {
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: -0.05px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-/* ============= META ROW (rating + location) ============= */
-.biz-meta { display: flex !important; flex-wrap: wrap !important; margin-bottom: 14px; }
-.meta { display: inline-flex !important; align-items: center; padding: 5px 11px; border-radius: 7px; font-size: 12px; font-weight: 700; margin-right: 8px; margin-bottom: 4px; white-space: nowrap; }
-.meta i { font-size: 10.5px; margin-right: 5px; }
-.meta-rating { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-.meta-rating i { color: #f59e0b; }
-.meta-rating .rev { color: #65a30d; font-weight: 600; font-size: 11px; margin-left: 2px; }
-.meta-loc { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
-.meta-loc i { color: #dc2626; }
+/* ============ BADGES ============ */
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  line-height: 1;
+}
+.badge i { font-size: 10px; }
+.badge-featured {
+  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  color: #78350f;
+  box-shadow: 0 2px 6px -2px rgba(251, 191, 36, 0.5);
+}
+.badge-premium {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #854d0e;
+  border: 1px solid #fcd34d;
+}
+.badge-verified {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+.badge-verified i { color: #059669; }
 
-/* ============= DEAL ============= */
-.deal { display: flex !important; align-items: center; padding: 10px 12px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fbbf24; border-left: 3px solid #f59e0b; border-radius: 8px; font-size: 12px; font-weight: 700; color: #78350f; line-height: 1.4; margin-bottom: 12px; }
-.deal i { color: #f59e0b; font-size: 12px; margin-right: 8px; flex-shrink: 0; }
+/* ============ STATS (rating + location) ============ */
+.card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #fafbfc 0%, #f8fafc 100%);
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.stat-star {
+  color: #f59e0b;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.stat-loc {
+  color: #dc2626;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.stat-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+.stat-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stat-sub {
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-top: 2px;
+}
 
-/* ============= TIMING ============= */
-.timing { display: flex !important; align-items: center; font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 12px; }
-.timing i { color: #94a3b8; font-size: 11px; margin-right: 7px; }
+/* ============ DEAL BOX ============ */
+.deal-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.deal-box::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+}
+.deal-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px -3px rgba(217, 119, 6, 0.5);
+}
+.deal-body { min-width: 0; flex: 1; }
+.deal-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #b45309;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 3px;
+}
+.deal-text {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #78350f;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-/* ============= SOCIAL ============= */
-.social { display: flex !important; margin-bottom: 12px; }
-.social a { text-decoration: none; color: #64748b; display: inline-flex !important; align-items: center; justify-content: center; width: 32px !important; min-width: 32px !important; height: 32px !important; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 12px; margin-right: 6px; }
-.social a:hover { color: #fff; background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #dc2626; transform: translateY(-2px); }
+/* ============ META ROW (timing + social) ============ */
+.meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+  min-width: 0;
+}
+.meta-item i { color: #94a3b8; font-size: 12px; flex-shrink: 0; }
+.meta-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.meta-social {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.meta-social a {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 12px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.meta-social a:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: #dc2626;
+  transform: translateY(-2px);
+}
 
-/* ============= ACTIONS ROW ============= */
-.biz-actions { display: flex !important; flex-wrap: wrap !important; padding-top: 14px; border-top: 1px solid #f1f5f9; margin-top: auto; }
-.act { display: inline-flex !important; align-items: center; padding: 8px 13px; border-radius: 9px; font-size: 12px; font-weight: 700; text-decoration: none; border: 1px solid transparent; white-space: nowrap; margin-right: 7px; margin-bottom: 6px; }
-.act i { font-size: 11px; margin-right: 6px; }
-.act-call { background: linear-gradient(135deg, #fff5f5, #fee2e2); color: #991b1b; border-color: #fecaca; }
+/* ============ ACTIONS FOOTER ============ */
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 0 16px;
+  margin-top: auto;
+  border-top: 1px solid #f1f5f9;
+}
+.act {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  line-height: 1;
+}
+.act i { font-size: 11px; }
+.act span { letter-spacing: -0.1px; }
+
+.act-call {
+  background: #fff5f5;
+  color: #991b1b;
+  border-color: #fecaca;
+}
 .act-call i { color: #dc2626; }
-.act-call:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border-color: #dc2626; text-decoration: none; }
+.act-call:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  border-color: #dc2626;
+  box-shadow: 0 6px 14px -6px rgba(220, 38, 38, 0.5);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
 .act-call:hover i { color: #fff; }
-.act-wa { background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #14532d; border-color: #bbf7d0; }
+
+.act-wa {
+  background: #f0fdf4;
+  color: #14532d;
+  border-color: #bbf7d0;
+}
 .act-wa i { color: #16a34a; }
-.act-wa:hover { background: linear-gradient(135deg, #25d366, #15803d); color: #fff; border-color: #25d366; text-decoration: none; }
+.act-wa:hover {
+  background: linear-gradient(135deg, #25d366, #15803d);
+  color: #fff;
+  border-color: #25d366;
+  box-shadow: 0 6px 14px -6px rgba(37, 211, 102, 0.5);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
 .act-wa:hover i { color: #fff; }
-.act-web { background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e3a8a; border-color: #bfdbfe; }
+
+.act-web {
+  background: #eff6ff;
+  color: #1e3a8a;
+  border-color: #bfdbfe;
+}
 .act-web i { color: #2563eb; }
-.act-web:hover { background: linear-gradient(135deg, #2563eb, #1e40af); color: #fff; border-color: #2563eb; text-decoration: none; }
+.act-web:hover {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #fff;
+  border-color: #2563eb;
+  box-shadow: 0 6px 14px -6px rgba(37, 99, 235, 0.5);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
 .act-web:hover i { color: #fff; }
-.act-map { background: linear-gradient(135deg, #f5f3ff, #ede9fe); color: #4c1d95; border-color: #ddd6fe; }
+
+.act-map {
+  background: #f5f3ff;
+  color: #4c1d95;
+  border-color: #ddd6fe;
+}
 .act-map i { color: #7c3aed; }
-.act-map:hover { background: linear-gradient(135deg, #7c3aed, #5b21b6); color: #fff; border-color: #7c3aed; text-decoration: none; }
+.act-map:hover {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #fff;
+  border-color: #7c3aed;
+  box-shadow: 0 6px 14px -6px rgba(124, 58, 237, 0.5);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
 .act-map:hover i { color: #fff; }
-.act-mail { background: linear-gradient(135deg, #fefce8, #fef9c3); color: #854d0e; border-color: #fef08a; }
+
+.act-mail {
+  background: #fefce8;
+  color: #854d0e;
+  border-color: #fef08a;
+}
 .act-mail i { color: #ca8a04; }
-.act-mail:hover { background: linear-gradient(135deg, #ca8a04, #a16207); color: #fff; border-color: #ca8a04; text-decoration: none; }
+.act-mail:hover {
+  background: linear-gradient(135deg, #ca8a04, #a16207);
+  color: #fff;
+  border-color: #ca8a04;
+  transform: translateY(-1px);
+  text-decoration: none;
+}
 .act-mail:hover i { color: #fff; }
 
-/* EMPTY */
+/* ============ EMPTY & PAGINATION ============ */
 .empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #fff; border-radius: 14px; border: 1px dashed #cbd5e1; }
 .empty i { font-size: 40px; color: #cbd5e1; margin-bottom: 12px; display: block; }
 .empty h3 { font-size: 16px; font-weight: 700; color: #334155; margin: 0 0 4px; }
 .empty p { font-size: 13.5px; color: #94a3b8; margin: 0; }
 
-/* PAGINATION */
 .pagination { display: flex; justify-content: center; flex-wrap: wrap; margin: 32px 0 8px; }
 .pagination button { padding: 8px 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit; color: #334155; min-width: 40px; display: inline-flex; align-items: center; justify-content: center; margin: 0 3px 6px; }
 .pagination button:hover:not(:disabled) { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
@@ -440,7 +758,7 @@ businesses = results.flat();
 .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
 .pagination span { color: #94a3b8; padding: 8px 4px; font-weight: 700; }
 
-/* RESPONSIVE */
+/* ============ RESPONSIVE ============ */
 @media (max-width: 768px) {
   .dir-head { flex-direction: column; align-items: flex-start; }
   .dir-head h1 { font-size: 22px; margin-bottom: 4px; }
@@ -452,10 +770,13 @@ businesses = results.flat();
   .f-select, .f-input { width: 100%; margin-right: 0; }
   .near-btn { justify-content: center; margin-right: 0; }
   .results-count { margin-left: 0; justify-content: center; }
-  .biz-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
-  .biz-card { padding: 16px; }
+  .biz-grid { grid-template-columns: 1fr; gap: 14px; }
+  .biz-card { padding: 18px 18px 0; }
+  .card-stats { grid-template-columns: 1fr 1fr; padding: 12px 14px; }
+  .stat-val { font-size: 13px; }
 }
 @media (max-width: 400px) {
   .cat-pills { grid-template-columns: repeat(2, 1fr); }
+  .card-stats { grid-template-columns: 1fr; }
 }
 </style>
