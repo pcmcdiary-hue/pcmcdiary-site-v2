@@ -7,12 +7,12 @@ const {
 } = Astro.props;
 
 const navItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Directory', href: '/directory' },
-  { label: 'Coupons', href: '/coupons' },
-  { label: 'Expert Salla', href: '/expert-salla' },
-  { label: 'Plans', href: '/plans' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Home', href: '/', icon: 'fa-house' },
+  { label: 'Directory', href: '/directory', icon: 'fa-list' },
+  { label: 'Coupons', href: '/coupons', icon: 'fa-ticket' },
+  { label: 'Expert Salla', href: '/expert-salla', icon: 'fa-user-tie' },
+  { label: 'Plans', href: '/plans', icon: 'fa-crown' },
+  { label: 'Contact', href: '/contact', icon: 'fa-envelope' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -25,6 +25,15 @@ const currentPath = Astro.url.pathname;
   <title>{title} | PCMC Diary</title>
   <meta name="description" content={description} />
   <link rel="icon" type="image/png" href="/logo.png" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </noscript>
 </head>
 <body>
 
@@ -37,7 +46,8 @@ const currentPath = Astro.url.pathname;
         {navItems.map(item => (
           <li>
             <a href={item.href} class={currentPath === item.href ? 'active' : ''}>
-              {item.label}
+              <i class={`fa-solid ${item.icon}`}></i>
+              <span>{item.label}</span>
             </a>
           </li>
         ))}
@@ -53,40 +63,42 @@ const currentPath = Astro.url.pathname;
     <div class="container">
       <div class="footer-inner">
         <div>
-          <h4>PCMC Diary</h4>
-          <p>Your trusted local directory for Pimpri-Chinchwad.</p>
+          <h4><i class="fa-solid fa-shield-halved"></i> PCMC Diary</h4>
+          <p>Your trusted local directory for Pimpri-Chinchwad. Verified businesses, exclusive coupons &amp; expert advice.</p>
         </div>
         <div>
           <h4>Explore</h4>
           <ul>
-            <li><a href="/directory">Directory</a></li>
-            <li><a href="/coupons">Coupons</a></li>
-            <li><a href="/expert-salla">Expert Salla</a></li>
-            <li><a href="/plans">Pricing</a></li>
+            <li><a href="/directory"><i class="fa-solid fa-list"></i> Directory</a></li>
+            <li><a href="/coupons"><i class="fa-solid fa-ticket"></i> Coupons</a></li>
+            <li><a href="/expert-salla"><i class="fa-solid fa-user-tie"></i> Expert Salla</a></li>
+            <li><a href="/plans"><i class="fa-solid fa-crown"></i> Pricing</a></li>
           </ul>
         </div>
         <div>
           <h4>Company</h4>
           <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
-            <li><a href="/register">List Your Business</a></li>
-            <li><a href="/payment">Payment</a></li>
+            <li><a href="/about"><i class="fa-solid fa-circle-info"></i> About</a></li>
+            <li><a href="/contact"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+            <li><a href="/register"><i class="fa-solid fa-circle-plus"></i> List Your Business</a></li>
+            <li><a href="/payment"><i class="fa-solid fa-credit-card"></i> Payment</a></li>
           </ul>
         </div>
         <div>
           <h4>Legal</h4>
           <ul>
-            <li><a href="/terms">Terms</a></li>
-            <li><a href="/privacy">Privacy</a></li>
-            <li><a href="/refund">Refund</a></li>
-            <li><a href="/disclaimer">Disclaimer</a></li>
-            <li><a href="/grievance-officer">Grievance Officer</a></li>
+            <li><a href="/terms"><i class="fa-solid fa-file-contract"></i> Terms</a></li>
+            <li><a href="/privacy"><i class="fa-solid fa-user-shield"></i> Privacy</a></li>
+            <li><a href="/refund"><i class="fa-solid fa-rotate-left"></i> Refund</a></li>
+            <li><a href="/disclaimer"><i class="fa-solid fa-triangle-exclamation"></i> Disclaimer</a></li>
+            <li><a href="/grievance-officer"><i class="fa-solid fa-gavel"></i> Grievance Officer</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        © 2026 PCMC Diary · Made with ♥ for Pimpri-Chinchwad
+        <span>© 2026 PCMC Diary</span>
+        <span class="dot">·</span>
+        <span>Made with <i class="fa-solid fa-heart" style="color:#dc2626"></i> for Pimpri-Chinchwad</span>
       </div>
     </div>
   </footer>
