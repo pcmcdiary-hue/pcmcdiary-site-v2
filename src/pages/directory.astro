@@ -102,8 +102,43 @@ businesses = results.flat();
   const LOCS = locations;
   const PER_PAGE = 20;
 
-  const state = { search: '', category: 'all', location: 'all', sort: 'featured', page: 1, filtered: [...ALL] };
+  const state = {
+    search: '',
+    category: 'all',
+    location: 'all',
+    sort: 'featured',
+    page: 1,
+    filtered: [...ALL],
+    nearMe: false,
+    userLocation: null,
+    distances: {}
+  };
 
+  // ============ DISTANCE ============
+  function haversine(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function getLatLng(b) {
+    const lat = parseFloat(b.latitude ?? b.lat ?? b.Latitude ?? b.Lat);
+    const lng = parseFloat(b.longitude ?? b.lng ?? b.Longitude ?? b.Lng);
+    if (!isFinite(lat) || !isFinite(lng) || lat === 0 || lng === 0) return null;
+    return { lat, lng };
+  }
+
+  function formatDist(km) {
+    if (km < 1) return `${Math.round(km * 1000)} m`;
+    if (km < 10) return `${km.toFixed(1)} km`;
+    return `${Math.round(km)} km`;
+  }
+
+  // ============ HELPERS ============
   function tierRank(b) {
     const t = (b.tier || '').toLowerCase();
     if (t === 'featured') return 1;
@@ -136,16 +171,11 @@ businesses = results.flat();
   function parseSocialLinks(raw) {
     if (!raw) return '';
     const icons = {
-      insta: 'fa-brands fa-instagram',
-      fb: 'fa-brands fa-facebook-f',
-      yt: 'fa-brands fa-youtube',
-      tw: 'fa-brands fa-x-twitter',
-      li: 'fa-brands fa-linkedin-in',
-      wa: 'fa-brands fa-whatsapp'
+      insta: 'fa-brands fa-instagram', fb: 'fa-brands fa-facebook-f', yt: 'fa-brands fa-youtube',
+      tw: 'fa-brands fa-x-twitter', li: 'fa-brands fa-linkedin-in', wa: 'fa-brands fa-whatsapp'
     };
-    const parts = String(raw).split('|');
     const out = [];
-    for (const part of parts) {
+    for (const part of String(raw).split('|')) {
       const trimmed = part.trim();
       if (!trimmed) continue;
       const idx = trimmed.indexOf(':');
@@ -154,12 +184,12 @@ businesses = results.flat();
       let url = trimmed.substring(idx + 1).trim();
       if (!url) continue;
       if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-      const iconClass = icons[key] || 'fa-solid fa-link';
-      out.push(`<a href="${url}" target="_blank" rel="noopener" title="${key}"><i class="${iconClass}"></i></a>`);
+      out.push(`<a href="${url}" target="_blank" rel="noopener" title="${key}"><i class="${icons[key] || 'fa-solid fa-link'}"></i></a>`);
     }
     return out.join('');
   }
 
+  // ============ CARD ============
   function renderCard(b) {
     const t = (b.tier || '').toLowerCase();
     const isPremium = ['featured','premium','premium_pro'].includes(t);
@@ -176,7 +206,11 @@ businesses = results.flat();
     if (rating > 0) {
       statsHtml += `<div class="stat"><i class="fa-solid fa-star stat-star"></i><div class="stat-body"><span class="stat-val">${rating.toFixed(1)}</span>${reviews ? `<span class="stat-sub">${reviews} reviews</span>` : ''}</div></div>`;
     }
-    if (b.location) {
+    // Near Me active → show distance as second stat, else show area
+    if (state.nearMe && state.distances[b.businessId] != null) {
+      const d = state.distances[b.businessId];
+      statsHtml += `<div class="stat"><i class="fa-solid fa-location-crosshairs stat-loc"></i><div class="stat-body"><span class="stat-val">${formatDist(d)}</span><span class="stat-sub">away</span></div></div>`;
+    } else if (b.location) {
       statsHtml += `<div class="stat"><i class="fa-solid fa-location-dot stat-loc"></i><div class="stat-body"><span class="stat-val">${b.location}</span><span class="stat-sub">Area</span></div></div>`;
     }
 
@@ -211,34 +245,37 @@ businesses = results.flat();
     return `
       <article class="biz-card">
         <div class="card-accent" style="background: linear-gradient(90deg, ${c1}, ${c2})"></div>
-
         <header class="card-head">
-          <div class="avatar" style="background: linear-gradient(135deg, ${c1}, ${c2})">
-            <span>${initial}</span>
-          </div>
+          <div class="avatar" style="background: linear-gradient(135deg, ${c1}, ${c2})"><span>${initial}</span></div>
           <div class="head-text">
             <h3 class="biz-name">${name}</h3>
             ${b.subCategory ? `<div class="biz-sub">${b.subCategory}</div>` : ''}
           </div>
         </header>
-
         ${badgesHtml ? `<div class="card-badges">${badgesHtml}</div>` : ''}
-
         ${statsHtml ? `<div class="card-stats">${statsHtml}</div>` : ''}
-
         ${dealHtml}
-
         ${metaRowHtml}
-
         ${actions ? `<footer class="card-actions">${actions}</footer>` : ''}
       </article>
     `;
   }
 
+  // ============ FILTERS ============
   function applyFilters() {
     let list = [...ALL];
-    if (state.category !== 'all') list = list.filter(b => b.categoryId === state.category);
-    if (state.location !== 'all') list = list.filter(b => (b.location || '') === state.location || (b.serviceArea || '').includes(state.location));
+
+    // Category
+    if (state.category !== 'all') {
+      list = list.filter(b => b.categoryId === state.category);
+    }
+
+    // Location (skip when Near Me is on)
+    if (!state.nearMe && state.location !== 'all') {
+      list = list.filter(b => (b.location || '') === state.location || (b.serviceArea || '').includes(state.location));
+    }
+
+    // Search
     if (state.search) {
       const q = state.search.toLowerCase();
       list = list.filter(b =>
@@ -248,29 +285,54 @@ businesses = results.flat();
         (b.location || '').toLowerCase().includes(q)
       );
     }
-    if (state.sort === 'featured') {
-      list.sort((a, b) => {
-        const d = tierRank(a) - tierRank(b);
-        if (d !== 0) return d;
-        return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
+
+    // Sort
+    if (state.nearMe && state.userLocation) {
+      // Compute distance for each
+      list.forEach(b => {
+        const ll = getLatLng(b);
+        if (ll) {
+          state.distances[b.businessId] = haversine(state.userLocation.lat, state.userLocation.lng, ll.lat, ll.lng);
+        } else {
+          state.distances[b.businessId] = null;
+        }
       });
-    } else if (state.sort === 'rating') {
-      list.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
-    } else if (state.sort === 'name') {
-      list.sort((a, b) => (a.businessName || '').localeCompare(b.businessName || ''));
+      // Only keep those with location, sort by distance
+      list = list.filter(b => state.distances[b.businessId] != null);
+      list.sort((a, b) => state.distances[a.businessId] - state.distances[b.businessId]);
+    } else {
+      if (state.sort === 'featured') {
+        list.sort((a, b) => {
+          const d = tierRank(a) - tierRank(b);
+          if (d !== 0) return d;
+          return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
+        });
+      } else if (state.sort === 'rating') {
+        list.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
+      } else if (state.sort === 'name') {
+        list.sort((a, b) => (a.businessName || '').localeCompare(b.businessName || ''));
+      }
     }
+
     state.filtered = list;
     state.page = 1;
     render();
   }
 
+  // ============ RENDER ============
   function render() {
     const total = state.filtered.length;
     const totalPages = Math.ceil(total / PER_PAGE) || 1;
     const start = (state.page - 1) * PER_PAGE;
     const items = state.filtered.slice(start, start + PER_PAGE);
 
-    document.getElementById('resultsCount').innerHTML = `<i class="fa-solid fa-store"></i> ${total} business${total !== 1 ? 'es' : ''}`;
+    const rcEl = document.getElementById('resultsCount');
+    if (state.nearMe) {
+      rcEl.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> ${total} nearby`;
+    } else {
+      rcEl.innerHTML = `<i class="fa-solid fa-store"></i> ${total} business${total !== 1 ? 'es' : ''}`;
+    }
+
     const grid = document.getElementById('bizGrid');
     if (total === 0) {
       grid.innerHTML = `<div class="empty"><i class="fa-solid fa-magnifying-glass"></i><h3>No businesses found</h3><p>Try adjusting filters</p></div>`;
@@ -300,6 +362,7 @@ businesses = results.flat();
     });
   }
 
+  // ============ EVENTS ============
   document.getElementById('catPills').addEventListener('click', e => {
     const btn = e.target.closest('.cat-pill');
     if (!btn) return;
@@ -310,50 +373,101 @@ businesses = results.flat();
     window.scrollTo({ top: 200, behavior: 'smooth' });
   });
 
-  document.getElementById('locFilter').addEventListener('change', e => { state.location = e.target.value; applyFilters(); });
-  document.getElementById('sortFilter').addEventListener('change', e => { state.sort = e.target.value; applyFilters(); });
+  document.getElementById('locFilter').addEventListener('change', e => {
+    state.location = e.target.value;
+    // If user manually changes location, turn off Near Me
+    if (state.location !== 'all' && state.nearMe) {
+      state.nearMe = false;
+      state.userLocation = null;
+      const nb = document.getElementById('nearMeBtn');
+      nb.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
+      nb.classList.remove('active');
+    }
+    applyFilters();
+  });
+
+  document.getElementById('sortFilter').addEventListener('change', e => {
+    state.sort = e.target.value;
+    if (state.nearMe) {
+      state.nearMe = false;
+      state.userLocation = null;
+      const nb = document.getElementById('nearMeBtn');
+      nb.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
+      nb.classList.remove('active');
+    }
+    applyFilters();
+  });
+
   document.getElementById('searchInput').addEventListener('input', e => {
     clearTimeout(window._t);
     window._t = setTimeout(() => { state.search = e.target.value; applyFilters(); }, 250);
   });
 
+  // ============ NEAR ME ============
   document.getElementById('nearMeBtn').addEventListener('click', () => {
-    if (!navigator.geolocation) return alert('Not supported');
     const btn = document.getElementById('nearMeBtn');
+
+    // Toggle OFF if already ON
+    if (state.nearMe) {
+      state.nearMe = false;
+      state.userLocation = null;
+      state.distances = {};
+      btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
+      btn.classList.remove('active');
+      // Reset filters
+      state.category = 'all';
+      state.location = 'all';
+      state.search = '';
+      document.getElementById('locFilter').value = 'all';
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+      document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
+      applyFilters();
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      alert('Your browser does not support location.');
+      return;
+    }
+
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Detecting…';
+
     navigator.geolocation.getCurrentPosition(
-      pos => {
-        const { latitude, longitude } = pos.coords;
-        const dist = (a,b,c,d) => {
-          const R = 6371, dLat = (c-a)*Math.PI/180, dLon = (d-b)*Math.PI/180;
-          const x = Math.sin(dLat/2)**2 + Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
-          return R*2*Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
-        };
-        state.filtered = [...ALL].filter(b => {
-          const la = parseFloat(b.latitude), lo = parseFloat(b.longitude);
-          if (!la || !lo) return false;
-          return dist(latitude, longitude, la, lo) <= 15;
-        }).sort((a, b) => dist(latitude, longitude, parseFloat(a.latitude), parseFloat(a.longitude)) - dist(latitude, longitude, parseFloat(b.latitude), parseFloat(b.longitude)));
-        state.page = 1;
-        document.getElementById('resultsCount').innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> ${state.filtered.length} near you`;
-        const grid = document.getElementById('bizGrid');
-        if (state.filtered.length === 0) {
-          grid.innerHTML = `<div class="empty"><i class="fa-solid fa-magnifying-glass"></i><h3>No businesses within 15 km</h3></div>`;
-          document.getElementById('pagination').innerHTML = '';
-        } else {
-          grid.innerHTML = state.filtered.slice(0, PER_PAGE).map(renderCard).join('');
-          renderPagination(Math.ceil(state.filtered.length / PER_PAGE));
-        }
+      (pos) => {
+        state.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        state.nearMe = true;
+        state.distances = {};
+
+        // Reset all other filters
+        state.category = 'all';
+        state.location = 'all';
+        state.search = '';
+        document.getElementById('locFilter').value = 'all';
+        document.getElementById('searchInput').value = '';
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
+
         btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me (ON)';
         btn.classList.add('active');
+
+        applyFilters();
+        window.scrollTo({ top: 200, behavior: 'smooth' });
       },
-      () => {
+      (err) => {
         btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
-        alert('Location denied');
-      }
+        btn.classList.remove('active');
+        let msg = 'Could not get your location.';
+        if (err.code === 1) msg = 'Location permission denied. Please enable location access.';
+        if (err.code === 2) msg = 'Location unavailable. Try again.';
+        if (err.code === 3) msg = 'Location request timed out. Try again.';
+        alert(msg);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   });
 
+  // Init
   applyFilters();
 </script>
 
@@ -484,16 +598,9 @@ businesses = results.flat();
   background: #f8fafc; border: 1px solid #e2e8f0;
   color: #64748b; font-size: 12px; text-decoration: none; transition: all 0.2s;
 }
-.biz-grid .meta-social a:hover {
-  color: #fff; background: linear-gradient(135deg, #dc2626, #b91c1c);
-  border-color: #dc2626; transform: translateY(-2px);
-}
+.biz-grid .meta-social a:hover { color: #fff; background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #dc2626; transform: translateY(-2px); }
 
-.biz-grid .card-actions {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 14px 0 16px; margin-top: auto;
-  border-top: 1px solid #f1f5f9;
-}
+.biz-grid .card-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 0 16px; margin-top: auto; border-top: 1px solid #f1f5f9; }
 .biz-grid .act {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 13px; border-radius: 9px;
@@ -502,27 +609,22 @@ businesses = results.flat();
   transition: all 0.2s; white-space: nowrap; line-height: 1;
 }
 .biz-grid .act i { font-size: 11px; }
-
 .biz-grid .act-call { background: #fff5f5; color: #991b1b; border-color: #fecaca; }
 .biz-grid .act-call i { color: #dc2626; }
 .biz-grid .act-call:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border-color: #dc2626; box-shadow: 0 6px 14px -6px rgba(220, 38, 38, 0.5); transform: translateY(-1px); text-decoration: none; }
 .biz-grid .act-call:hover i { color: #fff; }
-
 .biz-grid .act-wa { background: #f0fdf4; color: #14532d; border-color: #bbf7d0; }
 .biz-grid .act-wa i { color: #16a34a; }
 .biz-grid .act-wa:hover { background: linear-gradient(135deg, #25d366, #15803d); color: #fff; border-color: #25d366; box-shadow: 0 6px 14px -6px rgba(37, 211, 102, 0.5); transform: translateY(-1px); text-decoration: none; }
 .biz-grid .act-wa:hover i { color: #fff; }
-
 .biz-grid .act-web { background: #eff6ff; color: #1e3a8a; border-color: #bfdbfe; }
 .biz-grid .act-web i { color: #2563eb; }
 .biz-grid .act-web:hover { background: linear-gradient(135deg, #2563eb, #1e40af); color: #fff; border-color: #2563eb; box-shadow: 0 6px 14px -6px rgba(37, 99, 235, 0.5); transform: translateY(-1px); text-decoration: none; }
 .biz-grid .act-web:hover i { color: #fff; }
-
 .biz-grid .act-map { background: #f5f3ff; color: #4c1d95; border-color: #ddd6fe; }
 .biz-grid .act-map i { color: #7c3aed; }
 .biz-grid .act-map:hover { background: linear-gradient(135deg, #7c3aed, #5b21b6); color: #fff; border-color: #7c3aed; box-shadow: 0 6px 14px -6px rgba(124, 58, 237, 0.5); transform: translateY(-1px); text-decoration: none; }
 .biz-grid .act-map:hover i { color: #fff; }
-
 .biz-grid .act-mail { background: #fefce8; color: #854d0e; border-color: #fef08a; }
 .biz-grid .act-mail i { color: #ca8a04; }
 .biz-grid .act-mail:hover { background: linear-gradient(135deg, #ca8a04, #a16207); color: #fff; border-color: #ca8a04; transform: translateY(-1px); text-decoration: none; }
