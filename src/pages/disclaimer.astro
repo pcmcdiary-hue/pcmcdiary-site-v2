@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Disclaimer" description="Disclaimer for PCMC Diary.">
+  <div class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h1>Disclaimer</h1>
+        <p class="page-sub"><i class="fa-regular fa-calendar"></i> Last updated: 12 September 2026</p>
+      </div>
+      <div class="page-body">
+        <section>
+          <h2><i class="fa-solid fa-circle-info"></i> General Information</h2>
+          <p>The information on PCMC Diary is provided on an "as-is" basis for general informational purposes only. While we strive to keep information accurate and up-to-date, we make no warranties of any kind, express or implied, about completeness, accuracy, or reliability.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-store"></i> Business Listings</h2>
+          <p>PCMC Diary is a directory platform. We are not affiliated with, endorse, or guarantee the products, services, or claims made by any listed business. Any dealings you have with a business are strictly between you and that business.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-hand-holding-dollar"></i> Financial & Legal Advice</h2>
+          <p>Articles published under "Expert Salla" are for general information only and should not be treated as professional financial, legal, medical, or tax advice. Please consult a qualified professional for your specific situation.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-heart-pulse"></i> Health & Medical Content</h2>
+          <p>Health-related content is not a substitute for professional medical advice, diagnosis, or treatment. Always seek advice from a qualified healthcare provider.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-link"></i> External Links</h2>
+          <p>Our website contains links to external websites and third-party content. We have no control over the nature, content, or availability of those sites. Inclusion of any links does not imply endorsement.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-exclamation-circle"></i> Errors & Omissions</h2>
+          <p>We reserve the right to correct any errors or omissions, and to change or update information at any time without prior notice. Some information may be outdated, and we are not liable for any loss caused by reliance on it.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-shield-halved"></i> No Liability</h2>
+          <p>In no event shall PCMC Diary be liable for any loss or damage (direct, indirect, or consequential) arising from the use of this website or reliance on its content.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-envelope"></i> Contact</h2>
+          <p>If you spot any incorrect information, please email <a href="mailto:info@pcmcdiary.com">info@pcmcdiary.com</a> and we'll review it.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+.page { background: #f8fafc; padding: 40px 20px 80px; min-height: 60vh; }
+.page-container { max-width: 820px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 48px 52px; box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -16px rgba(15,23,42,0.08); border: 1px solid #f1f5f9; }
+.page-header { text-align: center; padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid #f1f5f9; }
+.page-icon { width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, #d97706, #b45309); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; box-shadow: 0 12px 24px -8px rgba(217,119,6,0.4); }
+.page-header h1 { font-size: 34px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; margin: 0 0 8px; line-height: 1.15; }
+.page-sub { font-size: 13.5px; color: #64748b; margin: 0; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; background: #f1f5f9; border-radius: 50px; }
+.page-body section { margin-bottom: 28px; }
+.page-body h2 { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 12px; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; }
+.page-body h2 i { color: #d97706; font-size: 15px; width: 20px; text-align: center; }
+.page-body p { color: #334155; line-height: 1.75; font-size: 14.5px; margin: 0; }
+.page-body a { color: #d97706; font-weight: 700; text-decoration: none; }
+.page-body a:hover { text-decoration: underline; }
+@media (max-width: 640px) {
+  .page { padding: 20px 12px 60px; }
+  .page-container { padding: 32px 22px; border-radius: 16px; }
+  .page-header h1 { font-size: 24px; }
+  .page-icon { width: 54px; height: 54px; font-size: 22px; border-radius: 14px; }
+  .page-body h2 { font-size: 16px; }
+  .page-body p { font-size: 13.5px; }
+}
+</style>
