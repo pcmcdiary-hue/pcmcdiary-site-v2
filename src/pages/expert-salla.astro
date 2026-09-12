@@ -1,0 +1,368 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const experts = [
+  { name: 'Dr. Saala', cat: 'Health & Medical', icon: 'fa-heart-pulse', gradient: 'linear-gradient(135deg,#dc2626,#991b1b)', sample: '"5 early signs of diabetes you should not ignore"', freq: 'Weekly', slug: 'dr-saala' },
+  { name: 'Arthik Saala', cat: 'Finance & Tax', icon: 'fa-coins', gradient: 'linear-gradient(135deg,#059669,#047857)', sample: '"How to save ₹46,800 tax this year (legally)"', freq: 'Weekly', slug: 'arthik-saala' },
+  { name: 'Vastu Saala', cat: 'Vastu & Harmony', icon: 'fa-compass', gradient: 'linear-gradient(135deg,#7c3aed,#5b21b6)', sample: '"Kitchen direction: why it affects your relationships"', freq: 'Weekly', slug: 'vastu-saala' },
+  { name: 'Fit Saala', cat: 'Fitness & Nutrition', icon: 'fa-dumbbell', gradient: 'linear-gradient(135deg,#ea580c,#c2410c)', sample: '"Lose 5 kg in 8 weeks — without giving up roti"', freq: 'Weekly', slug: 'fit-saala' },
+  { name: 'Kanoon Saala', cat: 'Legal & Rights', icon: 'fa-scale-balanced', gradient: 'linear-gradient(135deg,#1e293b,#0f172a)', sample: '"Rent agreement: 7 clauses you must check"', freq: 'Monthly', slug: 'kanoon-saala' },
+  { name: 'Career Saala', cat: 'Career & Jobs', icon: 'fa-briefcase', gradient: 'linear-gradient(135deg,#0284c7,#0369a1)', sample: '"Resume mistakes that cost you the interview"', freq: 'Weekly', slug: 'career-saala' },
+  { name: 'Shikshan Saala', cat: 'Education', icon: 'fa-graduation-cap', gradient: 'linear-gradient(135deg,#4f46e5,#4338ca)', sample: '"How to pick the right stream after 10th"', freq: 'Weekly', slug: 'shikshan-saala' },
+  { name: 'Beauty Saala', cat: 'Skin & Hair', icon: 'fa-spa', gradient: 'linear-gradient(135deg,#db2777,#be185d)', sample: '"Monsoon skincare: 5 dermatologist-approved tips"', freq: 'Weekly', slug: 'beauty-saala' },
+  { name: 'Food Saala', cat: 'Food & Recipes', icon: 'fa-utensils', gradient: 'linear-gradient(135deg,#b45309,#92400e)', sample: '"5 PCMC street foods you must try before 30"', freq: 'Weekly', slug: 'food-saala' },
+  { name: 'Tech Saala', cat: 'Tech & Gadgets', icon: 'fa-microchip', gradient: 'linear-gradient(135deg,#0891b2,#0e7490)', sample: '"Best phones under ₹20,000 this Diwali"', freq: 'Weekly', slug: 'tech-saala' },
+  { name: 'Rashi Saala', cat: 'Astrology', icon: 'fa-star', gradient: 'linear-gradient(135deg,#9333ea,#7c3aed)', sample: '"Your weekly rashi phal — career & health"', freq: 'Weekly', slug: 'rashi-saala' },
+  { name: 'Parenting Saala', cat: 'Parenting', icon: 'fa-child-reaching', gradient: 'linear-gradient(135deg,#0891b2,#0284c7)', sample: '"Screen time rules that actually work"', freq: 'Weekly', slug: 'parenting-saala' },
+  { name: 'Property Saala', cat: 'Real Estate', icon: 'fa-building', gradient: 'linear-gradient(135deg,#059669,#065f46)', sample: '"Wakad vs Hinjawadi: where to buy in 2026"', freq: 'Monthly', slug: 'property-saala' },
+  { name: 'Gaadi Saala', cat: 'Automobile', icon: 'fa-car-side', gradient: 'linear-gradient(135deg,#dc2626,#991b1b)', sample: '"Monsoon car care: 8 things to check today"', freq: 'Weekly', slug: 'gaadi-saala' },
+  { name: 'Travel Saala', cat: 'Travel', icon: 'fa-umbrella-beach', gradient: 'linear-gradient(135deg,#0284c7,#075985)', sample: '"Weekend getaways under ₹5,000 from Pune"', freq: 'Weekly', slug: 'travel-saala' },
+  { name: 'Business Saala', cat: 'Business Growth', icon: 'fa-chart-line', gradient: 'linear-gradient(135deg,#7c3aed,#6d28d9)', sample: '"How local shops can beat quick-commerce"', freq: 'Weekly', slug: 'business-saala' },
+  { name: 'Bima Saala', cat: 'Insurance', icon: 'fa-shield-heart', gradient: 'linear-gradient(135deg,#0891b2,#0369a1)', sample: '"Term plan vs endowment — which suits you?"', freq: 'Monthly', slug: 'bima-saala' },
+  { name: 'Tax Saala', cat: 'Tax & GST', icon: 'fa-file-invoice-dollar', gradient: 'linear-gradient(135deg,#059669,#065f46)', sample: '"GST filing for small shops — step by step"', freq: 'Monthly', slug: 'tax-saala' },
+  { name: 'Adhyatm Saala', cat: 'Spirituality', icon: 'fa-om', gradient: 'linear-gradient(135deg,#b45309,#92400e)', sample: '"5-minute morning rituals for calm & focus"', freq: 'Weekly', slug: 'adhyatm-saala' },
+  { name: 'Rishta Saala', cat: 'Relationships', icon: 'fa-heart', gradient: 'linear-gradient(135deg,#e11d48,#be123c)', sample: '"How to keep the spark alive after kids"', freq: 'Monthly', slug: 'rishta-saala' },
+  { name: 'Skill Saala', cat: 'Skills & Upskilling', icon: 'fa-laptop-code', gradient: 'linear-gradient(135deg,#0d9488,#0f766e)', sample: '"Learn Excel shortcuts that save 2 hrs/day"', freq: 'Free', slug: 'skill-saala' }
+];
+---
+
+<BaseLayout title="Expert Salla" description="Weekly expert advice from doctors, CAs, trainers, and more — for PCMC residents.">
+
+  <div class="ex-page">
+
+    <!-- HERO -->
+    <section class="ex-hero">
+      <div class="ex-hero-bg"></div>
+      <div class="ex-container">
+        <nav class="breadcrumb">
+          <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+          <i class="fa-solid fa-chevron-right sep"></i>
+          <span>Expert Salla</span>
+        </nav>
+
+        <div class="ex-hero-inner">
+          <div class="ex-hero-icon">
+            <i class="fa-solid fa-user-tie"></i>
+          </div>
+          <div class="ex-hero-text">
+            <h1>PCMC <em>Expert Salla</em></h1>
+            <p>Real advice from real experts — doctors, CAs, vastu consultants, trainers, lawyers, astrologers &amp; more.</p>
+          </div>
+        </div>
+
+        <!-- Featured expert -->
+        <div class="ex-feature">
+          <div class="ex-feature-l">
+            <div class="ex-feature-tag">
+              <i class="fa-solid fa-crown"></i> Expert of the Month
+            </div>
+            <h2>Dr. Saala — <em>Your weekly health companion</em></h2>
+            <p>Practical medical advice for PCMC families. Seasonal tips, home remedies, when to see a doctor &amp; how to read reports — in plain language.</p>
+            <div class="ex-feature-meta">
+              <span><i class="fa-solid fa-calendar"></i> Weekly column</span>
+              <span><i class="fa-solid fa-eye"></i> 8,400+ readers</span>
+              <span><i class="fa-solid fa-user-doctor"></i> Verified MD</span>
+            </div>
+            <a href="/search/label/dr-saala" class="ex-feature-cta">
+              <i class="fa-solid fa-book-open"></i> Read Latest Article
+            </a>
+          </div>
+          <div class="ex-feature-r">
+            <div class="ex-feature-stat"><i class="fa-solid fa-users"></i><div><div class="v">20+</div><div class="l">Expert Columns</div></div></div>
+            <div class="ex-feature-stat"><i class="fa-solid fa-newspaper"></i><div><div class="v">500+</div><div class="l">Articles Published</div></div></div>
+            <div class="ex-feature-stat"><i class="fa-solid fa-hand-holding-dollar"></i><div><div class="v">₹2,999</div><div class="l">Sponsor / month</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERTS GRID -->
+    <section class="ex-body">
+      <div class="ex-container">
+        <div class="ex-sec-head">
+          <div>
+            <span class="ex-eyebrow">All Columns</span>
+            <h2>Browse by Expert</h2>
+          </div>
+        </div>
+
+        <div class="ex-grid">
+          {experts.map(ex => (
+            <a href={`/search/label/${ex.slug}`} class="ex-card">
+              <div class="ex-card-accent" style={`background:${ex.gradient}`}></div>
+              <div class="ex-card-head">
+                <div class="ex-card-av" style={`background:${ex.gradient}`}>
+                  <i class={`fa-solid ${ex.icon}`}></i>
+                </div>
+                <div class="ex-card-head-text">
+                  <h3 class="ex-card-name">{ex.name}</h3>
+                  <div class="ex-card-cat">{ex.cat}</div>
+                </div>
+              </div>
+              <div class="ex-card-sample">{ex.sample}</div>
+              <div class="ex-card-foot">
+                <span class={`ex-freq ${ex.freq === 'Free' ? 'free' : ''}`}>
+                  <i class={`fa-solid ${ex.freq === 'Free' ? 'fa-gift' : 'fa-clock'}`}></i> {ex.freq}
+                </span>
+                <span class="ex-read-more">
+                  Read <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <!-- Monetization cards -->
+        <div class="ex-monetize">
+          <div class="ex-mono-card">
+            <div class="ex-mono-ic"><i class="fa-solid fa-pen-fancy"></i></div>
+            <h3>Become an Expert Writer</h3>
+            <p>Doctors, CAs, lawyers, trainers — share your expertise &amp; get paid per article.</p>
+            <a href="/contact">Apply Now <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="ex-mono-card">
+            <div class="ex-mono-ic"><i class="fa-solid fa-megaphone"></i></div>
+            <h3>Sponsor a Column</h3>
+            <p>Put your brand in front of 10,000+ engaged PCMC readers every month.</p>
+            <a href="/plans">See Packages <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="ex-mono-card">
+            <div class="ex-mono-ic"><i class="fa-solid fa-bullhorn"></i></div>
+            <h3>Advertise With Us</h3>
+            <p>Banner, sidebar &amp; newsletter ads for hyperlocal PCMC audience.</p>
+            <a href="/contact">Get Media Kit <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+</BaseLayout>
+
+<style is:global>
+.ex-page { background: #f8fafc; min-height: 60vh; }
+.ex-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+.ex-hero {
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
+  color: #fff; padding: 32px 0 48px;
+  position: relative; overflow: hidden;
+}
+.ex-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px;
+  opacity: 0.6; pointer-events: none;
+}
+.ex-hero .ex-container { position: relative; z-index: 2; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.7);
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.breadcrumb a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
+.breadcrumb a:hover { color: #fde047; }
+.breadcrumb a i { font-size: 11px; }
+.breadcrumb .sep { font-size: 9px; opacity: 0.5; }
+.breadcrumb span { color: #fde047; font-weight: 700; }
+
+.ex-hero-inner { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-bottom: 32px; }
+.ex-hero-icon {
+  width: 76px; height: 76px; border-radius: 20px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: #fde047; flex-shrink: 0;
+}
+.ex-hero-text h1 { font-size: 38px; font-weight: 800; letter-spacing: -1px; line-height: 1.1; margin: 0 0 8px; }
+.ex-hero-text h1 em { font-style: italic; color: #fde047; }
+.ex-hero-text p { font-size: 14.5px; color: rgba(255,255,255,0.88); font-weight: 500; margin: 0; max-width: 640px; line-height: 1.55; }
+
+.ex-feature {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 18px; padding: 28px;
+  color: #fff; position: relative; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.ex-feature::before {
+  content: ''; position: absolute; top: -30%; right: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(253,224,71,0.16), transparent 65%);
+  border-radius: 50%;
+}
+.ex-feature > * { position: relative; z-index: 2; }
+.ex-feature-l { min-width: 0; }
+.ex-feature-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 99px;
+  background: rgba(253,224,71,0.15);
+  border: 1px solid rgba(253,224,71,0.4);
+  color: #fde047; font-size: 10.5px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+.ex-feature h2 { font-size: 24px; font-weight: 800; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.4px; }
+.ex-feature h2 em { font-style: italic; color: #fde047; }
+.ex-feature p { font-size: 13.5px; color: rgba(255,255,255,0.78); line-height: 1.6; margin: 0 0 18px; }
+.ex-feature-meta { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.65); margin-bottom: 18px; }
+.ex-feature-meta span { display: inline-flex; align-items: center; gap: 6px; }
+.ex-feature-meta i { color: #fde047; font-size: 11px; }
+.ex-feature-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px; border-radius: 10px;
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #0f0a0a; font-weight: 800; font-size: 13px;
+  text-decoration: none; transition: all 0.2s;
+  box-shadow: 0 8px 20px -6px rgba(212,160,23,0.5);
+}
+.ex-feature-cta:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 12px 26px -6px rgba(212,160,23,0.6); }
+
+.ex-feature-r { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.ex-feature-stat {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+}
+.ex-feature-stat i {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: rgba(253,224,71,0.12);
+  color: #fde047; font-size: 17px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ex-feature-stat .v { font-size: 20px; font-weight: 800; line-height: 1; color: #fff; letter-spacing: -0.3px; }
+.ex-feature-stat .l { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-top: 3px; }
+
+.ex-body { padding: 48px 0 60px; }
+.ex-sec-head { margin-bottom: 24px; }
+.ex-eyebrow {
+  display: inline-block; font-size: 11px; font-weight: 800;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  color: #dc2626; margin-bottom: 6px;
+}
+.ex-sec-head h2 { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.4px; }
+
+.ex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.ex-card {
+  position: relative;
+  display: flex; flex-direction: column; gap: 12px;
+  background: #fff; border: 1px solid #e8ecf1;
+  border-radius: 16px; padding: 20px 20px 18px;
+  text-decoration: none; overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(15,23,42,0.03), 0 4px 12px -8px rgba(15,23,42,0.04);
+}
+.ex-card:hover {
+  transform: translateY(-4px);
+  border-color: #fecaca;
+  box-shadow: 0 20px 40px -16px rgba(15,23,42,0.12), 0 8px 16px -8px rgba(220,38,38,0.08);
+  text-decoration: none;
+}
+.ex-card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+
+.ex-card-head { display: flex; align-items: center; gap: 12px; padding-top: 4px; }
+.ex-card-av {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 19px; flex-shrink: 0;
+  box-shadow: 0 6px 14px -6px rgba(15,23,42,0.25);
+}
+.ex-card-head-text { flex: 1; min-width: 0; }
+.ex-card-name { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 3px; letter-spacing: -0.3px; }
+.ex-card-cat { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.ex-card-sample {
+  font-size: 13px; color: #475569; line-height: 1.5;
+  font-style: italic; font-weight: 500;
+  padding: 10px 0 0;
+  border-top: 1px dashed #e2e8f0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 48px;
+}
+
+.ex-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding-top: 12px; border-top: 1px solid #f1f5f9; margin-top: auto;
+}
+.ex-freq {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10.5px; font-weight: 800; color: #b45309;
+  padding: 4px 9px; border-radius: 6px;
+  background: linear-gradient(135deg,#fffbeb,#fef3c7);
+  border: 1px solid #fde68a;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.ex-freq.free {
+  background: linear-gradient(135deg,#d1fae5,#a7f3d0);
+  color: #065f46; border-color: #6ee7b7;
+}
+.ex-read-more {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 800; color: #dc2626;
+  transition: gap 0.2s;
+}
+.ex-card:hover .ex-read-more { gap: 8px; }
+.ex-read-more i { font-size: 10px; }
+
+.ex-monetize {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px; padding-top: 32px; border-top: 1px dashed #e2e8f0;
+}
+.ex-mono-card {
+  background: #fff; border: 1px solid #e8ecf1; border-radius: 14px;
+  padding: 22px 20px; text-align: center;
+  transition: all 0.3s;
+}
+.ex-mono-card:hover {
+  border-color: #fde68a; transform: translateY(-3px);
+  box-shadow: 0 16px 32px -16px rgba(15,23,42,0.1);
+}
+.ex-mono-ic {
+  width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg,#fffbeb,#fef3c7);
+  color: #b45309; font-size: 20px;
+}
+.ex-mono-card h3 { font-size: 14.5px; font-weight: 800; color: #0f172a; margin: 0 0 8px; letter-spacing: -0.2px; }
+.ex-mono-card p { font-size: 12.5px; color: #64748b; margin: 0 0 14px; line-height: 1.55; }
+.ex-mono-card a {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 800; color: #dc2626;
+  padding: 7px 14px; border-radius: 99px;
+  background: #fef2f2; border: 1px solid #fecaca;
+  text-decoration: none; transition: all 0.2s;
+}
+.ex-mono-card a:hover { background: #dc2626; color: #fff; border-color: #dc2626; text-decoration: none; }
+
+@media (max-width: 900px) {
+  .ex-feature { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .ex-hero { padding: 24px 0 32px; }
+  .ex-hero-inner { gap: 16px; margin-bottom: 24px; }
+  .ex-hero-icon { width: 60px; height: 60px; font-size: 26px; border-radius: 16px; }
+  .ex-hero-text h1 { font-size: 26px; }
+  .ex-hero-text p { font-size: 13px; }
+  .ex-feature { padding: 20px; }
+  .ex-feature h2 { font-size: 19px; }
+  .ex-feature-meta { gap: 12px; font-size: 11.5px; }
+  .ex-grid { grid-template-columns: 1fr; gap: 12px; }
+  .ex-sec-head h2 { font-size: 20px; }
+}
+</style>
