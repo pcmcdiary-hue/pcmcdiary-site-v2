@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Contact Us" description="Get in touch with PCMC Diary — for business listings, partnerships, or queries.">
+
+  <div class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-icon"><i class="fa-solid fa-envelope"></i></div>
+        <h1>Contact Us</h1>
+        <p class="page-sub">We usually reply within 24 hours</p>
+      </div>
+
+      <div class="contact-grid">
+
+        <a href="mailto:info@pcmcdiary.com" class="contact-card">
+          <div class="contact-ic" style="background: linear-gradient(135deg,#dc2626,#991b1b)">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <div class="contact-info">
+            <h3>Email</h3>
+            <p>info@pcmcdiary.com</p>
+            <span>Best for: General queries, listings, partnerships</span>
+          </div>
+        </a>
+
+        <a href="https://wa.me/918793932827" target="_blank" rel="noopener" class="contact-card">
+          <div class="contact-ic" style="background: linear-gradient(135deg,#25d366,#15803d)">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div class="contact-info">
+            <h3>WhatsApp</h3>
+            <p>+91 87939 32827</p>
+            <span>Best for: Quick questions, urgent issues</span>
+          </div>
+        </a>
+
+        <a href="tel:+918793932827" class="contact-card">
+          <div class="contact-ic" style="background: linear-gradient(135deg,#0891b2,#0e7490)">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+          <div class="contact-info">
+            <h3>Phone</h3>
+            <p>+91 87939 32827</p>
+            <span>Mon-Sat, 10 AM – 7 PM</span>
+          </div>
+        </a>
+
+        <div class="contact-card static">
+          <div class="contact-ic" style="background: linear-gradient(135deg,#2563eb,#1e40af)">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+          <div class="contact-info">
+            <h3>Location</h3>
+            <p>Nigdi, Pimpri-Chinchwad</p>
+            <span>Maharashtra, India</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="cta-section">
+        <h2><i class="fa-solid fa-store"></i> Want to List Your Business?</h2>
+        <p>Register your business on PCMC Diary and reach thousands of local customers. Free listings available.</p>
+        <div class="cta-btns">
+          <a href="/register" class="cta-btn primary">
+            <i class="fa-solid fa-circle-plus"></i> Register Business
+          </a>
+          <a href="/plans" class="cta-btn outline">
+            <i class="fa-solid fa-crown"></i> View Plans
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style is:global>
+.page {
+  background: #f8fafc;
+  padding: 40px 20px 80px;
+  min-height: 60vh;
+}
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 48px 52px;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -16px rgba(15,23,42,0.08);
+  border: 1px solid #f1f5f9;
+}
+.page-header {
+  text-align: center;
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.page-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #fff;
+  box-shadow: 0 12px 24px -8px rgba(220,38,38,0.4);
+}
+.page-header h1 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.8px;
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+.page-sub { font-size: 15px; color: #64748b; margin: 0; font-weight: 500; }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.contact-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.contact-card:not(.static):hover {
+  transform: translateY(-3px);
+  border-color: #fecaca;
+  box-shadow: 0 16px 32px -12px rgba(220,38,38,0.15);
+  text-decoration: none;
+}
+.contact-ic {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 8px 16px -6px rgba(15,23,42,0.25);
+}
+.contact-info { flex: 1; min-width: 0; }
+.contact-info h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
+  letter-spacing: -0.2px;
+}
+.contact-info p {
+  font-size: 14px;
+  font-weight: 700;
+  color: #dc2626;
+  margin: 0 0 6px;
+  word-break: break-word;
+}
+.contact-info span {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  display: block;
+}
+
+.cta-section {
+  text-align: center;
+  padding: 36px 28px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -40%; right: -10%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(220,38,38,0.35), transparent 65%);
+  border-radius: 50%;
+}
+.cta-section > * { position: relative; z-index: 2; }
+.cta-section h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 10px;
+  letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.cta-section h2 i { color: #fde047; font-size: 20px; }
+.cta-section p {
+  font-size: 14.5px;
+  color: rgba(255,255,255,0.85);
+  margin: 0 0 22px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+.cta-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border-radius: 11px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.cta-btn.primary {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #fff;
+  box-shadow: 0 10px 24px -8px rgba(220,38,38,0.55);
+}
+.cta-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(220,38,38,0.65); text-decoration: none; }
+.cta-btn.outline {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.cta-btn.outline:hover { background: rgba(255,255,255,0.16); text-decoration: none; transform: translateY(-2px); }
+.cta-btn i { font-size: 13px; }
+
+@media (max-width: 640px) {
+  .page { padding: 20px 12px 60px; }
+  .page-container { padding: 32px 20px; border-radius: 16px; }
+  .page-header h1 { font-size: 26px; }
+  .page-icon { width: 54px; height: 54px; font-size: 22px; border-radius: 14px; }
+  .contact-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
+  .contact-card { padding: 16px; }
+  .contact-ic { width: 42px; height: 42px; font-size: 17px; border-radius: 10px; }
+  .cta-section { padding: 28px 20px; border-radius: 16px; }
+  .cta-section h2 { font-size: 20px; }
+  .cta-section p { font-size: 13.5px; }
+}
+</style>
