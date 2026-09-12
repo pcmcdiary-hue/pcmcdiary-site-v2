@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Privacy Policy" description="Privacy policy for PCMC Diary.">
+  <div class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-icon"><i class="fa-solid fa-user-shield"></i></div>
+        <h1>Privacy Policy</h1>
+        <p class="page-sub"><i class="fa-regular fa-calendar"></i> Last updated: 12 September 2026</p>
+      </div>
+      <div class="page-body">
+        <section>
+          <h2><i class="fa-solid fa-database"></i> 1. Information We Collect</h2>
+          <p>We collect minimal information to operate the directory:</p>
+          <ul>
+            <li>Business details submitted by owners (name, address, phone, email, website)</li>
+            <li>Basic analytics data (pages visited, browser type, approximate location)</li>
+            <li>Contact information you provide when reaching out (email, phone)</li>
+            <li>Payment information handled securely by third-party gateways (we do not store card details)</li>
+          </ul>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-bullseye"></i> 2. How We Use Information</h2>
+          <ul>
+            <li>To display business listings on our directory</li>
+            <li>To improve website experience and functionality</li>
+            <li>To communicate with you about your listing or queries</li>
+            <li>To send occasional updates (only if you opt-in)</li>
+          </ul>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-share-nodes"></i> 3. Data Sharing</h2>
+          <p>We do not sell your personal information. We may share limited data with:</p>
+          <ul>
+            <li>Payment gateways (for processing transactions)</li>
+            <li>Analytics providers (Google Analytics — anonymized)</li>
+            <li>Legal authorities (if required by law)</li>
+          </ul>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-cookie-bite"></i> 4. Cookies</h2>
+          <p>We use cookies and similar technologies for basic functionality and analytics. You can disable cookies in your browser settings, though some features may not work properly.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-lock"></i> 5. Data Security</h2>
+          <p>We use industry-standard security measures to protect data. However, no online transmission is 100% secure. We cannot guarantee absolute security.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-user-check"></i> 6. Your Rights</h2>
+          <ul>
+            <li>Request access to data we hold about you</li>
+            <li>Request correction or deletion of your data</li>
+            <li>Opt-out of marketing communications</li>
+            <li>Withdraw consent at any time</li>
+          </ul>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-child"></i> 7. Children's Privacy</h2>
+          <p>Our services are not directed to children under 13. We do not knowingly collect data from children.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-rotate"></i> 8. Changes to Policy</h2>
+          <p>We may update this Privacy Policy. Any changes will be posted on this page with a revised date.</p>
+        </section>
+        <section>
+          <h2><i class="fa-solid fa-envelope"></i> 9. Contact</h2>
+          <p>For privacy-related queries, email <a href="mailto:info@pcmcdiary.com">info@pcmcdiary.com</a>.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+.page { background: #f8fafc; padding: 40px 20px 80px; min-height: 60vh; }
+.page-container { max-width: 820px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 48px 52px; box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -16px rgba(15,23,42,0.08); border: 1px solid #f1f5f9; }
+.page-header { text-align: center; padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid #f1f5f9; }
+.page-icon { width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, #2563eb, #1e40af); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; box-shadow: 0 12px 24px -8px rgba(37,99,235,0.4); }
+.page-header h1 { font-size: 34px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; margin: 0 0 8px; line-height: 1.15; }
+.page-sub { font-size: 13.5px; color: #64748b; margin: 0; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; background: #f1f5f9; border-radius: 50px; }
+.page-body section { margin-bottom: 28px; }
+.page-body h2 { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 12px; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; }
+.page-body h2 i { color: #2563eb; font-size: 15px; width: 20px; text-align: center; }
+.page-body p { color: #334155; line-height: 1.75; font-size: 14.5px; margin: 0; }
+.page-body ul { list-style: none; padding: 0; margin: 12px 0 0; }
+.page-body ul li { padding: 8px 14px 8px 36px; position: relative; color: #334155; line-height: 1.6; font-size: 14px; background: #f8fafc; border-radius: 8px; margin-bottom: 6px; }
+.page-body ul li::before { content: '\f111'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 16px; top: 11px; color: #2563eb; font-size: 5px; }
+.page-body a { color: #2563eb; font-weight: 700; text-decoration: none; }
+.page-body a:hover { text-decoration: underline; }
+@media (max-width: 640px) {
+  .page { padding: 20px 12px 60px; }
+  .page-container { padding: 32px 22px; border-radius: 16px; }
+  .page-header h1 { font-size: 24px; }
+  .page-icon { width: 54px; height: 54px; font-size: 22px; border-radius: 14px; }
+  .page-body h2 { font-size: 16px; }
+  .page-body p, .page-body ul li { font-size: 13.5px; }
+}
+</style>
