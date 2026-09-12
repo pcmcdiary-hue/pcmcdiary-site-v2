@@ -172,7 +172,10 @@ businesses = results.flat();
       if (isPro && b.socialLinks) {
         const icons = { insta: 'fa-brands fa-instagram', fb: 'fa-brands fa-facebook-f', yt: 'fa-brands fa-youtube', tw: 'fa-brands fa-x-twitter', li: 'fa-brands fa-linkedin-in', wa: 'fa-brands fa-whatsapp' };
         social = `<div class="meta-social">${b.socialLinks.split('|').map(p => {
-          const [k, u] = p.split(':');
+        const idx = p.indexOf(':');
+if (idx === -1) return '';
+const k = p.substring(0, idx);
+const u = p.substring(idx + 1);
           if (!u) return '';
           return `<a href="${u.trim()}" target="_blank" rel="noopener" title="${k}"><i class="${icons[k.trim()] || 'fa-solid fa-link'}"></i></a>`;
         }).join('')}</div>`;
