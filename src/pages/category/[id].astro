@@ -252,11 +252,25 @@ uniqueLocs.sort();
       return;
     }
 
-    filtered.sort(function(a, b) {
-      const d = tierRank(a) - tierRank(b);
-      if (d !== 0) return d;
-      return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
-    });
+  var tiers = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+for (var i = 0; i < filtered.length; i++) {
+  var t = tierRank(filtered[i]);
+  tiers[t].push(filtered[i]);
+}
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+filtered = []
+  .concat(shuffle(tiers[1]))
+  .concat(shuffle(tiers[2]))
+  .concat(shuffle(tiers[3]))
+  .concat(shuffle(tiers[4]))
+  .concat(shuffle(tiers[5]))
+  .concat(shuffle(tiers[6]));
 
     let html = '';
     for (let i = 0; i < filtered.length; i++) {
