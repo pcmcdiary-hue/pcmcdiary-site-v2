@@ -282,3 +282,60 @@ a:hover { text-decoration: underline; }
   flex-wrap: wrap;
 }
 .footer-bottom .dot { opacity: 0.5; }
+
+
+
+
+/* ========== FOOTER — Mobile Fix ========== */
+@media (max-width: 900px) {
+  .footer {
+    padding: 40px 0 20px;
+  }
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
+    padding-bottom: 28px;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer {
+    padding: 36px 0 20px;
+  }
+  .footer .container {
+    padding: 0 20px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-bottom: 24px;
+  }
+  .footer h4 {
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .footer ul a,
+  .footer-contact a,
+  .footer-contact .footer-loc {
+    font-size: 13px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .footer-contact a,
+  .footer-contact .footer-loc {
+    padding-right: 8px;
+  }
+  .footer-brand p {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .footer-bottom {
+    font-size: 12px;
+    padding-top: 20px;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .footer-bottom .dot { display: none; }
+}
