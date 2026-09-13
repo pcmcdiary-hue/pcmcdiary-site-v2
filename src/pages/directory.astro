@@ -305,12 +305,28 @@ businesses = results.flat();
       withDist.sort((a, b) => a._dist - b._dist);
       list = [...withDist, ...withoutDist];
     } else {
-      if (state.sort === 'featured') {
-        list.sort((a, b) => {
-          const d = tierRank(a) - tierRank(b);
-          if (d !== 0) return d;
-          return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
-        });
+if (state.sort === 'featured') {
+  const tiers = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+  for (const b of list) {
+    const t = tierRank(b);
+    tiers[t].push(b);
+  }
+  const shuffle = (arr) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+  list = [
+    ...shuffle(tiers[1]),
+    ...shuffle(tiers[2]),
+    ...shuffle(tiers[3]),
+    ...shuffle(tiers[4]),
+    ...shuffle(tiers[5]),
+    ...shuffle(tiers[6])
+  ];
+}
       } else if (state.sort === 'rating') {
         list.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
       } else if (state.sort === 'name') {
