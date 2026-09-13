@@ -20,20 +20,22 @@ const iconMap = {
 };
 
 export async function getStaticPaths() {
-  try {
-    const res = await fetch(`${CDN}/categories.json`);
-    const data = await res.json();
-    const cats = data.categories || [];
-    return cats.map(cat => ({
-      params: { id: cat.categoryId },
-      props: {
-        category: cat,
-        iconClass: iconMap[cat.categoryName] || 'fa-folder'
-      }
-    }));
-  } catch (e) {
-    return [];
-  }
+  const url = `${CDN}/categories.json`;
+  console.log(`[DEBUG] Fetching: ${url}`);
+  const res = await fetch(url);
+  console.log(`[DEBUG] Status: ${res.status}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+  const data = await res.json();
+  const cats = data.categories || [];
+  console.log(`[DEBUG] Categories found: ${cats.length}`);
+  if (cats.length === 0) throw new Error('Categories array is empty');
+  return cats.map(cat => ({
+    params: { id: cat.categoryId },
+    props: {
+      category: cat,
+      iconClass: iconMap[cat.categoryName] || 'fa-folder'
+    }
+  }));
 }
 
 const { category, iconClass } = Astro.props;
@@ -53,7 +55,6 @@ const pageDesc = `Find the best ${category.categoryName} businesses in Pimpri-Ch
 
   <div class="cat-page">
 
-    <!-- HERO -->
     <section class="cat-hero">
       <div class="cat-hero-bg"></div>
       <div class="cat-container">
@@ -76,10 +77,8 @@ const pageDesc = `Find the best ${category.categoryName} businesses in Pimpri-Ch
       </div>
     </section>
 
-    <!-- BODY -->
     <section class="cat-body">
       <div class="cat-container">
-
         <div class="results-bar">
           <span class="results-count">
             <i class="fa-solid fa-store"></i> {businesses.length} {businesses.length === 1 ? 'business' : 'businesses'}
@@ -88,9 +87,7 @@ const pageDesc = `Find the best ${category.categoryName} businesses in Pimpri-Ch
             <i class="fa-solid fa-arrow-left"></i> All Categories
           </a>
         </div>
-
         <div class="biz-grid" id="bizGrid"></div>
-
       </div>
     </section>
 
@@ -237,7 +234,6 @@ const pageDesc = `Find the best ${category.categoryName} businesses in Pimpri-Ch
 .cat-page { background: #f8fafc; min-height: 60vh; }
 .cat-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-/* HERO */
 .cat-hero {
   background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
   color: #fff;
@@ -314,7 +310,6 @@ const pageDesc = `Find the best ${category.categoryName} businesses in Pimpri-Ch
   margin: 0;
 }
 
-/* BODY */
 .cat-body { padding: 32px 0 60px; }
 
 .results-bar {
@@ -356,7 +351,6 @@ const pageDesc = `Find the best ${category.categoryName} businesses in Pimpri-Ch
 
 .biz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 
-/* CARD */
 .biz-grid .biz-card {
   position: relative;
   background: #fff;
