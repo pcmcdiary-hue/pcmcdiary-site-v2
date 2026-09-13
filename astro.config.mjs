@@ -7,9 +7,5 @@ export default defineConfig({
   build: {
     format: 'directory'
   },
-  integrations: [
-    sitemap({
-      filter: (page) => !page.includes('/404')
-    })
-  ]
+  integrations: [sitemap()]
 });
