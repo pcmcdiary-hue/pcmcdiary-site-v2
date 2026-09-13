@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Block admin/utility pages from crawling
+Disallow: /404
+Disallow: /*?*q=
+
+# Sitemap location
+Sitemap: https://pcmcdiary.com/sitemap-index.xml
+
+# Crawl delay (be respectful)
+Crawl-delay: 1
