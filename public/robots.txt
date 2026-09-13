@@ -6,7 +6,6 @@ Disallow: /404
 Disallow: /*?*q=
 
 # Sitemap location
-Sitemap: https://pcmcdiary.com/sitemap-index.xml
-
+Sitemap: https://pcmcdiary.com/sitemap.xml
 # Crawl delay (be respectful)
 Crawl-delay: 1
