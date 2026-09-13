@@ -1,0 +1,882 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const plans = [
+  {
+    id: 'free',
+    name: 'Free',
+    price: 0,
+    period: 'forever',
+    tagline: 'Get listed, get found',
+    badge: null,
+    color: '#64748b',
+    gradient: 'linear-gradient(135deg,#94a3b8,#64748b)',
+    features: [
+      { label: 'Basic business listing', included: true },
+      { label: '1 location visibility', included: true },
+      { label: 'Call button', included: true },
+      { label: 'Customer rating display', included: true },
+      { label: 'WhatsApp button', included: false },
+      { label: 'Website link', included: false },
+      { label: 'Coupon / deal badge', included: false },
+      { label: 'Timing display', included: false },
+    ],
+    cta: 'Start Free',
+    ctaHref: '/register',
+  },
+  {
+    id: 'vb',
+    name: 'Verified Basic',
+    price: 99,
+    period: 'per year',
+    tagline: 'Trust badge + more reach',
+    badge: null,
+    color: '#059669',
+    gradient: 'linear-gradient(135deg,#34d399,#059669)',
+    features: [
+      { label: 'Everything in Free', included: true },
+      { label: 'Verified badge', included: true },
+      { label: 'Visibility in 3 areas', included: true },
+      { label: 'Call button', included: true },
+      { label: 'Customer rating display', included: true },
+      { label: 'WhatsApp button', included: false },
+      { label: 'Website link', included: false },
+      { label: 'Coupon / deal badge', included: false },
+    ],
+    cta: 'Choose Verified Basic',
+    ctaHref: '/register?plan=vb',
+  },
+  {
+    id: 'vp',
+    name: 'Verified Pro',
+    price: 199,
+    period: 'per year',
+    tagline: 'Full PCMC coverage',
+    badge: null,
+    color: '#0891b2',
+    gradient: 'linear-gradient(135deg,#22d3ee,#0891b2)',
+    features: [
+      { label: 'Everything in Verified Basic', included: true },
+      { label: 'All 33 locations', included: true },
+      { label: 'Top 20 position', included: true },
+      { label: 'Review count display', included: true },
+      { label: 'Call button', included: true },
+      { label: 'WhatsApp button', included: false },
+      { label: 'Website link', included: false },
+      { label: 'Coupon / deal badge', included: false },
+    ],
+    cta: 'Choose Verified Pro',
+    ctaHref: '/register?plan=vp',
+  },
+  {
+    id: 'premium',
+    name: 'Premium',
+    price: 499,
+    period: 'per year',
+    tagline: 'Most popular for growing shops',
+    badge: 'MOST POPULAR',
+    color: '#b45309',
+    gradient: 'linear-gradient(135deg,#fbbf24,#b45309)',
+    featured: true,
+    features: [
+      { label: 'Everything in Verified Pro', included: true },
+      { label: 'All 33 locations', included: true },
+      { label: 'Top 10 position', included: true },
+      { label: 'WhatsApp button', included: true },
+      { label: 'Website link', included: true },
+      { label: 'Coupon / deal badge', included: true },
+      { label: 'Timing display', included: true },
+      { label: 'Priority support', included: false },
+    ],
+    cta: 'Choose Premium',
+    ctaHref: '/register?plan=premium',
+  },
+  {
+    id: 'premium_pro',
+    name: 'Premium Pro',
+    price: 999,
+    period: 'per year',
+    tagline: 'For established brands',
+    badge: null,
+    color: '#7c3aed',
+    gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed)',
+    features: [
+      { label: 'Everything in Premium', included: true },
+      { label: 'All 33 locations', included: true },
+      { label: 'Top 5 position', included: true },
+      { label: 'Email button', included: true },
+      { label: 'Social media links', included: true },
+      { label: 'Coupon / deal badge', included: true },
+      { label: 'Timing display', included: true },
+      { label: 'Priority support', included: true },
+    ],
+    cta: 'Choose Premium Pro',
+    ctaHref: '/register?plan=premium_pro',
+  },
+  {
+    id: 'featured',
+    name: 'Featured',
+    price: 2999,
+    period: 'per year · coming soon',
+    tagline: 'Top of every search',
+    badge: 'LAUNCHING SOON',
+    color: '#b91c1c',
+    gradient: 'linear-gradient(135deg,#ef4444,#7f1d1d)',
+    features: [
+      { label: 'Everything in Premium Pro', included: true },
+      { label: 'Top 3 position', included: true },
+      { label: 'Star badge + priority', included: true },
+      { label: 'Featured on homepage', included: true },
+      { label: 'Coupon spotlight', included: true },
+      { label: 'Social media links', included: true },
+      { label: 'Dedicated account manager', included: true },
+      { label: 'Custom artwork allowed', included: true },
+    ],
+    cta: 'Join Waitlist',
+    ctaHref: '/contact',
+    disabled: true,
+  }
+];
+
+const comparison = [
+  { feature: 'Badge', free: '—', vb: '✓ Verified', vp: '✓ Verified', premium: '👑 + ✓', prem_pro: '👑 + ✓', featured: '⭐ + ✓' },
+  { feature: 'Locations', free: '1', vb: '3', vp: '33', premium: '33', prem_pro: '33', featured: '33' },
+  { feature: 'Position', free: 'Bottom', vb: 'Rotation', vp: 'Top 20', premium: 'Top 10', prem_pro: 'Top 5', featured: 'Top 3' },
+  { feature: 'Rating display', free: '✓', vb: '✓', vp: '✓', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Review count', free: '—', vb: '—', vp: '✓', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Call button', free: '✓', vb: '✓', vp: '✓', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'WhatsApp button', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Website link', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Google Maps link', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Coupon / deal', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Timing info', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Email button', free: '—', vb: '—', vp: '—', premium: '—', prem_pro: '✓', featured: '✓' },
+  { feature: 'Social links', free: '—', vb: '—', vp: '—', premium: '—', prem_pro: '✓', featured: '✓' },
+  { feature: 'Priority support', free: '—', vb: '—', vp: '—', premium: '—', prem_pro: '✓', featured: '✓' },
+];
+
+const faqs = [
+  { q: 'How do I pay?', a: 'After registering, you will be redirected to our secure payment page. You can pay via UPI, QR code, or bank transfer.' },
+  { q: 'Can I upgrade later?', a: 'Yes, you can upgrade your plan anytime. The remaining amount from your current plan will be adjusted.' },
+  { q: 'What if I have multiple locations?', a: 'Choose Verified Pro, Premium, or Premium Pro — all three cover all 33 locations of PCMC automatically.' },
+  { q: 'Is there a refund policy?', a: 'Yes, refunds are available within 7 days if your listing has not gone live. See our Refund Policy for details.' },
+  { q: 'Do paid plans guarantee sales?', a: 'No. Paid plans increase visibility and features, but actual sales depend on your business, pricing, and service.' },
+  { q: 'Can I add my own images?', a: 'Image support is coming soon. Currently, listings use auto-generated avatar icons based on your business name.' },
+];
+---
+
+<BaseLayout title="Pricing & Plans" description="Choose the right plan for your business on PCMC Diary. Free, Verified, Premium & Premium Pro options.">
+
+  <div class="pl-page">
+
+    <!-- HERO -->
+    <section class="pl-hero">
+      <div class="pl-hero-bg"></div>
+      <div class="pl-container">
+        <nav class="breadcrumb">
+          <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+          <i class="fa-solid fa-chevron-right sep"></i>
+          <span>Plans</span>
+        </nav>
+
+        <div class="pl-hero-inner">
+          <div class="pl-hero-badge">
+            <i class="fa-solid fa-crown"></i>
+            Pricing
+          </div>
+          <h1>Simple plans. <em>Serious reach.</em></h1>
+          <p>Choose the plan that fits your business. Upgrade anytime, cancel anytime. All prices in INR.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANS GRID -->
+    <section class="pl-body">
+      <div class="pl-container">
+        <div class="plans-grid">
+          {plans.map(plan => (
+            <div class={`plan-card ${plan.featured ? 'plan-featured' : ''} ${plan.disabled ? 'plan-disabled' : ''}`}>
+              {plan.badge && (
+                <div class={`plan-badge ${plan.featured ? 'plan-badge-popular' : ''}`}>
+                  {plan.badge}
+                </div>
+              )}
+
+              <div class="plan-accent" style={`background:${plan.gradient}`}></div>
+
+              <div class="plan-head">
+                <div class="plan-av" style={`background:${plan.gradient}`}>
+                  <i class={`fa-solid ${
+                    plan.id === 'free' ? 'fa-seedling' :
+                    plan.id === 'vb' ? 'fa-circle-check' :
+                    plan.id === 'vp' ? 'fa-shield-halved' :
+                    plan.id === 'premium' ? 'fa-crown' :
+                    plan.id === 'premium_pro' ? 'fa-gem' :
+                    'fa-star'
+                  }`}></i>
+                </div>
+                <div class="plan-name">{plan.name}</div>
+                <div class="plan-tag">{plan.tagline}</div>
+              </div>
+
+              <div class="plan-price">
+                {plan.price === 0 ? (
+                  <div class="price-free">Free</div>
+                ) : (
+                  <>
+                    <span class="price-cur">₹</span>
+                    <span class="price-num">{plan.price}</span>
+                  </>
+                )}
+                <div class="price-period">{plan.period}</div>
+              </div>
+
+              <ul class="plan-features">
+                {plan.features.map(f => (
+                  <li class={f.included ? 'feat-in' : 'feat-out'}>
+                    <i class={`fa-solid ${f.included ? 'fa-circle-check' : 'fa-circle-xmark'}`}></i>
+                    <span>{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a href={plan.ctaHref} class={`plan-cta ${plan.featured ? 'plan-cta-primary' : ''} ${plan.disabled ? 'plan-cta-disabled' : ''}`}>
+                {plan.cta}
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <!-- Note -->
+        <div class="pl-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>All paid plans are billed annually. GST applicable as per Indian regulations.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON TABLE -->
+    <section class="pl-compare">
+      <div class="pl-container">
+        <div class="pl-sec-head">
+          <span class="pl-eyebrow">Compare</span>
+          <h2>Full feature comparison</h2>
+          <p>See exactly what's included in every plan.</p>
+        </div>
+
+        <div class="compare-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th class="cmp-feature">Feature</th>
+                <th>Free</th>
+                <th>VB<br><span>₹99</span></th>
+                <th>VP<br><span>₹199</span></th>
+                <th class="cmp-popular">Premium<br><span>₹499</span></th>
+                <th>Prem Pro<br><span>₹999</span></th>
+                <th>Featured<br><span>₹2,999</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {comparison.map(row => (
+                <tr>
+                  <td class="cmp-feature">{row.feature}</td>
+                  <td>{row.free}</td>
+                  <td>{row.vb}</td>
+                  <td>{row.vp}</td>
+                  <td class="cmp-popular">{row.premium}</td>
+                  <td>{row.prem_pro}</td>
+                  <td>{row.featured}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="pl-faq">
+      <div class="pl-container">
+        <div class="pl-sec-head">
+          <span class="pl-eyebrow pl-eyebrow-gold">Questions</span>
+          <h2>Frequently asked questions</h2>
+        </div>
+
+        <div class="faq-grid">
+          {faqs.map(faq => (
+            <div class="faq-card">
+              <div class="faq-q">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>{faq.q}</span>
+              </div>
+              <div class="faq-a">{faq.a}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="pl-final">
+      <div class="pl-container">
+        <div class="pl-cta">
+          <div class="pl-cta-glow"></div>
+          <div class="pl-cta-inner">
+            <div class="pl-cta-icon"><i class="fa-solid fa-store"></i></div>
+            <h2>Still deciding?</h2>
+            <p>Talk to us on WhatsApp — we'll help you pick the right plan for your business.</p>
+            <div class="pl-cta-btns">
+              <a href="https://wa.me/918793932827" target="_blank" rel="noopener" class="pl-btn pl-btn-primary">
+                <i class="fa-brands fa-whatsapp"></i>
+                Chat on WhatsApp
+              </a>
+              <a href="/register" class="pl-btn pl-btn-outline">
+                <i class="fa-solid fa-circle-plus"></i>
+                List your business free
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</BaseLayout>
+
+<style is:global>
+.pl-page { background: #f8fafc; min-height: 60vh; }
+.pl-container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+/* HERO */
+.pl-hero {
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
+  color: #fff; padding: 40px 0 72px;
+  position: relative; overflow: hidden;
+}
+.pl-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px;
+  opacity: 0.6; pointer-events: none;
+}
+.pl-hero .pl-container { position: relative; z-index: 2; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.7);
+  margin-bottom: 24px; flex-wrap: wrap;
+}
+.breadcrumb a {
+  color: rgba(255,255,255,0.85); text-decoration: none;
+  font-weight: 600; display: inline-flex; align-items: center;
+  gap: 6px; transition: color 0.2s;
+}
+.breadcrumb a:hover { color: #fde047; }
+.breadcrumb a i { font-size: 11px; }
+.breadcrumb .sep { font-size: 9px; opacity: 0.5; }
+.breadcrumb span { color: #fde047; font-weight: 700; }
+
+.pl-hero-inner { text-align: center; max-width: 700px; margin: 0 auto; }
+.pl-hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px; border-radius: 50px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(10px);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: #fde047; margin-bottom: 18px;
+}
+.pl-hero h1 {
+  font-size: 48px; font-weight: 800;
+  letter-spacing: -1.4px; line-height: 1.1;
+  margin: 0 0 16px;
+}
+.pl-hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, #fde047, #fbbf24);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-right: 6px;
+}
+.pl-hero p {
+  font-size: 16px; color: rgba(255,255,255,0.85);
+  line-height: 1.6; max-width: 560px; margin: 0 auto;
+  font-weight: 500;
+}
+
+/* BODY */
+.pl-body { padding: 0 0 72px; margin-top: -36px; position: relative; z-index: 3; }
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* PLAN CARD */
+.plan-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  padding: 28px 24px 24px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px -8px rgba(15,23,42,0.06);
+}
+.plan-card:hover {
+  transform: translateY(-6px);
+  border-color: #cbd5e1;
+  box-shadow: 0 24px 48px -20px rgba(15,23,42,0.15), 0 8px 20px -8px rgba(15,23,42,0.06);
+}
+
+.plan-featured {
+  border-color: #fbbf24;
+  border-width: 2px;
+  box-shadow: 0 20px 44px -20px rgba(217,119,6,0.3), 0 8px 20px -8px rgba(217,119,6,0.12);
+}
+.plan-featured:hover {
+  box-shadow: 0 28px 56px -20px rgba(217,119,6,0.4), 0 12px 24px -8px rgba(217,119,6,0.18);
+}
+
+.plan-disabled { opacity: 0.85; }
+
+.plan-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+
+.plan-badge {
+  position: absolute;
+  top: 16px; right: 16px;
+  padding: 5px 11px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.plan-badge-popular {
+  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  color: #78350f;
+  border-color: #fbbf24;
+  box-shadow: 0 4px 12px -4px rgba(251,191,36,0.5);
+}
+
+.plan-head { margin-bottom: 20px; padding-top: 6px; }
+.plan-av {
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 20px -8px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.plan-name {
+  font-size: 20px; font-weight: 800;
+  color: #0f172a; letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.plan-tag {
+  font-size: 12.5px; color: #64748b;
+  font-weight: 600; line-height: 1.45;
+}
+
+.plan-price {
+  padding: 20px 0;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.price-free {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  background: linear-gradient(135deg, #059669, #047857);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.price-cur {
+  font-size: 20px;
+  font-weight: 700;
+  color: #334155;
+  align-self: flex-start;
+  margin-top: 6px;
+}
+.price-num {
+  font-size: 38px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -1.4px;
+  line-height: 1;
+}
+.price-period {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-left: auto;
+  align-self: center;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plan-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.plan-features li i {
+  font-size: 13px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.feat-in { color: #334155; }
+.feat-in i { color: #16a34a; }
+.feat-out { color: #94a3b8; }
+.feat-out i { color: #cbd5e1; }
+
+.plan-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 13px 20px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 11px;
+  font-size: 13.5px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: -0.1px;
+}
+.plan-cta i { font-size: 11px; transition: transform 0.2s; }
+.plan-cta:hover {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -8px rgba(15,23,42,0.3);
+}
+.plan-cta:hover i { transform: translateX(3px); }
+
+.plan-cta-primary {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  color: #fff;
+  border-color: #b91c1c;
+  box-shadow: 0 10px 24px -8px rgba(185,28,28,0.5);
+}
+.plan-cta-primary:hover {
+  background: linear-gradient(135deg, #991b1b, #7f1d1d);
+  border-color: #7f1d1d;
+  box-shadow: 0 14px 32px -8px rgba(185,28,28,0.6);
+}
+.plan-cta-disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+.plan-cta-disabled:hover {
+  background: #f8fafc;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+  transform: none;
+  box-shadow: none;
+}
+
+.pl-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 12px 20px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 600;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+.pl-note i { color: #0891b2; font-size: 13px; }
+
+/* COMPARE */
+.pl-compare { padding: 72px 0; background: #fff; }
+.pl-sec-head { text-align: center; margin-bottom: 40px; }
+.pl-eyebrow {
+  display: inline-block; font-size: 11px;
+  font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; color: #dc2626;
+  margin-bottom: 10px;
+}
+.pl-eyebrow-gold { color: #b45309; }
+.pl-sec-head h2 {
+  font-size: 34px; font-weight: 800;
+  color: #0f172a; letter-spacing: -1px;
+  margin: 0 0 10px;
+}
+.pl-sec-head p {
+  font-size: 15px; color: #64748b;
+  max-width: 500px; margin: 0 auto;
+  font-weight: 500;
+}
+
+.compare-wrap {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 24px -16px rgba(15,23,42,0.1);
+}
+.compare-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.compare-table th {
+  padding: 18px 14px;
+  background: #f8fafc;
+  text-align: center;
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 12px;
+  letter-spacing: -0.1px;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+.compare-table th span {
+  display: block;
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.compare-table th.cmp-feature {
+  text-align: left;
+  padding-left: 22px;
+  min-width: 200px;
+}
+.compare-table th.cmp-popular {
+  background: linear-gradient(180deg, #fef3c7, #fde68a);
+  color: #78350f;
+  position: relative;
+}
+.compare-table th.cmp-popular span { color: #a16207; }
+
+.compare-table td {
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+}
+.compare-table tr:last-child td { border-bottom: 0; }
+.compare-table td.cmp-feature {
+  text-align: left;
+  padding-left: 22px;
+  color: #0f172a;
+  font-weight: 700;
+}
+.compare-table td.cmp-popular {
+  background: #fffbeb;
+  color: #78350f;
+  font-weight: 800;
+}
+.compare-table tr:hover td:not(.cmp-popular) { background: #f8fafc; }
+
+/* FAQ */
+.pl-faq { padding: 72px 0; background: #f8fafc; }
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 14px;
+}
+.faq-card {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  transition: all 0.2s;
+}
+.faq-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 24px -12px rgba(15,23,42,0.1);
+  transform: translateY(-2px);
+}
+.faq-q {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
+  line-height: 1.4;
+}
+.faq-q i {
+  color: #b45309;
+  font-size: 15px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.faq-a {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.65;
+  font-weight: 500;
+  padding-left: 25px;
+}
+
+/* FINAL CTA */
+.pl-final { padding: 72px 0; background: #fff; }
+.pl-cta {
+  position: relative;
+  padding: 64px 40px 60px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+  border-radius: 28px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 40px 80px -32px rgba(15,23,42,0.4);
+}
+.pl-cta-glow {
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(185,28,28,0.35), transparent 60%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.pl-cta-inner { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
+.pl-cta-icon {
+  width: 64px; height: 64px;
+  margin: 0 auto 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  color: #fbbf24;
+}
+.pl-cta h2 {
+  font-size: 36px; font-weight: 800;
+  color: #fff; letter-spacing: -1px;
+  margin: 0 0 14px;
+}
+.pl-cta p {
+  font-size: 15.5px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+  margin: 0 0 30px;
+}
+.pl-cta-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.pl-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 14px 26px;
+  border-radius: 12px;
+  font-size: 14px; font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: -0.1px;
+}
+.pl-btn-primary {
+  background: linear-gradient(135deg, #25d366, #15803d);
+  color: #fff;
+  box-shadow: 0 14px 32px -10px rgba(37,211,102,0.55);
+}
+.pl-btn-primary:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  box-shadow: 0 18px 40px -10px rgba(37,211,102,0.65);
+}
+.pl-btn-outline {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.22);
+  backdrop-filter: blur(10px);
+}
+.pl-btn-outline:hover {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .plans-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .pl-container { padding: 0 18px; }
+  .pl-hero { padding: 32px 0 56px; }
+  .pl-hero h1 { font-size: 30px; letter-spacing: -0.8px; }
+  .pl-hero p { font-size: 14px; }
+  .pl-hero-badge { font-size: 10px; padding: 6px 12px; }
+
+  .pl-body { padding: 0 0 52px; margin-top: -28px; }
+  .plans-grid { grid-template-columns: 1fr; gap: 16px; }
+  .plan-card { padding: 24px 20px 20px; }
+  .plan-name { font-size: 18px; }
+  .price-num { font-size: 32px; }
+  .price-free { font-size: 30px; }
+
+  .pl-compare, .pl-faq, .pl-final { padding: 52px 0; }
+  .pl-sec-head h2 { font-size: 24px; letter-spacing: -0.6px; }
+  .pl-sec-head p { font-size: 13.5px; }
+
+  .faq-grid { grid-template-columns: 1fr; gap: 12px; }
+  .faq-card { padding: 18px; }
+
+  .pl-cta { padding: 44px 24px; border-radius: 22px; }
+  .pl-cta h2 { font-size: 26px; letter-spacing: -0.6px; }
+  .pl-cta p { font-size: 14px; }
+  .pl-cta-icon { width: 56px; height: 56px; font-size: 22px; border-radius: 16px; }
+  .pl-btn { padding: 13px 22px; font-size: 13.5px; width: 100%; justify-content: center; }
+}
+@media (max-width: 480px) {
+  .pl-hero h1 { font-size: 26px; }
+  .compare-table { font-size: 12px; }
+  .compare-table th, .compare-table td { padding: 12px 10px; }
+}
+</style>
