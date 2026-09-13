@@ -46,7 +46,6 @@ try {
   });
 } catch (e) { businesses = []; }
 
-// Extract unique categories from businesses for the filter
 const uniqueCats = [];
 const seen = {};
 for (let i = 0; i < businesses.length; i++) {
@@ -95,6 +94,10 @@ uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
             <i class="fa-solid fa-store"></i> {businesses.length} {businesses.length === 1 ? 'business' : 'businesses'}
           </span>
           <div class="filter-row">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="searchInput" class="filter-search" placeholder="Search business name, tag…" />
+            </div>
             <select id="catFilter" class="filter-select">
               <option value="all">All Categories</option>
               {uniqueCats.map(c => <option value={c.id}>{c.name}</option>)}
@@ -226,13 +229,25 @@ uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
     const grid = document.getElementById('bizGrid');
     const countEl = document.getElementById('resultsCount');
     const catEl = document.getElementById('catFilter');
+    const searchEl = document.getElementById('searchInput');
     if (!grid) return;
 
     const catVal = catEl ? catEl.value : 'all';
+    const searchVal = searchEl ? searchEl.value.trim().toLowerCase() : '';
     let filtered = ALL.slice();
 
     if (catVal !== 'all') {
       filtered = filtered.filter(function(b) { return b.categoryId === catVal; });
+    }
+
+    if (searchVal) {
+      filtered = filtered.filter(function(b) {
+        const name = (b.businessName || '').toLowerCase();
+        const sub = (b.subCategory || '').toLowerCase();
+        const tags = (b.tags || '').toLowerCase();
+        const loc = (b.location || '').toLowerCase();
+        return name.indexOf(searchVal) !== -1 || sub.indexOf(searchVal) !== -1 || tags.indexOf(searchVal) !== -1 || loc.indexOf(searchVal) !== -1;
+      });
     }
 
     if (countEl) {
@@ -240,7 +255,7 @@ uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
     }
 
     if (filtered.length === 0) {
-      grid.innerHTML = '<div class="empty"><i class="fa-solid fa-store"></i><h3>No businesses found</h3><p>Try a different category filter.</p></div>';
+      grid.innerHTML = '<div class="empty"><i class="fa-solid fa-store"></i><h3>No businesses found</h3><p>Try a different search or filter.</p></div>';
       return;
     }
 
@@ -259,7 +274,14 @@ uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
 
   function init() {
     const catEl = document.getElementById('catFilter');
+    const searchEl = document.getElementById('searchInput');
     if (catEl) catEl.addEventListener('change', applyAndRender);
+    if (searchEl) {
+      searchEl.addEventListener('input', function() {
+        clearTimeout(window._searchTimer);
+        window._searchTimer = setTimeout(applyAndRender, 250);
+      });
+    }
     applyAndRender();
   }
 
@@ -390,6 +412,37 @@ uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
 .results-count i { color: #dc2626; }
 
 .filter-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s;
+  min-width: 220px;
+  flex: 1;
+}
+.search-wrap i { color: #94a3b8; font-size: 13px; }
+.search-wrap:focus-within { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+.search-wrap:focus-within i { color: #dc2626; }
+
+.filter-search {
+  padding: 9px 0;
+  border: 0;
+  font-size: 13px;
+  font-family: inherit;
+  color: #334155;
+  font-weight: 600;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+.filter-search::placeholder { color: #94a3b8; font-weight: 500; }
+
 .filter-select {
   padding: 9px 14px;
   border: 1px solid #e2e8f0;
@@ -516,6 +569,7 @@ uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
   .loc-hero-text p { font-size: 13px; }
   .results-bar { flex-direction: column; align-items: stretch; }
   .filter-row { width: 100%; }
+  .search-wrap { min-width: 100%; }
   .filter-select { flex: 1; }
   .biz-grid { grid-template-columns: 1fr; gap: 14px; }
   .biz-grid .biz-card { padding: 18px 18px 0; }
