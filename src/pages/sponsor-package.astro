@@ -1,0 +1,649 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const packages = [
+  {
+    id: 'starter',
+    name: 'Starter',
+    tagline: 'Try it out',
+    price: 3000,
+    period: 'per month',
+    articles: 5,
+    perArticle: 600,
+    gradient: 'linear-gradient(135deg,#0891b2,#0e7490)',
+    icon: 'fa-rocket',
+    features: [
+      { label: '5 SEO-optimized articles', included: true },
+      { label: 'Author bio + business link', included: true },
+      { label: 'Basic homepage feature (3 days)', included: true },
+      { label: '1 social media post per article', included: true },
+      { label: 'WhatsApp broadcast', included: false },
+      { label: 'Instagram Reel', included: false },
+      { label: 'Newsletter feature', included: false },
+      { label: 'Verified "Sponsored" badge on listing', included: false },
+    ]
+  },
+  {
+    id: 'growth',
+    name: 'Growth',
+    tagline: 'Most popular',
+    price: 15000,
+    period: 'for 6 months',
+    articles: 30,
+    perArticle: 500,
+    save: 3000,
+    featured: true,
+    gradient: 'linear-gradient(135deg,#d97706,#b45309)',
+    icon: 'fa-chart-line',
+    features: [
+      { label: '30 SEO-optimized articles', included: true },
+      { label: 'Author bio + business link', included: true },
+      { label: 'Homepage feature (1 week per article)', included: true },
+      { label: '3 social media posts per article', included: true },
+      { label: 'WhatsApp broadcast (weekly)', included: true },
+      { label: 'Instagram Reel per article', included: false },
+      { label: 'Newsletter feature (monthly)', included: true },
+      { label: 'Verified "Sponsored" badge on listing', included: true },
+    ]
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    tagline: 'Best value',
+    price: 25000,
+    period: 'for 1 year',
+    articles: 60,
+    perArticle: 416,
+    save: 11000,
+    gradient: 'linear-gradient(135deg,#7c3aed,#5b21b6)',
+    icon: 'fa-crown',
+    features: [
+      { label: '60 SEO-optimized articles', included: true },
+      { label: 'Author bio + business link', included: true },
+      { label: 'Homepage feature (2 weeks per article)', included: true },
+      { label: '5 social media posts per article', included: true },
+      { label: 'WhatsApp broadcast (daily)', included: true },
+      { label: 'Instagram Reel per article', included: true },
+      { label: 'Newsletter feature (weekly)', included: true },
+      { label: 'Verified "Sponsored" badge on listing', included: true },
+    ]
+  }
+];
+
+const benefits = [
+  { icon: 'fa-users', title: '10,000+ Monthly Readers', desc: 'Active PCMC audience across our platform every month.' },
+  { icon: 'fa-magnifying-glass', title: 'Google Search Ranking', desc: 'Your article ranks on Google, bringing long-term organic traffic.' },
+  { icon: 'fa-link', title: 'SEO Backlink', desc: 'Do-follow backlink to your website from a growing authority site.' },
+  { icon: 'fa-crown', title: 'Authoritative Positioning', desc: '"As featured in PCMC Diary" — instant trust with local customers.' },
+  { icon: 'fa-house', title: 'Homepage Feature', desc: 'Your article featured on homepage for days — massive visibility.' },
+  { icon: 'fa-phone', title: 'Direct Lead Generation', desc: 'Contact buttons, WhatsApp links — readers become customers.' },
+  { icon: 'fa-bullhorn', title: 'Social Media Amplification', desc: 'We post on Instagram, WhatsApp & Facebook for wider reach.' },
+  { icon: 'fa-infinity', title: 'Permanent Article', desc: 'Your article stays forever — one-time fee, lifetime value.' },
+];
+
+const whoCanSponsor = [
+  { icon: 'fa-user-doctor', name: 'Doctors & Clinics', desc: 'Health articles, seasonal tips, wellness guides' },
+  { icon: 'fa-coins', name: 'CAs & Financial Advisors', desc: 'Tax tips, investment guides, financial planning' },
+  { icon: 'fa-scale-balanced', name: 'Lawyers & Consultants', desc: 'Legal advice, business guidance, compliance' },
+  { icon: 'fa-dumbbell', name: 'Gyms & Fitness Trainers', desc: 'Workout plans, diet tips, fitness trends' },
+  { icon: 'fa-compass', name: 'Vastu & Astrology Experts', desc: 'Vastu tips, horoscope insights, spiritual guidance' },
+  { icon: 'fa-spa', name: 'Salons, Spas & Wellness', desc: 'Beauty tips, seasonal care, product reviews' },
+  { icon: 'fa-building', name: 'Builders & Real Estate', desc: 'Property trends, investment advice, area reviews' },
+  { icon: 'fa-utensils', name: 'Restaurants & Cloud Kitchens', desc: 'Food stories, recipes, local cuisine features' },
+];
+
+const faqs = [
+  { q: 'How do you write the articles?', a: 'Our team writes SEO-optimized articles based on your topic or expertise. You review and approve before publishing.' },
+  { q: 'Can I write my own articles?', a: 'Yes! If you write quality content, we publish it as-is. We only add SEO optimization, images, and formatting.' },
+  { q: 'Where does the article appear?', a: 'On our Expert Salla section. Each article gets a permanent URL, is submitted to Google, and gets a do-follow backlink to your business.' },
+  { q: 'How many backlinks will I get?', a: 'Every article contains 1-2 do-follow links to your website (if you have one). 5 articles/month = 5-10 backlinks.' },
+  { q: 'What about payment terms?', a: 'Full payment upfront via UPI. Invoice provided. GST applicable as per government rules.' },
+  { q: 'Can I cancel anytime?', a: 'Monthly package can be cancelled before next cycle. 6-month and yearly packages are prepaid and non-refundable.' },
+];
+---
+
+<BaseLayout title="Sponsor a Column — Expert Salla" description="Reach 10,000+ PCMC readers with sponsored articles. SEO backlink, homepage feature, and permanent branding for your business.">
+
+  <div class="sp-page">
+
+    <!-- HERO -->
+    <section class="sp-hero">
+      <div class="sp-hero-bg"></div>
+      <div class="sp-container">
+        <nav class="breadcrumb">
+          <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+          <i class="fa-solid fa-chevron-right sep"></i>
+          <a href="/expert-salla">Expert Salla</a>
+          <i class="fa-solid fa-chevron-right sep"></i>
+          <span>Sponsor Package</span>
+        </nav>
+
+        <div class="sp-hero-inner">
+          <div class="sp-hero-badge">
+            <i class="fa-solid fa-megaphone"></i>
+            Sponsored Content
+          </div>
+          <h1>Reach <em>10,000+ PCMC Readers</em> every month</h1>
+          <p>Publish expert articles on PCMC Diary and build your authority, generate leads, and rank on Google — all for less than the cost of one newspaper ad.</p>
+          <div class="sp-hero-btns">
+            <a href="#packages" class="sp-btn sp-btn-primary">
+              <i class="fa-solid fa-eye"></i>
+              View Packages
+            </a>
+            <a href="https://wa.me/918793932827?text=Hi, I want to know more about sponsored articles on PCMC Diary" target="_blank" rel="noopener" class="sp-btn sp-btn-outline">
+              <i class="fa-brands fa-whatsapp"></i>
+              Talk to Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section class="sp-section">
+      <div class="sp-container">
+        <div class="sp-sec-head">
+          <span class="sp-eyebrow">Why Sponsor</span>
+          <h2>What you get from every sponsored article</h2>
+          <p>Not just a blog post — a complete brand-building package.</p>
+        </div>
+
+        <div class="benefits-grid">
+          {benefits.map(b => (
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <i class={`fa-solid ${b.icon}`}></i>
+              </div>
+              <h3>{b.title}</h3>
+              <p>{b.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section class="sp-section sp-packages-section" id="packages">
+      <div class="sp-container">
+        <div class="sp-sec-head">
+          <span class="sp-eyebrow">Pricing</span>
+          <h2>Choose your package</h2>
+          <p>Save more with longer commitments. Cancel anytime.</p>
+        </div>
+
+        <div class="packages-grid">
+          {packages.map(pkg => (
+            <div class={`pkg-card ${pkg.featured ? 'pkg-featured' : ''}`}>
+              {pkg.featured && (
+                <div class="pkg-badge">MOST POPULAR</div>
+              )}
+              <div class="pkg-accent" style={`background:${pkg.gradient}`}></div>
+
+              <div class="pkg-head">
+                <div class="pkg-icon" style={`background:${pkg.gradient}`}>
+                  <i class={`fa-solid ${pkg.icon}`}></i>
+                </div>
+                <div class="pkg-name">{pkg.name}</div>
+                <div class="pkg-tag">{pkg.tagline}</div>
+              </div>
+
+              <div class="pkg-price">
+                <span class="price-cur">₹</span>
+                <span class="price-num">{pkg.price.toLocaleString('en-IN')}</span>
+                <div class="price-period">{pkg.period}</div>
+              </div>
+
+              <div class="pkg-meta">
+                <span class="pkg-articles">
+                  <i class="fa-solid fa-newspaper"></i>
+                  {pkg.articles} articles
+                </span>
+                <span class="pkg-per">
+                  ₹{pkg.perArticle}/article
+                </span>
+              </div>
+
+              {pkg.save && (
+                <div class="pkg-save">
+                  <i class="fa-solid fa-tag"></i>
+                  You save ₹{pkg.save.toLocaleString('en-IN')}
+                </div>
+              )}
+
+              <ul class="pkg-features">
+                {pkg.features.map(f => (
+                  <li class={f.included ? 'feat-in' : 'feat-out'}>
+                    <i class={`fa-solid ${f.included ? 'fa-circle-check' : 'fa-circle-xmark'}`}></i>
+                    <span>{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={`https://wa.me/918793932827?text=${encodeURIComponent('Hi, I am interested in the ' + pkg.name + ' sponsor package (₹' + pkg.price + '). Please share details.')}`}
+                target="_blank"
+                rel="noopener"
+                class={`pkg-cta ${pkg.featured ? 'pkg-cta-primary' : ''}`}
+              >
+                Get Started
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <div class="sp-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>All packages are prepaid. GST applicable as per government rules. Full invoice provided.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHO CAN SPONSOR -->
+    <section class="sp-section">
+      <div class="sp-container">
+        <div class="sp-sec-head">
+          <span class="sp-eyebrow">Perfect For</span>
+          <h2>Who should sponsor?</h2>
+          <p>Any expert, professional, or business with local customer base.</p>
+        </div>
+
+        <div class="who-grid">
+          {whoCanSponsor.map(w => (
+            <div class="who-card">
+              <div class="who-icon"><i class={`fa-solid ${w.icon}`}></i></div>
+              <div class="who-body">
+                <div class="who-name">{w.name}</div>
+                <div class="who-desc">{w.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="sp-section sp-faq-section">
+      <div class="sp-container">
+        <div class="sp-sec-head">
+          <span class="sp-eyebrow">Questions</span>
+          <h2>Frequently asked questions</h2>
+        </div>
+
+        <div class="faq-grid">
+          {faqs.map(f => (
+            <div class="faq-card">
+              <div class="faq-q">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>{f.q}</span>
+              </div>
+              <div class="faq-a">{f.a}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="sp-section">
+      <div class="sp-container">
+        <div class="sp-final">
+          <div class="sp-final-glow"></div>
+          <div class="sp-final-inner">
+            <div class="sp-final-icon"><i class="fa-solid fa-rocket"></i></div>
+            <h2>Ready to grow your brand?</h2>
+            <p>Message us on WhatsApp — we'll get back within 24 hours with a custom plan for your business.</p>
+            <div class="sp-final-btns">
+              <a href="https://wa.me/918793932827?text=Hi, I want to sponsor a column on PCMC Diary" target="_blank" rel="noopener" class="sp-btn sp-btn-primary">
+                <i class="fa-brands fa-whatsapp"></i>
+                WhatsApp Us
+              </a>
+              <a href="/contact" class="sp-btn sp-btn-outline">
+                <i class="fa-solid fa-envelope"></i>
+                Contact Form
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</BaseLayout>
+
+<style is:global>
+.sp-page { background: #f8fafc; min-height: 60vh; }
+.sp-container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+/* HERO */
+.sp-hero {
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
+  color: #fff;
+  padding: 44px 0 72px;
+  position: relative;
+  overflow: hidden;
+}
+.sp-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.sp-hero .sp-container { position: relative; z-index: 2; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.7);
+  margin-bottom: 24px; flex-wrap: wrap;
+}
+.breadcrumb a {
+  color: rgba(255,255,255,0.85); text-decoration: none;
+  font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+}
+.breadcrumb a:hover { color: #fde047; }
+.breadcrumb a i { font-size: 11px; }
+.breadcrumb .sep { font-size: 9px; opacity: 0.5; }
+.breadcrumb span { color: #fde047; font-weight: 700; }
+
+.sp-hero-inner { text-align: center; max-width: 760px; margin: 0 auto; }
+.sp-hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 18px; border-radius: 50px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  color: #fde047; margin-bottom: 18px;
+  backdrop-filter: blur(10px);
+}
+.sp-hero h1 {
+  font-size: 48px; font-weight: 800;
+  letter-spacing: -1.4px; line-height: 1.1;
+  margin: 0 0 18px;
+}
+.sp-hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, #fde047, #fbbf24);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-right: 6px;
+}
+.sp-hero p {
+  font-size: 16px; color: rgba(255,255,255,0.88);
+  line-height: 1.6; margin: 0 auto 28px;
+  max-width: 600px;
+}
+.sp-hero-btns {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.sp-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 14px 26px; border-radius: 12px;
+  font-size: 14px; font-weight: 800;
+  text-decoration: none; transition: all 0.2s;
+  letter-spacing: -0.1px;
+}
+.sp-btn-primary {
+  background: #fff; color: #7f1d1d;
+  box-shadow: 0 12px 28px -8px rgba(0,0,0,0.3);
+}
+.sp-btn-primary:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 16px 34px -8px rgba(0,0,0,0.4); }
+.sp-btn-outline {
+  background: rgba(255,255,255,0.1); color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(10px);
+}
+.sp-btn-outline:hover { background: rgba(255,255,255,0.2); text-decoration: none; transform: translateY(-2px); }
+
+/* SECTIONS */
+.sp-section { padding: 72px 0; }
+.sp-section:nth-child(even) { background: #fff; }
+.sp-packages-section { background: linear-gradient(180deg, #f8fafc, #fff) !important; padding-top: 0; margin-top: -44px; position: relative; z-index: 3; }
+.sp-faq-section { background: #f8fafc !important; }
+
+.sp-sec-head { text-align: center; margin-bottom: 44px; }
+.sp-eyebrow {
+  display: inline-block; font-size: 11px; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: #dc2626; margin-bottom: 12px;
+  padding: 5px 14px; background: #fef2f2;
+  border: 1px solid #fecaca; border-radius: 50px;
+}
+.sp-sec-head h2 {
+  font-size: 36px; font-weight: 800;
+  color: #0f172a; letter-spacing: -1px;
+  line-height: 1.15; margin: 0 0 10px;
+}
+.sp-sec-head p { font-size: 15px; color: #64748b; max-width: 540px; margin: 0 auto; font-weight: 500; }
+
+/* BENEFITS */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+.benefit-card {
+  padding: 24px; background: #fff;
+  border: 1px solid #e2e8f0; border-radius: 16px;
+  transition: all 0.25s;
+}
+.benefit-card:hover {
+  border-color: #fecaca; transform: translateY(-4px);
+  box-shadow: 0 16px 32px -16px rgba(220,38,38,0.15);
+}
+.benefit-icon {
+  width: 48px; height: 48px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  color: #dc2626; font-size: 19px; margin-bottom: 14px;
+}
+.benefit-card h3 {
+  font-size: 15px; font-weight: 800; color: #0f172a;
+  margin: 0 0 8px; letter-spacing: -0.2px;
+}
+.benefit-card p { font-size: 13px; color: #64748b; line-height: 1.55; margin: 0; font-weight: 500; }
+
+/* PACKAGES */
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+.pkg-card {
+  position: relative; display: flex; flex-direction: column;
+  padding: 30px 26px 24px; background: #fff;
+  border: 1.5px solid #e2e8f0; border-radius: 20px;
+  overflow: hidden; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 4px 12px -8px rgba(15,23,42,0.06);
+}
+.pkg-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px -20px rgba(15,23,42,0.15);
+  border-color: #cbd5e1;
+}
+.pkg-featured {
+  border-color: #fbbf24; border-width: 2px;
+  box-shadow: 0 20px 44px -20px rgba(217,119,6,0.3);
+}
+.pkg-featured:hover { box-shadow: 0 28px 56px -20px rgba(217,119,6,0.4); }
+.pkg-badge {
+  position: absolute; top: 16px; right: 16px;
+  padding: 5px 12px; background: linear-gradient(135deg,#fef3c7,#fbbf24);
+  color: #78350f; border-radius: 6px;
+  font-size: 9.5px; font-weight: 800;
+  letter-spacing: 0.6px; text-transform: uppercase;
+  box-shadow: 0 4px 12px -4px rgba(251,191,36,0.5);
+}
+.pkg-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+
+.pkg-head { margin-bottom: 20px; padding-top: 6px; }
+.pkg-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 21px; margin-bottom: 14px;
+  box-shadow: 0 8px 20px -8px rgba(15,23,42,0.25);
+}
+.pkg-name { font-size: 22px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; margin-bottom: 4px; }
+.pkg-tag { font-size: 12.5px; color: #64748b; font-weight: 600; }
+
+.pkg-price {
+  padding: 22px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 14px; display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;
+}
+.price-cur { font-size: 22px; font-weight: 700; color: #334155; align-self: flex-start; margin-top: 6px; }
+.price-num { font-size: 40px; font-weight: 800; color: #0f172a; letter-spacing: -1.5px; line-height: 1; }
+.price-period { font-size: 12px; color: #94a3b8; font-weight: 600; margin-left: auto; align-self: center; }
+
+.pkg-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; padding: 0 2px;
+}
+.pkg-articles {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 800; color: #0f172a;
+}
+.pkg-articles i { color: #dc2626; font-size: 12px; }
+.pkg-per { font-size: 12px; color: #64748b; font-weight: 700; padding: 4px 10px; background: #f1f5f9; border-radius: 6px; }
+
+.pkg-save {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 14px; background: linear-gradient(135deg,#d1fae5,#a7f3d0);
+  border: 1px solid #6ee7b7; color: #065f46;
+  border-radius: 8px; font-size: 12px; font-weight: 800;
+  margin-bottom: 16px;
+}
+.pkg-save i { font-size: 11px; }
+
+.pkg-features { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 10px; }
+.pkg-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; font-weight: 600; }
+.pkg-features li i { font-size: 13px; margin-top: 1px; flex-shrink: 0; }
+.feat-in { color: #334155; }
+.feat-in i { color: #16a34a; }
+.feat-out { color: #94a3b8; }
+.feat-out i { color: #cbd5e1; }
+
+.pkg-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: auto; padding: 14px 20px;
+  background: #f1f5f9; color: #0f172a;
+  border: 1.5px solid #e2e8f0; border-radius: 12px;
+  font-size: 14px; font-weight: 800; text-decoration: none;
+  transition: all 0.2s; letter-spacing: -0.1px;
+}
+.pkg-cta i { font-size: 11px; transition: transform 0.2s; }
+.pkg-cta:hover {
+  background: #0f172a; color: #fff; border-color: #0f172a;
+  text-decoration: none; transform: translateY(-1px);
+  box-shadow: 0 12px 24px -8px rgba(15,23,42,0.3);
+}
+.pkg-cta:hover i { transform: translateX(3px); }
+.pkg-cta-primary {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff; border-color: #d97706;
+  box-shadow: 0 10px 24px -8px rgba(217,119,6,0.5);
+}
+.pkg-cta-primary:hover { background: linear-gradient(135deg, #b45309, #92400e); border-color: #92400e; }
+
+.sp-note {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 32px; padding: 12px 20px;
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 50px;
+  font-size: 12.5px; color: #64748b; font-weight: 600;
+  max-width: fit-content; margin-left: auto; margin-right: auto;
+}
+.sp-note i { color: #0891b2; font-size: 13px; }
+
+/* WHO */
+.who-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.who-card {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px 18px; background: #fff;
+  border: 1px solid #e2e8f0; border-radius: 12px;
+  transition: all 0.2s;
+}
+.who-card:hover { border-color: #fecaca; transform: translateY(-2px); box-shadow: 0 8px 20px -12px rgba(220,38,38,0.15); }
+.who-icon {
+  width: 42px; height: 42px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  color: #dc2626; font-size: 17px; flex-shrink: 0;
+}
+.who-body { min-width: 0; }
+.who-name { font-size: 13.5px; font-weight: 800; color: #0f172a; letter-spacing: -0.2px; margin-bottom: 4px; }
+.who-desc { font-size: 12px; color: #64748b; line-height: 1.45; font-weight: 500; }
+
+/* FAQ */
+.faq-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px;
+}
+.faq-card {
+  padding: 22px; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+  transition: all 0.2s;
+}
+.faq-card:hover { border-color: #cbd5e1; box-shadow: 0 12px 24px -12px rgba(15,23,42,0.1); transform: translateY(-2px); }
+.faq-q {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14.5px; font-weight: 800; color: #0f172a;
+  margin-bottom: 10px; line-height: 1.4; letter-spacing: -0.2px;
+}
+.faq-q i { color: #b45309; font-size: 15px; margin-top: 1px; flex-shrink: 0; }
+.faq-a { font-size: 13px; color: #64748b; line-height: 1.65; font-weight: 500; padding-left: 25px; }
+
+/* FINAL CTA */
+.sp-final {
+  position: relative; padding: 64px 40px 60px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+  border-radius: 28px; overflow: hidden; text-align: center;
+  box-shadow: 0 40px 80px -32px rgba(15,23,42,0.4);
+}
+.sp-final-glow {
+  position: absolute; top: -50%; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(185,28,28,0.35), transparent 60%);
+  border-radius: 50%; pointer-events: none;
+}
+.sp-final-inner { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
+.sp-final-icon {
+  width: 64px; height: 64px; margin: 0 auto 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #fbbf24;
+}
+.sp-final h2 { font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -1px; margin: 0 0 14px; }
+.sp-final p { font-size: 15.5px; color: rgba(255,255,255,0.78); line-height: 1.6; margin: 0 0 30px; }
+.sp-final-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sp-container { padding: 0 18px; }
+  .sp-hero { padding: 32px 0 56px; }
+  .sp-hero h1 { font-size: 30px; letter-spacing: -0.8px; }
+  .sp-hero p { font-size: 14px; }
+  .sp-hero-badge { font-size: 10px; padding: 6px 12px; }
+  .sp-section { padding: 52px 0; }
+  .sp-sec-head h2 { font-size: 24px; letter-spacing: -0.6px; }
+  .sp-sec-head p { font-size: 13.5px; }
+  .benefits-grid { grid-template-columns: 1fr; gap: 12px; }
+  .packages-grid { grid-template-columns: 1fr; gap: 16px; }
+  .pkg-card { padding: 24px 20px 20px; }
+  .price-num { font-size: 32px; }
+  .who-grid { grid-template-columns: 1fr; }
+  .faq-grid { grid-template-columns: 1fr; gap: 12px; }
+  .faq-card { padding: 18px; }
+  .sp-final { padding: 44px 24px; border-radius: 22px; }
+  .sp-final h2 { font-size: 26px; }
+  .sp-final p { font-size: 14px; }
+  .sp-btn { padding: 13px 22px; font-size: 13.5px; width: 100%; justify-content: center; }
+}
+</style>
