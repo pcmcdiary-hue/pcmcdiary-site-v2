@@ -3,23 +3,40 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const CDN = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data';
 
+const iconMap = {
+  'Food & Dining': 'fa-utensils','Grocery & Kirana': 'fa-cart-shopping','Health & Medical': 'fa-stethoscope',
+  'Beauty & Personal Care': 'fa-spa','Fitness & Wellness': 'fa-dumbbell','Education & Learning': 'fa-graduation-cap',
+  'Fashion & Apparel': 'fa-shirt','Jewelry & Gold': 'fa-gem','Electronics & Gadgets': 'fa-laptop',
+  'Home & Interior': 'fa-couch','Automotive': 'fa-car','Domestic Services': 'fa-broom',
+  'IT & Digital Services': 'fa-code','Logistics & Movers': 'fa-truck-fast','Hospitality & Travel': 'fa-plane',
+  'Entertainment & Events': 'fa-film','Kids & Baby': 'fa-child','Books & Stationery': 'fa-book',
+  'Gardening & Outdoor': 'fa-seedling','Pet Care': 'fa-paw','Real Estate & Property': 'fa-building',
+  'Finance & Legal': 'fa-coins','Packaging & Printing': 'fa-print','Cafes & Quick Bites': 'fa-mug-hot',
+  'Shopping & Retail': 'fa-bag-shopping','Communication & Internet': 'fa-wifi','Security Services': 'fa-shield-halved',
+  'Alternative Medicine': 'fa-leaf','Photography & Video': 'fa-camera','Celebrations & Gifts': 'fa-gift',
+  'Government Services': 'fa-landmark','Utilities': 'fa-bolt','Daily Use Services': 'fa-screwdriver-wrench',
+  'Fitness Equipment': 'fa-person-running','Ayurveda & Wellness': 'fa-mortar-pestle','Coaches & Trainers': 'fa-chalkboard-user',
+  'Interior & Exterior Design': 'fa-paint-roller','Consulting Services': 'fa-handshake','Specialty Stores': 'fa-store'
+};
+
 export async function getStaticPaths() {
-  try {
-    const locRes = await fetch(`${CDN}/locations.json`);
-    const locData = await locRes.json();
-    const locs = locData.locations || [];
-    return locs.map(loc => ({
-      params: { id: loc.locationId },
-      props: { location: loc }
-    }));
-  } catch (e) {
-    return [];
-  }
+  const url = `${CDN}/locations.json`;
+  console.log(`[DEBUG] Fetching locations: ${url}`);
+  const res = await fetch(url);
+  console.log(`[DEBUG] Locations status: ${res.status}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+  const data = await res.json();
+  const locs = data.locations || [];
+  console.log(`[DEBUG] Locations found: ${locs.length}`);
+  if (locs.length === 0) throw new Error('Locations array is empty');
+  return locs.map(loc => ({
+    params: { id: loc.locationId },
+    props: { location: loc }
+  }));
 }
 
 const { location } = Astro.props;
 
-// Fetch all categories + businesses to find those serving this location
 let businesses = [];
 try {
   const catRes = await fetch(`${CDN}/categories.json`);
@@ -37,7 +54,6 @@ try {
   );
   const all = results.flat();
 
-  // Filter: primary location OR serviceArea includes this location
   businesses = all.filter(b => {
     if ((b.location || '') === location.locationName) return true;
     const sa = (b.serviceArea || '').split(',').map(s => s.trim());
@@ -53,7 +69,6 @@ const pageDesc = `Find ${businesses.length}+ verified businesses in ${location.l
 
   <div class="loc-page">
 
-    <!-- HERO -->
     <section class="loc-hero">
       <div class="loc-hero-bg"></div>
       <div class="loc-container">
@@ -94,10 +109,8 @@ const pageDesc = `Find ${businesses.length}+ verified businesses in ${location.l
       </div>
     </section>
 
-    <!-- BODY -->
     <section class="loc-body">
       <div class="loc-container">
-
         <div class="results-bar">
           <span class="results-count">
             <i class="fa-solid fa-store"></i> {businesses.length} {businesses.length === 1 ? 'business' : 'businesses'}
@@ -106,9 +119,7 @@ const pageDesc = `Find ${businesses.length}+ verified businesses in ${location.l
             <i class="fa-solid fa-arrow-left"></i> All Locations
           </a>
         </div>
-
         <div class="biz-grid" id="bizGrid"></div>
-
       </div>
     </section>
 
