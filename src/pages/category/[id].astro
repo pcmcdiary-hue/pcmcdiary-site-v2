@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const iconMap = {
+    'Food & Dining': 'fa-utensils','Grocery & Kirana': 'fa-cart-shopping','Health & Medical': 'fa-stethoscope',
+    'Beauty & Personal Care': 'fa-spa','Fitness & Wellness': 'fa-dumbbell','Education & Learning': 'fa-graduation-cap',
+    'Fashion & Apparel': 'fa-shirt','Jewelry & Gold': 'fa-gem','Electronics & Gadgets': 'fa-laptop',
+    'Home & Interior': 'fa-couch','Automotive': 'fa-car','Domestic Services': 'fa-broom',
+    'IT & Digital Services': 'fa-code','Logistics & Movers': 'fa-truck-fast','Hospitality & Travel': 'fa-plane',
+    'Entertainment & Events': 'fa-film','Kids & Baby': 'fa-child','Books & Stationery': 'fa-book',
+    'Gardening & Outdoor': 'fa-seedling','Pet Care': 'fa-paw','Real Estate & Property': 'fa-building',
+    'Finance & Legal': 'fa-coins','Packaging & Printing': 'fa-print','Cafes & Quick Bites': 'fa-mug-hot',
+    'Shopping & Retail': 'fa-bag-shopping','Communication & Internet': 'fa-wifi','Security Services': 'fa-shield-halved',
+    'Alternative Medicine': 'fa-leaf','Photography & Video': 'fa-camera','Celebrations & Gifts': 'fa-gift',
+    'Government Services': 'fa-landmark','Utilities': 'fa-bolt','Daily Use Services': 'fa-screwdriver-wrench',
+    'Fitness Equipment': 'fa-person-running','Ayurveda & Wellness': 'fa-mortar-pestle','Coaches & Trainers': 'fa-chalkboard-user',
+    'Interior & Exterior Design': 'fa-paint-roller','Consulting Services': 'fa-handshake','Specialty Stores': 'fa-store'
+  };
+
+  const url = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/categories.json';
+  console.log('[DEBUG] Fetching: ' + url);
+  const res = await fetch(url);
+  console.log('[DEBUG] Status: ' + res.status);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  const cats = data.categories || [];
+  console.log('[DEBUG] Categories found: ' + cats.length);
+  if (cats.length === 0) throw new Error('Categories empty');
+
+  return cats.map(function(cat) {
+    return {
+      params: { id: cat.categoryId },
+      props: {
+        category: cat,
+        iconClass: iconMap[cat.categoryName] || 'fa-folder'
+      }
+    };
+  });
+}
+
+const { category, iconClass } = Astro.props;
+
+let businesses = [];
+try {
+  const res = await fetch('https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/' + category.file);
+  const data = await res.json();
+  businesses = Array.isArray(data) ? data : [];
+} catch (e) { businesses = []; }
+---
+
+<BaseLayout title={category.categoryName + ' in PCMC'} description={'Find ' + category.categoryName + ' businesses in Pimpri-Chinchwad.'}>
+  <div class="cat-page">
+    <section class="cat-hero">
+      <div class="cat-container">
+        <div class="hero-icon"><i class={`fa-solid ${iconClass}`}></i></div>
+        <h1>{category.categoryName}</h1>
+        <p>{businesses.length} verified businesses in PCMC</p>
+      </div>
+    </section>
+    <section class="cat-body">
+      <div class="cat-container">
+        <div id="bizGrid" class="biz-grid"></div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ businesses }}>
+  const grid = document.getElementById('bizGrid');
+  if (grid) {
+    if (businesses.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:#64748b">No businesses yet</div>';
+    } else {
+      grid.innerHTML = businesses.map(b =>
+        '<div style="padding:20px;background:#fff;border-radius:12px;border:1px solid #e2e8f0">' +
+          '<h3 style="font-weight:800;margin:0 0 8px;color:#0f172a">' + (b.businessName || 'Business') + '</h3>' +
+          '<p style="color:#64748b;font-size:13px;margin:0">' + (b.subCategory || '') + ' · ' + (b.location || '') + '</p>' +
+        '</div>'
+      ).join('');
+    }
+  }
+</script>
+
+<style is:global>
+.cat-page { background: #f8fafc; min-height: 60vh; }
+.cat-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.cat-hero {
+  background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+  color: #fff; padding: 48px 0; text-align: center;
+}
+.hero-icon {
+  width: 72px; height: 72px; margin: 0 auto 16px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; color: #fde047;
+}
+.cat-hero h1 { font-size: 36px; font-weight: 800; margin: 0 0 8px; letter-spacing: -1px; }
+.cat-hero p { font-size: 14.5px; opacity: 0.85; margin: 0; }
+.cat-body { padding: 40px 0 60px; }
+.biz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 768px) { .biz-grid { grid-template-columns: 1fr; } .cat-hero h1 { font-size: 26px; } }
+</style>
