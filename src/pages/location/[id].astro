@@ -32,7 +32,7 @@ try {
         const res = await fetch(baseUrl + '/' + cat.file);
         const data = await res.json();
         return (Array.isArray(data) ? data : []).map(function(b) {
-          return Object.assign({}, b, { categoryId: cat.categoryId });
+          return Object.assign({}, b, { categoryId: cat.categoryId, categoryName: cat.categoryName });
         });
       } catch (e) { return []; }
     })
@@ -45,6 +45,16 @@ try {
     return sa.indexOf(location.locationName) !== -1;
   });
 } catch (e) { businesses = []; }
+
+// Extract unique categories from businesses for the filter
+const uniqueCats = [];
+const seen = {};
+for (let i = 0; i < businesses.length; i++) {
+  const cid = businesses[i].categoryId;
+  const cname = businesses[i].categoryName;
+  if (cid && cname && !seen[cid]) { seen[cid] = true; uniqueCats.push({ id: cid, name: cname }); }
+}
+uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
 ---
 
 <BaseLayout title={'Businesses in ' + location.locationName + ', PCMC'} description={'Find verified businesses in ' + location.locationName + ', Pimpri-Chinchwad.'}>
@@ -81,12 +91,18 @@ try {
     <section class="loc-body">
       <div class="loc-container">
         <div class="results-bar">
-          <span class="results-count">
+          <span class="results-count" id="resultsCount">
             <i class="fa-solid fa-store"></i> {businesses.length} {businesses.length === 1 ? 'business' : 'businesses'}
           </span>
-          <a href="/directory" class="back-link">
-            <i class="fa-solid fa-arrow-left"></i> All Locations
-          </a>
+          <div class="filter-row">
+            <select id="catFilter" class="filter-select">
+              <option value="all">All Categories</option>
+              {uniqueCats.map(c => <option value={c.id}>{c.name}</option>)}
+            </select>
+            <a href="/directory" class="back-link">
+              <i class="fa-solid fa-arrow-left"></i> All Locations
+            </a>
+          </div>
         </div>
         <div class="biz-grid" id="bizGrid"></div>
       </div>
@@ -206,26 +222,45 @@ try {
     '</article>';
   }
 
-  function init() {
+  function applyAndRender() {
     const grid = document.getElementById('bizGrid');
+    const countEl = document.getElementById('resultsCount');
+    const catEl = document.getElementById('catFilter');
     if (!grid) return;
 
-    if (ALL.length === 0) {
-      grid.innerHTML = '<div class="empty"><i class="fa-solid fa-location-dot"></i><h3>No businesses yet</h3><p>We\'re adding listings in this area. Check back soon.</p></div>';
+    const catVal = catEl ? catEl.value : 'all';
+    let filtered = ALL.slice();
+
+    if (catVal !== 'all') {
+      filtered = filtered.filter(function(b) { return b.categoryId === catVal; });
+    }
+
+    if (countEl) {
+      countEl.innerHTML = '<i class="fa-solid fa-store"></i> ' + filtered.length + ' ' + (filtered.length === 1 ? 'business' : 'businesses');
+    }
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty"><i class="fa-solid fa-store"></i><h3>No businesses found</h3><p>Try a different category filter.</p></div>';
       return;
     }
 
-    const sorted = ALL.slice().sort(function(a, b) {
+    filtered.sort(function(a, b) {
       const d = tierRank(a) - tierRank(b);
       if (d !== 0) return d;
       return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
     });
 
     let html = '';
-    for (let i = 0; i < sorted.length; i++) {
-      html += renderCard(sorted[i]);
+    for (let i = 0; i < filtered.length; i++) {
+      html += renderCard(filtered[i]);
     }
     grid.innerHTML = html;
+  }
+
+  function init() {
+    const catEl = document.getElementById('catFilter');
+    if (catEl) catEl.addEventListener('change', applyAndRender);
+    applyAndRender();
   }
 
   if (document.readyState === 'loading') {
@@ -353,6 +388,24 @@ try {
   gap: 7px;
 }
 .results-count i { color: #dc2626; }
+
+.filter-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.filter-select {
+  padding: 9px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #334155;
+  font-weight: 700;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-select:hover { border-color: #cbd5e1; }
+.filter-select:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+
 .back-link {
   font-size: 13px;
   font-weight: 700;
@@ -461,6 +514,9 @@ try {
   .loc-hero-icon { width: 60px; height: 60px; font-size: 26px; border-radius: 16px; }
   .loc-hero-text h1 { font-size: 24px; }
   .loc-hero-text p { font-size: 13px; }
+  .results-bar { flex-direction: column; align-items: stretch; }
+  .filter-row { width: 100%; }
+  .filter-select { flex: 1; }
   .biz-grid { grid-template-columns: 1fr; gap: 14px; }
   .biz-grid .biz-card { padding: 18px 18px 0; }
   .biz-grid .card-stats { padding: 12px 14px; }
