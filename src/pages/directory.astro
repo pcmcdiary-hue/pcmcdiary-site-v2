@@ -152,6 +152,16 @@ businesses = results.flat();
     return 6;
   }
 
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+    return arr;
+  }
+
   function avatarColors(name) {
     const pal = [['#dc2626','#991b1b'],['#ea580c','#c2410c'],['#d97706','#b45309'],['#ca8a04','#a16207'],['#65a30d','#4d7c0f'],['#059669','#047857'],['#0891b2','#0e7490'],['#0284c7','#0369a1'],['#4f46e5','#4338ca'],['#7c3aed','#6d28d9'],['#c026d3','#a21caf'],['#db2777','#be185d'],['#e11d48','#be123c'],['#9333ea','#7e22ce']];
     let h = 0;
@@ -165,7 +175,7 @@ businesses = results.flat();
     if (t === 'featured') out.push('<span class="badge badge-featured"><i class="fa-solid fa-star"></i><span>Featured</span></span>');
     else if (t === 'premium_pro') out.push('<span class="badge badge-premium"><i class="fa-solid fa-crown"></i><span>Premium Pro</span></span>');
     else if (t === 'premium') out.push('<span class="badge badge-premium"><i class="fa-solid fa-crown"></i><span>Premium</span></span>');
-    if (['featured','premium','premium_pro','vp','vb'].includes(t)) out.push('<span class="badge badge-verified"><i class="fa-solid fa-circle-check"></i><span>Verified</span></span>');
+    if (['featured','premium','premium_pro','vp','vb'].indexOf(t) !== -1) out.push('<span class="badge badge-verified"><i class="fa-solid fa-circle-check"></i><span>Verified</span></span>');
     return out.join('');
   }
 
@@ -195,11 +205,13 @@ businesses = results.flat();
   // ============ CARD ============
   function renderCard(b) {
     const t = (b.tier || '').toLowerCase();
-    const isPremium = ['featured','premium','premium_pro'].includes(t);
+    const isPremium = ['featured','premium','premium_pro'].indexOf(t) !== -1;
     const isPro = t === 'premium_pro';
     const name = b.businessName || 'Business';
     const initial = name.trim().charAt(0).toUpperCase();
-    const [c1, c2] = avatarColors(name);
+    const colors = avatarColors(name);
+    const c1 = colors[0];
+    const c2 = colors[1];
     const rating = parseFloat(b.rating) || 0;
     const reviews = parseInt(b.reviews) || 0;
 
@@ -209,7 +221,6 @@ businesses = results.flat();
     if (rating > 0) {
       statsHtml += `<div class="stat"><i class="fa-solid fa-star stat-star"></i><div class="stat-body"><span class="stat-val">${rating.toFixed(1)}</span>${reviews ? `<span class="stat-sub">${reviews} reviews</span>` : ''}</div></div>`;
     }
-    // Near Me ON → show distance
     if (b._dist != null) {
       statsHtml += `<div class="stat"><i class="fa-solid fa-location-crosshairs stat-loc"></i><div class="stat-body"><span class="stat-val">${formatDist(b._dist)}</span><span class="stat-sub">away</span></div></div>`;
     } else if (b.location) {
@@ -218,14 +229,7 @@ businesses = results.flat();
 
     let dealHtml = '';
     if (isPremium && b.deals) {
-      dealHtml = `
-        <div class="deal-box">
-          <div class="deal-icon"><i class="fa-solid fa-gift"></i></div>
-          <div class="deal-body">
-            <div class="deal-label">Limited Offer</div>
-            <div class="deal-text">${b.deals}</div>
-          </div>
-        </div>`;
+      dealHtml = `<div class="deal-box"><div class="deal-icon"><i class="fa-solid fa-gift"></i></div><div class="deal-body"><div class="deal-label">Limited Offer</div><div class="deal-text">${b.deals}</div></div></div>`;
     }
 
     const socialLinksHtml = (isPro) ? parseSocialLinks(b.socialLinks) : '';
@@ -274,59 +278,50 @@ businesses = results.flat();
 
     // Location filter (skip when Near Me is on)
     if (!state.nearMe && state.location !== 'all') {
-      list = list.filter(b => (b.location || '') === state.location || (b.serviceArea || '').includes(state.location));
+      list = list.filter(b => (b.location || '') === state.location || (b.serviceArea || '').indexOf(state.location) !== -1);
     }
 
     // Search filter
     if (state.search) {
       const q = state.search.toLowerCase();
       list = list.filter(b =>
-        (b.businessName || '').toLowerCase().includes(q) ||
-        (b.subCategory || '').toLowerCase().includes(q) ||
-        (b.tags || '').toLowerCase().includes(q) ||
-        (b.location || '').toLowerCase().includes(q)
+        (b.businessName || '').toLowerCase().indexOf(q) !== -1 ||
+        (b.subCategory || '').toLowerCase().indexOf(q) !== -1 ||
+        (b.tags || '').toLowerCase().indexOf(q) !== -1 ||
+        (b.location || '').toLowerCase().indexOf(q) !== -1
       );
     }
 
     // Sort
     if (state.nearMe && state.userLocation) {
-      // Attach distance to each business (collision-proof)
       const withDist = [];
       const withoutDist = [];
       for (const b of list) {
         const ll = getLatLng(b);
         if (ll) {
           const d = haversine(state.userLocation.lat, state.userLocation.lng, ll.lat, ll.lng);
-          withDist.push({ ...b, _dist: d });
+          withDist.push(Object.assign({}, b, { _dist: d }));
         } else {
           withoutDist.push(b);
         }
       }
       withDist.sort((a, b) => a._dist - b._dist);
-      list = [...withDist, ...withoutDist];
+      list = withDist.concat(withoutDist);
     } else {
-if (state.sort === 'featured') {
-  const tiers = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
-  for (const b of list) {
-    const t = tierRank(b);
-    tiers[t].push(b);
-  }
-  const shuffle = (arr) => {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  };
-  list = [
-    ...shuffle(tiers[1]),
-    ...shuffle(tiers[2]),
-    ...shuffle(tiers[3]),
-    ...shuffle(tiers[4]),
-    ...shuffle(tiers[5]),
-    ...shuffle(tiers[6])
-  ];
-}
+      if (state.sort === 'featured') {
+        const tiers = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+        for (const b of list) {
+          const t = tierRank(b);
+          tiers[t].push(b);
+        }
+        list = [].concat(
+          shuffleArray(tiers[1]),
+          shuffleArray(tiers[2]),
+          shuffleArray(tiers[3]),
+          shuffleArray(tiers[4]),
+          shuffleArray(tiers[5]),
+          shuffleArray(tiers[6])
+        );
       } else if (state.sort === 'rating') {
         list.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
       } else if (state.sort === 'name') {
@@ -427,7 +422,6 @@ if (state.sort === 'featured') {
   document.getElementById('nearMeBtn').addEventListener('click', () => {
     const btn = document.getElementById('nearMeBtn');
 
-    // Toggle OFF
     if (state.nearMe) {
       state.nearMe = false;
       state.userLocation = null;
@@ -456,7 +450,6 @@ if (state.sort === 'featured') {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
 
-        // Invalid location check
         if (Math.abs(lat) < 0.01 && Math.abs(lng) < 0.01) {
           btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
           alert('Invalid location received. Please check your GPS and try again.');
@@ -466,7 +459,6 @@ if (state.sort === 'featured') {
         state.userLocation = { lat, lng };
         state.nearMe = true;
 
-        // Reset filters
         state.category = 'all';
         state.location = 'all';
         state.search = '';
@@ -499,7 +491,7 @@ if (state.sort === 'featured') {
 </script>
 
 <style is:global>
-/* ============ PAGE LAYOUT ============ */
+/* CSS unchanged — same as before */
 .dir-page { background: #f8fafc; min-height: 60vh; padding: 32px 0 60px; }
 .dir-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
