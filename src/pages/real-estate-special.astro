@@ -1,0 +1,570 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const packages = [
+  {
+    id: 'builder-starter',
+    name: 'Builder Starter',
+    tagline: 'Perfect for single project',
+    price: 10000,
+    period: 'per year',
+    icon: 'fa-building',
+    gradient: 'linear-gradient(135deg,#059669,#047857)',
+    features: [
+      { label: '1 dedicated project page', included: true },
+      { label: '15 mini property listings', included: true },
+      { label: 'Gallery (up to 10 images)', included: true },
+      { label: 'Location map + directions', included: true },
+      { label: 'Contact form + WhatsApp button', included: true },
+      { label: 'Homepage feature (3 days)', included: true },
+      { label: 'Top 3 position in Real Estate', included: false },
+      { label: 'Video walkthrough', included: false },
+      { label: 'Newsletter + Instagram Reel', included: false },
+    ]
+  },
+  {
+    id: 'builder-pro',
+    name: 'Builder Pro',
+    tagline: 'Best for growing builders',
+    price: 25000,
+    period: 'per year',
+    featured: true,
+    icon: 'fa-city',
+    gradient: 'linear-gradient(135deg,#d97706,#b45309)',
+    features: [
+      { label: '3 dedicated project pages', included: true },
+      { label: '50 mini property listings', included: true },
+      { label: 'Gallery (up to 30 images)', included: true },
+      { label: 'Location map + directions', included: true },
+      { label: 'Contact form + WhatsApp button', included: true },
+      { label: 'Homepage feature (2 weeks per project)', included: true },
+      { label: 'Top 3 position in Real Estate', included: true },
+      { label: 'Video walkthrough (1 project)', included: true },
+      { label: 'Newsletter + Instagram Reel', included: false },
+    ]
+  },
+  {
+    id: 'builder-premium',
+    name: 'Builder Premium',
+    tagline: 'Maximum visibility',
+    price: 50000,
+    period: 'per year',
+    icon: 'fa-crown',
+    gradient: 'linear-gradient(135deg,#7c3aed,#5b21b6)',
+    features: [
+      { label: 'Unlimited project pages', included: true },
+      { label: 'Unlimited property listings', included: true },
+      { label: 'Gallery (unlimited images)', included: true },
+      { label: 'Location map + directions', included: true },
+      { label: 'Contact form + WhatsApp button', included: true },
+      { label: 'Homepage banner (6 months)', included: true },
+      { label: '#1 position in Real Estate', included: true },
+      { label: 'Video walkthrough (unlimited)', included: true },
+      { label: 'Newsletter + Instagram Reel + Ads', included: true },
+    ]
+  }
+];
+
+const benefits = [
+  { icon: 'fa-users', title: 'Targeted Local Audience', desc: 'PCMC buyers actively searching for property in your area.' },
+  { icon: 'fa-magnifying-glass', title: 'Google Search Ranking', desc: 'Your project ranks on Google for "flats in Wakad" type searches.' },
+  { icon: 'fa-file-signature', title: 'Dedicated Project Page', desc: 'Complete project info, floor plans, amenities & contact form.' },
+  { icon: 'fa-images', title: 'High-Quality Gallery', desc: 'Showcase your project with professional images.' },
+  { icon: 'fa-phone', title: 'Direct Lead Generation', desc: 'Contact form + WhatsApp button — buyers reach you directly.' },
+  { icon: 'fa-house', title: 'Homepage Feature', desc: 'Featured on homepage for days — massive visibility.' },
+  { icon: 'fa-bullhorn', title: 'Social Media Amplification', desc: 'Instagram + WhatsApp promotions to 10,000+ audience.' },
+  { icon: 'fa-chart-line', title: 'Analytics Dashboard', desc: 'Track views, clicks, and inquiries for your project.' },
+];
+
+const stats = [
+  { num: '10k+', label: 'Monthly Readers' },
+  { num: '33', label: 'Areas Covered' },
+  { num: '200+', label: 'Active Projects' },
+  { num: '5L+', label: 'PCMC Population' },
+];
+
+const faqs = [
+  { q: 'How long does it take to go live?', a: 'Within 24 hours of payment + content submission. We help you set up everything.' },
+  { q: 'Can I update project info later?', a: 'Yes, unlimited updates for the duration of your package. Just WhatsApp us.' },
+  { q: 'Do I need to provide content?', a: 'We can write it for you based on your project brochure. Or you provide ready content — your choice.' },
+  { q: 'How many leads can I expect?', a: 'Depends on your project + location. Average 20-50 leads/month for popular PCMC areas.' },
+  { q: 'Can I cancel?', a: 'Yearly packages are prepaid and non-refundable. Monthly available on request.' },
+  { q: 'Do you handle GST?', a: 'Yes, we provide GST invoice. Applicable as per government rules.' },
+];
+---
+
+<BaseLayout title="Real Estate Special — PCMC Diary" description="List your real estate project on PCMC Diary. Dedicated project pages, high-intent leads, and 10,000+ monthly readers.">
+
+  <div class="re-page">
+
+    <!-- HERO -->
+    <section class="re-hero">
+      <div class="re-hero-bg"></div>
+      <div class="re-container">
+        <nav class="breadcrumb">
+          <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+          <i class="fa-solid fa-chevron-right sep"></i>
+          <span>Real Estate Special</span>
+        </nav>
+
+        <div class="re-hero-inner">
+          <div class="re-hero-badge">
+            <i class="fa-solid fa-building"></i>
+            Real Estate Special
+          </div>
+          <h1>Get <em>high-intent property leads</em> from PCMC buyers</h1>
+          <p>Dedicated project pages, verified listings, and direct inquiries — reach thousands of serious buyers actively searching in your area.</p>
+          <div class="re-hero-btns">
+            <a href="#packages" class="re-btn re-btn-primary">
+              <i class="fa-solid fa-tags"></i>
+              View Packages
+            </a>
+            <a href="https://wa.me/918793932827?text=Hi, I want to list my real estate project on PCMC Diary" target="_blank" rel="noopener" class="re-btn re-btn-outline">
+              <i class="fa-brands fa-whatsapp"></i>
+              Talk to Us
+            </a>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="re-stats">
+          {stats.map(s => (
+            <div class="re-stat">
+              <div class="re-stat-num">{s.num}</div>
+              <div class="re-stat-lbl">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section class="re-section">
+      <div class="re-container">
+        <div class="re-sec-head">
+          <span class="re-eyebrow">Why PCMC Diary</span>
+          <h2>What you get with every package</h2>
+          <p>A complete real estate marketing solution — not just a listing.</p>
+        </div>
+
+        <div class="re-benefits">
+          {benefits.map(b => (
+            <div class="re-benefit">
+              <div class="re-benefit-icon">
+                <i class={`fa-solid ${b.icon}`}></i>
+              </div>
+              <h3>{b.title}</h3>
+              <p>{b.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section class="re-section re-pkg-section" id="packages">
+      <div class="re-container">
+        <div class="re-sec-head">
+          <span class="re-eyebrow">Pricing</span>
+          <h2>Choose your package</h2>
+          <p>Annual packages — best ROI for builders and developers.</p>
+        </div>
+
+        <div class="re-pkgs">
+          {packages.map(pkg => (
+            <div class={`re-pkg ${pkg.featured ? 're-pkg-featured' : ''}`}>
+              {pkg.featured && <div class="re-pkg-badge">MOST POPULAR</div>}
+              <div class="re-pkg-accent" style={`background:${pkg.gradient}`}></div>
+
+              <div class="re-pkg-head">
+                <div class="re-pkg-icon" style={`background:${pkg.gradient}`}>
+                  <i class={`fa-solid ${pkg.icon}`}></i>
+                </div>
+                <div class="re-pkg-name">{pkg.name}</div>
+                <div class="re-pkg-tag">{pkg.tagline}</div>
+              </div>
+
+              <div class="re-pkg-price">
+                <span class="re-price-cur">₹</span>
+                <span class="re-price-num">{pkg.price.toLocaleString('en-IN')}</span>
+                <div class="re-price-period">{pkg.period}</div>
+              </div>
+
+              <ul class="re-pkg-features">
+                {pkg.features.map(f => (
+                  <li class={f.included ? 're-feat-in' : 're-feat-out'}>
+                    <i class={`fa-solid ${f.included ? 'fa-circle-check' : 'fa-circle-xmark'}`}></i>
+                    <span>{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={`https://wa.me/918793932827?text=${encodeURIComponent('Hi, I am interested in the ' + pkg.name + ' package (₹' + pkg.price + ') for my real estate project. Please share details.')}`}
+                target="_blank"
+                rel="noopener"
+                class={`re-pkg-cta ${pkg.featured ? 're-pkg-cta-primary' : ''}`}
+              >
+                Get Started
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <div class="re-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Custom packages available for large builders. GST applicable as per rules. Full invoice provided.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="re-section re-faq-section">
+      <div class="re-container">
+        <div class="re-sec-head">
+          <span class="re-eyebrow">FAQ</span>
+          <h2>Common questions</h2>
+        </div>
+
+        <div class="re-faqs">
+          {faqs.map(f => (
+            <div class="re-faq">
+              <div class="re-faq-q">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>{f.q}</span>
+              </div>
+              <div class="re-faq-a">{f.a}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="re-section">
+      <div class="re-container">
+        <div class="re-final">
+          <div class="re-final-glow"></div>
+          <div class="re-final-inner">
+            <div class="re-final-icon"><i class="fa-solid fa-building"></i></div>
+            <h2>Ready to list your project?</h2>
+            <p>Message us on WhatsApp. We'll set up your project page within 24 hours.</p>
+            <div class="re-final-btns">
+              <a href="https://wa.me/918793932827?text=Hi, I want to list my real estate project" target="_blank" rel="noopener" class="re-btn re-btn-primary">
+                <i class="fa-brands fa-whatsapp"></i>
+                WhatsApp Now
+              </a>
+              <a href="/contact" class="re-btn re-btn-outline">
+                <i class="fa-solid fa-envelope"></i>
+                Contact Form
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</BaseLayout>
+
+<style is:global>
+.re-page { background: #f8fafc; min-height: 60vh; }
+.re-container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+.re-hero {
+  background: linear-gradient(135deg, #7c2d12 0%, #7f1d1d 50%, #450a0a 100%);
+  color: #fff; padding: 44px 0 60px;
+  position: relative; overflow: hidden;
+}
+.re-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px;
+  opacity: 0.6; pointer-events: none;
+}
+.re-hero .re-container { position: relative; z-index: 2; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.7);
+  margin-bottom: 24px; flex-wrap: wrap;
+}
+.breadcrumb a {
+  color: rgba(255,255,255,0.85); text-decoration: none;
+  font-weight: 600; display: inline-flex; align-items: center; gap: 6px;
+}
+.breadcrumb a:hover { color: #fde047; }
+.breadcrumb a i { font-size: 11px; }
+.breadcrumb .sep { font-size: 9px; opacity: 0.5; }
+.breadcrumb span { color: #fde047; font-weight: 700; }
+
+.re-hero-inner { text-align: center; max-width: 760px; margin: 0 auto 44px; }
+.re-hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 18px; border-radius: 50px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  color: #fde047; margin-bottom: 18px;
+  backdrop-filter: blur(10px);
+}
+.re-hero h1 {
+  font-size: 46px; font-weight: 800;
+  letter-spacing: -1.4px; line-height: 1.1;
+  margin: 0 0 18px;
+}
+.re-hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, #fde047, #fbbf24);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-right: 6px;
+}
+.re-hero p {
+  font-size: 16px; color: rgba(255,255,255,0.88);
+  line-height: 1.6; margin: 0 auto 28px; max-width: 600px;
+}
+.re-hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.re-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 14px 26px; border-radius: 12px;
+  font-size: 14px; font-weight: 800;
+  text-decoration: none; transition: all 0.2s;
+  letter-spacing: -0.1px;
+}
+.re-btn-primary {
+  background: #fff; color: #7c2d12;
+  box-shadow: 0 12px 28px -8px rgba(0,0,0,0.3);
+}
+.re-btn-primary:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 16px 34px -8px rgba(0,0,0,0.4); }
+.re-btn-outline {
+  background: rgba(255,255,255,0.1); color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(10px);
+}
+.re-btn-outline:hover { background: rgba(255,255,255,0.2); text-decoration: none; transform: translateY(-2px); }
+
+.re-stats {
+  display: flex; justify-content: center; gap: 40px;
+  flex-wrap: wrap; padding-top: 36px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  position: relative; z-index: 2;
+}
+.re-stat { text-align: center; }
+.re-stat-num {
+  font-size: 30px; font-weight: 800;
+  letter-spacing: -1px; line-height: 1;
+  background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.re-stat-lbl {
+  font-size: 10.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  color: rgba(255,255,255,0.55); margin-top: 8px;
+}
+
+/* SECTIONS */
+.re-section { padding: 72px 0; }
+.re-section:nth-child(even) { background: #fff; }
+.re-pkg-section { background: linear-gradient(180deg, #f8fafc, #fff) !important; padding-top: 60px; }
+.re-faq-section { background: #f8fafc !important; }
+
+.re-sec-head { text-align: center; margin-bottom: 44px; }
+.re-eyebrow {
+  display: inline-block; font-size: 11px; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: #7c2d12; margin-bottom: 12px;
+  padding: 5px 14px; background: #fef3c7;
+  border: 1px solid #fde68a; border-radius: 50px;
+}
+.re-sec-head h2 {
+  font-size: 36px; font-weight: 800; color: #0f172a;
+  letter-spacing: -1px; line-height: 1.15; margin: 0 0 10px;
+}
+.re-sec-head p { font-size: 15px; color: #64748b; max-width: 540px; margin: 0 auto; font-weight: 500; }
+
+/* BENEFITS */
+.re-benefits {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px;
+}
+.re-benefit {
+  padding: 24px; background: #fff;
+  border: 1px solid #e2e8f0; border-radius: 16px;
+  transition: all 0.25s;
+}
+.re-benefit:hover {
+  border-color: #fde68a; transform: translateY(-4px);
+  box-shadow: 0 16px 32px -16px rgba(217,119,6,0.2);
+}
+.re-benefit-icon {
+  width: 48px; height: 48px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #b45309; font-size: 19px; margin-bottom: 14px;
+}
+.re-benefit h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 8px; letter-spacing: -0.2px; }
+.re-benefit p { font-size: 13px; color: #64748b; line-height: 1.55; margin: 0; font-weight: 500; }
+
+/* PACKAGES */
+.re-pkgs {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px; align-items: stretch;
+}
+.re-pkg {
+  position: relative; display: flex; flex-direction: column;
+  padding: 30px 26px 24px; background: #fff;
+  border: 1.5px solid #e2e8f0; border-radius: 20px;
+  overflow: hidden; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 4px 12px -8px rgba(15,23,42,0.06);
+}
+.re-pkg:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px -20px rgba(15,23,42,0.15);
+  border-color: #cbd5e1;
+}
+.re-pkg-featured {
+  border-color: #fbbf24; border-width: 2px;
+  box-shadow: 0 20px 44px -20px rgba(217,119,6,0.3);
+}
+.re-pkg-featured:hover { box-shadow: 0 28px 56px -20px rgba(217,119,6,0.4); }
+.re-pkg-badge {
+  position: absolute; top: 16px; right: 16px;
+  padding: 5px 12px; background: linear-gradient(135deg,#fef3c7,#fbbf24);
+  color: #78350f; border-radius: 6px;
+  font-size: 9.5px; font-weight: 800;
+  letter-spacing: 0.6px; text-transform: uppercase;
+  box-shadow: 0 4px 12px -4px rgba(251,191,36,0.5);
+}
+.re-pkg-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+
+.re-pkg-head { margin-bottom: 20px; padding-top: 6px; }
+.re-pkg-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 21px; margin-bottom: 14px;
+  box-shadow: 0 8px 20px -8px rgba(15,23,42,0.25);
+}
+.re-pkg-name { font-size: 22px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; margin-bottom: 4px; }
+.re-pkg-tag { font-size: 12.5px; color: #64748b; font-weight: 600; }
+
+.re-pkg-price {
+  padding: 22px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 20px; display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;
+}
+.re-price-cur { font-size: 22px; font-weight: 700; color: #334155; align-self: flex-start; margin-top: 6px; }
+.re-price-num { font-size: 40px; font-weight: 800; color: #0f172a; letter-spacing: -1.5px; line-height: 1; }
+.re-price-period { font-size: 12px; color: #94a3b8; font-weight: 600; margin-left: auto; align-self: center; }
+
+.re-pkg-features { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 10px; }
+.re-pkg-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; font-weight: 600; }
+.re-pkg-features li i { font-size: 13px; margin-top: 1px; flex-shrink: 0; }
+.re-feat-in { color: #334155; }
+.re-feat-in i { color: #16a34a; }
+.re-feat-out { color: #94a3b8; }
+.re-feat-out i { color: #cbd5e1; }
+
+.re-pkg-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: auto; padding: 14px 20px;
+  background: #f1f5f9; color: #0f172a;
+  border: 1.5px solid #e2e8f0; border-radius: 12px;
+  font-size: 14px; font-weight: 800; text-decoration: none;
+  transition: all 0.2s; letter-spacing: -0.1px;
+}
+.re-pkg-cta i { font-size: 11px; transition: transform 0.2s; }
+.re-pkg-cta:hover {
+  background: #0f172a; color: #fff; border-color: #0f172a;
+  text-decoration: none; transform: translateY(-1px);
+  box-shadow: 0 12px 24px -8px rgba(15,23,42,0.3);
+}
+.re-pkg-cta:hover i { transform: translateX(3px); }
+.re-pkg-cta-primary {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff; border-color: #d97706;
+  box-shadow: 0 10px 24px -8px rgba(217,119,6,0.5);
+}
+.re-pkg-cta-primary:hover { background: linear-gradient(135deg, #b45309, #92400e); border-color: #92400e; }
+
+.re-note {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 32px; padding: 12px 20px;
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 50px;
+  font-size: 12.5px; color: #64748b; font-weight: 600;
+  max-width: fit-content; margin-left: auto; margin-right: auto;
+}
+.re-note i { color: #0891b2; font-size: 13px; }
+
+/* FAQ */
+.re-faqs { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px; }
+.re-faq {
+  padding: 22px; background: #fff;
+  border: 1px solid #e2e8f0; border-radius: 14px;
+  transition: all 0.2s;
+}
+.re-faq:hover { border-color: #cbd5e1; box-shadow: 0 12px 24px -12px rgba(15,23,42,0.1); transform: translateY(-2px); }
+.re-faq-q {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14.5px; font-weight: 800; color: #0f172a;
+  margin-bottom: 10px; line-height: 1.4;
+}
+.re-faq-q i { color: #b45309; font-size: 15px; margin-top: 1px; flex-shrink: 0; }
+.re-faq-a { font-size: 13px; color: #64748b; line-height: 1.65; font-weight: 500; padding-left: 25px; }
+
+/* FINAL CTA */
+.re-final {
+  position: relative; padding: 64px 40px 60px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #7c2d12 100%);
+  border-radius: 28px; overflow: hidden; text-align: center;
+  box-shadow: 0 40px 80px -32px rgba(15,23,42,0.4);
+}
+.re-final-glow {
+  position: absolute; top: -50%; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(217,119,6,0.35), transparent 60%);
+  border-radius: 50%; pointer-events: none;
+}
+.re-final-inner { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
+.re-final-icon {
+  width: 64px; height: 64px; margin: 0 auto 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #fbbf24;
+}
+.re-final h2 { font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -1px; margin: 0 0 14px; }
+.re-final p { font-size: 15.5px; color: rgba(255,255,255,0.78); line-height: 1.6; margin: 0 0 30px; }
+.re-final-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .re-container { padding: 0 18px; }
+  .re-hero { padding: 32px 0 48px; }
+  .re-hero h1 { font-size: 30px; letter-spacing: -0.8px; }
+  .re-hero p { font-size: 14px; }
+  .re-hero-badge { font-size: 10px; padding: 6px 12px; }
+  .re-stats { gap: 22px; padding-top: 28px; }
+  .re-stat-num { font-size: 24px; }
+  .re-stat-lbl { font-size: 9.5px; }
+  .re-section { padding: 52px 0; }
+  .re-sec-head h2 { font-size: 24px; letter-spacing: -0.6px; }
+  .re-sec-head p { font-size: 13.5px; }
+  .re-benefits { grid-template-columns: 1fr; gap: 12px; }
+  .re-pkgs { grid-template-columns: 1fr; gap: 16px; }
+  .re-pkg { padding: 24px 20px 20px; }
+  .re-price-num { font-size: 32px; }
+  .re-faqs { grid-template-columns: 1fr; gap: 12px; }
+  .re-faq { padding: 18px; }
+  .re-final { padding: 44px 24px; border-radius: 22px; }
+  .re-final h2 { font-size: 26px; }
+  .re-final p { font-size: 14px; }
+  .re-btn { padding: 13px 22px; font-size: 13.5px; width: 100%; justify-content: center; }
+}
+</style>
