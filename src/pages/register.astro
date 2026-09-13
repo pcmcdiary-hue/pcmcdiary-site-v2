@@ -1,0 +1,584 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const plans = [
+  { id: 'free', name: 'Free', price: 0, desc: 'Basic listing' },
+  { id: 'vb', name: 'Verified Basic', price: 99, desc: '3 areas · Verified badge' },
+  { id: 'vp', name: 'Verified Pro', price: 199, desc: 'All 33 areas · Top 20' },
+  { id: 'premium', name: 'Premium', price: 499, desc: 'Top 10 · WhatsApp · Website · Coupons' },
+  { id: 'premium_pro', name: 'Premium Pro', price: 999, desc: 'Top 5 · Email · Social · Priority support' },
+];
+---
+
+<BaseLayout title="Register Your Business" description="List your business on PCMC Diary — free registration for local businesses in Pimpri-Chinchwad.">
+
+  <div class="rg-page">
+    <div class="rg-wrap">
+
+      <!-- Hero -->
+      <div class="rg-hero">
+        <div class="rg-hero-bg"></div>
+        <div class="rg-hero-inner">
+          <div class="rg-hero-badge">
+            <i class="fa-solid fa-circle-plus"></i>
+            Free Listing
+          </div>
+          <h1>List your business on PCMC Diary</h1>
+          <p>Reach thousands of local customers across Pimpri-Chinchwad. Free listing, upgrade anytime.</p>
+        </div>
+      </div>
+
+      <!-- Info grid -->
+      <div class="rg-info">
+        <div class="rg-info-card">
+          <div class="rg-info-icon" style="background:linear-gradient(135deg,#dc2626,#991b1b)">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <h3>Quick & Simple</h3>
+          <p>Fill the form once. Our team verifies and lists your business within 24 hours.</p>
+        </div>
+        <div class="rg-info-card">
+          <div class="rg-info-icon" style="background:linear-gradient(135deg,#059669,#047857)">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+          </div>
+          <h3>Start Free</h3>
+          <p>Free listing is always available. Upgrade to paid plans only when ready.</p>
+        </div>
+        <div class="rg-info-card">
+          <div class="rg-info-icon" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">
+            <i class="fa-solid fa-headset"></i>
+          </div>
+          <h3>Dedicated Support</h3>
+          <p>Our team helps you complete the listing and choose the right plan.</p>
+        </div>
+      </div>
+
+      <!-- Form section -->
+      <div class="rg-form-wrap">
+        <div class="rg-form-head">
+          <div class="rg-form-eyebrow">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Registration Form
+          </div>
+          <h2>Tell us about your business</h2>
+          <p>Fill in the details below. We will contact you on WhatsApp to confirm and activate your listing.</p>
+        </div>
+
+        <form
+          class="rg-form"
+          id="registerForm"
+          action="https://formsubmit.co/info@pcmcdiary.com"
+          method="POST"
+        >
+          <!-- Hidden fields -->
+          <input type="hidden" name="_subject" value="New Business Registration — PCMC Diary" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="text" name="_honey" style="display:none" />
+
+          <!-- Row 1 -->
+          <div class="rg-row">
+            <div class="rg-field">
+              <label>Business Name <span>*</span></label>
+              <input type="text" name="Business Name" placeholder="e.g. Cafe Coffee Day" required />
+            </div>
+            <div class="rg-field">
+              <label>Owner Name <span>*</span></label>
+              <input type="text" name="Owner Name" placeholder="Your full name" required />
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="rg-row">
+            <div class="rg-field">
+              <label>Phone / WhatsApp <span>*</span></label>
+              <input type="tel" name="Phone" placeholder="+91 98765 43210" required />
+            </div>
+            <div class="rg-field">
+              <label>Email</label>
+              <input type="email" name="Email" placeholder="your@email.com" />
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="rg-row">
+            <div class="rg-field">
+              <label>Category <span>*</span></label>
+              <select name="Category" required>
+                <option value="">Select category</option>
+                <option>Food &amp; Dining</option>
+                <option>Grocery &amp; Kirana</option>
+                <option>Health &amp; Medical</option>
+                <option>Beauty &amp; Personal Care</option>
+                <option>Fitness &amp; Wellness</option>
+                <option>Education &amp; Learning</option>
+                <option>Fashion &amp; Apparel</option>
+                <option>Jewelry &amp; Gold</option>
+                <option>Electronics &amp; Gadgets</option>
+                <option>Home &amp; Interior</option>
+                <option>Automotive</option>
+                <option>Domestic Services</option>
+                <option>IT &amp; Digital Services</option>
+                <option>Logistics &amp; Movers</option>
+                <option>Hospitality &amp; Travel</option>
+                <option>Entertainment &amp; Events</option>
+                <option>Real Estate &amp; Property</option>
+                <option>Finance &amp; Legal</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="rg-field">
+              <label>Area / Location <span>*</span></label>
+              <input type="text" name="Location" placeholder="e.g. Wakad, Hinjawadi, Baner" required />
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="rg-field">
+            <label>Full Address <span>*</span></label>
+            <textarea name="Address" rows="2" placeholder="Shop / building name, street, landmark, pincode" required></textarea>
+          </div>
+
+          <!-- Row 4 -->
+          <div class="rg-row">
+            <div class="rg-field">
+              <label>Website (if any)</label>
+              <input type="url" name="Website" placeholder="https://yourwebsite.com" />
+            </div>
+            <div class="rg-field">
+              <label>Google Maps Link (if any)</label>
+              <input type="url" name="Google Map" placeholder="https://maps.google.com/..." />
+            </div>
+          </div>
+
+          <!-- Plan -->
+          <div class="rg-field">
+            <label>Preferred Plan <span>*</span></label>
+            <div class="rg-plans">
+              {plans.map(p => (
+                <label class="rg-plan-opt">
+                  <input type="radio" name="Plan" value={p.name} required />
+                  <div class="rg-plan-card">
+                    <div class="rg-plan-name">{p.name}</div>
+                    <div class="rg-plan-price">
+                      {p.price === 0 ? 'Free' : `₹${p.price}/yr`}
+                    </div>
+                    <div class="rg-plan-desc">{p.desc}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="rg-field">
+            <label>Short Description (max 200 chars)</label>
+            <textarea name="Description" rows="3" maxlength="200" placeholder="What does your business do? What makes it special?"></textarea>
+          </div>
+
+          <!-- Terms -->
+          <label class="rg-terms">
+            <input type="checkbox" required />
+            <span>I agree to the <a href="/terms" target="_blank">Terms &amp; Conditions</a> and <a href="/privacy" target="_blank">Privacy Policy</a> of PCMC Diary.</span>
+          </label>
+
+          <!-- Submit -->
+          <button type="submit" class="rg-submit">
+            <i class="fa-solid fa-paper-plane"></i>
+            Submit Registration
+          </button>
+
+          <div class="rg-form-note">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>We'll contact you within 24 hours on WhatsApp. Your data is safe with us.</span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Help card -->
+      <div class="rg-help">
+        <div class="rg-help-icon"><i class="fa-solid fa-circle-question"></i></div>
+        <div class="rg-help-text">
+          <h4>Need help with registration?</h4>
+          <p>Message us on WhatsApp — we'll help you complete the form.</p>
+        </div>
+        <a href="https://wa.me/918793932827" target="_blank" rel="noopener" class="rg-help-btn">
+          <i class="fa-brands fa-whatsapp"></i>
+          WhatsApp us
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style is:global>
+.rg-page { background: #f8fafc; min-height: 60vh; padding: 0 0 72px; }
+.rg-wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+/* HERO */
+.rg-hero {
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
+  color: #fff;
+  padding: 48px 32px 80px;
+  border-radius: 0 0 28px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin: 0 -20px 0;
+}
+.rg-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px;
+  opacity: 0.6;
+}
+.rg-hero-inner { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; }
+.rg-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fde047;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+}
+.rg-hero h1 {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+.rg-hero p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* INFO CARDS */
+.rg-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: -44px;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 3;
+}
+.rg-info-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+  text-align: center;
+  box-shadow: 0 12px 32px -16px rgba(15,23,42,0.15);
+}
+.rg-info-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  color: #fff;
+  font-size: 20px;
+  box-shadow: 0 8px 20px -8px rgba(15,23,42,0.3);
+}
+.rg-info-card h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+  letter-spacing: -0.2px;
+}
+.rg-info-card p {
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* FORM WRAP */
+.rg-form-wrap {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 40px 44px;
+  box-shadow: 0 20px 48px -24px rgba(15,23,42,0.12);
+}
+.rg-form-head { margin-bottom: 32px; }
+.rg-form-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 50px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #b91c1c;
+  margin-bottom: 14px;
+}
+.rg-form-head h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.6px;
+  margin: 0 0 8px;
+}
+.rg-form-head p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 560px;
+}
+
+/* FORM */
+.rg-form { display: flex; flex-direction: column; gap: 22px; }
+.rg-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.rg-field { display: flex; flex-direction: column; gap: 8px; }
+.rg-field label {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: -0.1px;
+}
+.rg-field label span { color: #dc2626; }
+
+.rg-field input[type="text"],
+.rg-field input[type="tel"],
+.rg-field input[type="email"],
+.rg-field input[type="url"],
+.rg-field select,
+.rg-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #0f172a;
+  background: #fff;
+  outline: none;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.rg-field input::placeholder,
+.rg-field textarea::placeholder { color: #94a3b8; }
+.rg-field input:focus,
+.rg-field select:focus,
+.rg-field textarea:focus {
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 3px rgba(185,28,28,0.08);
+}
+.rg-field textarea { resize: vertical; min-height: 60px; line-height: 1.55; }
+.rg-field select { cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 42px; }
+
+/* PLANS */
+.rg-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+.rg-plan-opt { cursor: pointer; }
+.rg-plan-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.rg-plan-card {
+  padding: 14px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.2s;
+  height: 100%;
+}
+.rg-plan-opt:hover .rg-plan-card { border-color: #fca5a5; }
+.rg-plan-opt input:checked + .rg-plan-card {
+  border-color: #b91c1c;
+  background: linear-gradient(135deg,#fff,#fef2f2);
+  box-shadow: 0 8px 20px -8px rgba(185,28,28,0.25);
+}
+.rg-plan-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+  letter-spacing: -0.1px;
+}
+.rg-plan-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #b91c1c;
+  margin-bottom: 6px;
+}
+.rg-plan-opt input:checked + .rg-plan-card .rg-plan-price { color: #991b1b; }
+.rg-plan-desc {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* TERMS */
+.rg-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.55;
+  font-weight: 500;
+}
+.rg-terms input {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: #b91c1c;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.rg-terms a { color: #b91c1c; font-weight: 700; text-decoration: none; }
+.rg-terms a:hover { text-decoration: underline; }
+
+/* SUBMIT */
+.rg-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 28px;
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: -0.1px;
+  box-shadow: 0 14px 30px -10px rgba(185,28,28,0.5);
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+.rg-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px -10px rgba(185,28,28,0.6);
+}
+.rg-submit i { font-size: 14px; }
+
+.rg-form-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+  text-align: center;
+}
+.rg-form-note i { color: #059669; font-size: 12px; }
+
+/* HELP */
+.rg-help {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 24px;
+  padding: 22px 24px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 18px;
+  color: #fff;
+  flex-wrap: wrap;
+  box-shadow: 0 16px 32px -16px rgba(15,23,42,0.3);
+}
+.rg-help-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.rg-help-text { flex: 1; min-width: 200px; }
+.rg-help-text h4 {
+  font-size: 15px;
+  font-weight: 800;
+  margin: 0 0 4px;
+  letter-spacing: -0.2px;
+}
+.rg-help-text p { font-size: 12.5px; opacity: 0.75; margin: 0; line-height: 1.5; }
+.rg-help-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: linear-gradient(135deg, #25d366, #15803d);
+  color: #fff;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 10px 22px -8px rgba(37,211,102,0.5);
+  white-space: nowrap;
+}
+.rg-help-btn:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  box-shadow: 0 14px 28px -8px rgba(37,211,102,0.6);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .rg-wrap { padding: 0 16px; }
+  .rg-hero { padding: 32px 20px 64px; border-radius: 0 0 20px 20px; margin: 0 -16px 0; }
+  .rg-hero h1 { font-size: 24px; letter-spacing: -0.5px; }
+  .rg-hero p { font-size: 13.5px; }
+  .rg-hero-badge { font-size: 10px; padding: 6px 12px; }
+  .rg-info { grid-template-columns: 1fr; gap: 10px; margin-top: -36px; margin-bottom: 28px; }
+  .rg-info-card { padding: 18px; }
+  .rg-info-icon { width: 42px; height: 42px; font-size: 18px; margin-bottom: 10px; }
+  .rg-form-wrap { padding: 24px 20px; border-radius: 18px; }
+  .rg-form-head h2 { font-size: 20px; }
+  .rg-form-head p { font-size: 13px; }
+  .rg-row { grid-template-columns: 1fr; gap: 14px; }
+  .rg-form { gap: 18px; }
+  .rg-plans { grid-template-columns: 1fr 1fr; }
+  .rg-submit { width: 100%; }
+  .rg-help { text-align: center; justify-content: center; padding: 20px; border-radius: 16px; }
+  .rg-help-btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 400px) {
+  .rg-plans { grid-template-columns: 1fr; }
+}
+</style>
