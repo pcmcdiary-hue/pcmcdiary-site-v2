@@ -19,6 +19,23 @@ const iconMap = {
   'Interior & Exterior Design': 'fa-paint-roller','Consulting Services': 'fa-handshake','Specialty Stores': 'fa-store'
 };
 
+// Short names for mobile grid (2-line safe)
+const shortNameMap = {
+  'Food & Dining': 'Food','Grocery & Kirana': 'Grocery','Health & Medical': 'Health',
+  'Beauty & Personal Care': 'Beauty','Fitness & Wellness': 'Fitness','Education & Learning': 'Edu',
+  'Fashion & Apparel': 'Fashion','Jewelry & Gold': 'Jewelry','Electronics & Gadgets': 'Elec',
+  'Home & Interior': 'Home','Automotive': 'Auto','Domestic Services': 'Domestic',
+  'IT & Digital Services': 'IT','Logistics & Movers': 'Logistics','Hospitality & Travel': 'Travel',
+  'Entertainment & Events': 'Events','Kids & Baby': 'Kids','Books & Stationery': 'Books',
+  'Gardening & Outdoor': 'Garden','Pet Care': 'Pets','Real Estate & Property': 'Realty',
+  'Finance & Legal': 'Finance','Packaging & Printing': 'Print','Cafes & Quick Bites': 'Cafes',
+  'Shopping & Retail': 'Shop','Communication & Internet': 'Internet','Security Services': 'Security',
+  'Alternative Medicine': 'Ayurved','Photography & Video': 'Photo','Celebrations & Gifts': 'Gifts',
+  'Government Services': 'Govt','Utilities': 'Utility','Daily Use Services': 'Repair',
+  'Fitness Equipment': 'Equip','Ayurveda & Wellness': 'AltMed','Coaches & Trainers': 'Coach',
+  'Interior & Exterior Design': 'Design','Consulting Services': 'Consult','Specialty Stores': 'Store'
+};
+
 let categories = [];
 let locations = [];
 let businesses = [];
@@ -26,7 +43,11 @@ let businesses = [];
 try {
   const catRes = await fetch(`${CDN}/categories.json`);
   const catData = await catRes.json();
-  categories = (catData.categories || []).map(c => ({ ...c, iconClass: iconMap[c.categoryName] || 'fa-folder' }));
+  categories = (catData.categories || []).map(c => ({
+    ...c,
+    iconClass: iconMap[c.categoryName] || 'fa-folder',
+    shortName: shortNameMap[c.categoryName] || (c.categoryName.length > 10 ? c.categoryName.substring(0, 8) + '…' : c.categoryName)
+  }));
 } catch (e) { console.error(e); }
 
 try {
@@ -57,27 +78,30 @@ businesses = results.flat();
         <p>Find trusted local businesses &amp; services</p>
       </header>
 
-      <div class="cat-pills" id="catPills">
-        <button class="cat-pill active" data-cat="all">
-          <span class="cp-icon"><i class="fa-solid fa-border-all"></i></span>
-          <span class="cp-name">All</span>
-        </button>
-        {categories.map(c => (
-          <button class="cat-pill" data-cat={c.categoryId}>
-            <span class="cp-icon"><i class={`fa-solid ${c.iconClass}`}></i></span>
-            <span class="cp-name">{c.categoryName.length > 14 ? c.categoryName.substring(0, 12) + '…' : c.categoryName}</span>
-          </button>
-        ))}
-      </div>
-
       <div class="filters">
-        <input type="text" id="searchInput" class="f-input" placeholder="Search business, service, or area…" />
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="searchInput" class="f-input" placeholder="Search business, service, or area…" />
+        </div>
         <button id="nearMeBtn" class="near-btn">
           <i class="fa-solid fa-location-crosshairs"></i> Near Me
         </button>
         <span class="results-count" id="resultsCount">
           <i class="fa-solid fa-store"></i> {businesses.length} businesses
         </span>
+      </div>
+
+      <div class="cat-grid" id="catPills">
+        <button class="cat-chip all active" data-cat="all">
+          <i class="fa-solid fa-border-all"></i>
+          <span>All</span>
+        </button>
+        {categories.map(c => (
+          <button class="cat-chip" data-cat={c.categoryId}>
+            <i class={`fa-solid ${c.iconClass}`}></i>
+            <span>{c.shortName}</span>
+          </button>
+        ))}
       </div>
 
       <div class="biz-grid" id="bizGrid"></div>
@@ -132,7 +156,6 @@ businesses = results.flat();
   }
 
   // ============ SCROLL HELPER ============
-  // Landing on first listing — NOT scrolling to page top
   function scrollToFirstListing() {
     const grid = document.getElementById('bizGrid');
     if (!grid) return;
@@ -271,12 +294,10 @@ businesses = results.flat();
   function applyFilters() {
     let list = [...ALL];
 
-    // Category filter
     if (state.category !== 'all') {
       list = list.filter(b => b.categoryId === state.category);
     }
 
-    // Search filter
     if (state.search) {
       const q = state.search.toLowerCase();
       list = list.filter(b =>
@@ -287,7 +308,6 @@ businesses = results.flat();
       );
     }
 
-    // Sort
     if (state.nearMe && state.userLocation) {
       const withDist = [];
       const withoutDist = [];
@@ -303,6 +323,7 @@ businesses = results.flat();
       withDist.sort((a, b) => a._dist - b._dist);
       list = withDist.concat(withoutDist);
     } else {
+      // ─── ROTATION CODE (UNCHANGED) ───
       if (state.sort === 'featured') {
         const tiers = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
         for (const b of list) {
@@ -340,7 +361,7 @@ businesses = results.flat();
     if (state.nearMe) {
       const withCoords = state.filtered.filter(b => b._dist != null).length;
       if (withCoords === 0) {
-        rcEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> GPS data unavailable — showing ${total} businesses`;
+        rcEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> GPS unavailable — ${total} shown`;
       } else {
         rcEl.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> ${total} sorted by distance`;
       }
@@ -379,17 +400,16 @@ businesses = results.flat();
 
   // ============ EVENTS ============
   document.getElementById('catPills').addEventListener('click', e => {
-    const btn = e.target.closest('.cat-pill');
+    const btn = e.target.closest('.cat-chip');
     if (!btn) return;
-    document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.category = btn.dataset.cat;
 
-    // Auto-scroll active pill into view
+    // Auto-scroll pill into view (mobile horizontal scroll — optional)
     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
     applyFilters();
-    // Land on first listing, NOT page top
     setTimeout(scrollToFirstListing, 50);
   });
 
@@ -405,7 +425,6 @@ businesses = results.flat();
   document.getElementById('nearMeBtn').addEventListener('click', () => {
     const btn = document.getElementById('nearMeBtn');
 
-    // OFF
     if (state.nearMe) {
       state.nearMe = false;
       state.userLocation = null;
@@ -415,13 +434,11 @@ businesses = results.flat();
       return;
     }
 
-    // Check GPS support
     if (!navigator.geolocation) {
       alert('Your browser does not support location.');
       return;
     }
 
-    // Pre-check: do any businesses have GPS data?
     const withGps = ALL.filter(b => getLatLng(b)).length;
     if (withGps === 0) {
       alert('Near Me is unavailable — business GPS data is being updated.\n\nPlease use the search box to find businesses by area name (e.g. "Wakad", "Nigdi").');
@@ -446,8 +463,8 @@ businesses = results.flat();
         state.category = 'all';
         state.search = '';
         document.getElementById('searchInput').value = '';
-        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        const allPill = document.querySelector('.cat-pill[data-cat="all"]');
+        document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+        const allPill = document.querySelector('.cat-chip[data-cat="all"]');
         if (allPill) {
           allPill.classList.add('active');
           allPill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -485,88 +502,37 @@ businesses = results.flat();
 .dir-head h1 span { color: #dc2626; }
 .dir-head p { color: #64748b; font-size: 14px; font-weight: 500; padding-bottom: 2px; }
 
-/* ════════ CATEGORY PILLS — HORIZONTAL SCROLL ════════ */
-.cat-pills {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 8px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-}
-.cat-pills::-webkit-scrollbar { display: none; }
-
-.cat-pill {
-  flex: 0 0 auto;
-  min-width: 90px;
-  height: 66px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 10px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-  text-align: center;
-  scroll-snap-align: start;
-}
-.cat-pill:hover { border-color: #dc2626; background: #fef2f2; transform: translateY(-2px); }
-.cat-pill.active { background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #dc2626; color: #fff; }
-.cp-icon { font-size: 17px; line-height: 1; color: #64748b; margin-bottom: 5px; }
-.cat-pill.active .cp-icon { color: #fff; }
-.cat-pill:hover .cp-icon { color: #dc2626; }
-.cat-pill.active:hover .cp-icon { color: #fff; }
-.cp-name { font-size: 11px; font-weight: 700; color: #334155; line-height: 1.15; }
-.cat-pill.active .cp-name { color: #fff; }
-
-/* ════════ FILTERS — SEARCH + NEAR ME ONLY ════════ */
+/* ════════ SEARCH + NEAR ME ════════ */
 .filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding: 14px 0;
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 14px; padding: 0 0 14px;
   border-bottom: 1px solid #e2e8f0;
   align-items: center;
 }
+.search-wrap { position: relative; flex: 1; min-width: 220px; }
+.search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: #94a3b8; font-size: 13px; pointer-events: none;
+}
 .f-input {
-  flex: 1;
-  min-width: 200px;
-  padding: 11px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 14px;
-  background: #fff;
-  font-family: inherit;
-  color: #334155;
-  font-weight: 600;
-  outline: none;
-  transition: all 0.2s;
+  width: 100%;
+  padding: 11px 14px 11px 38px;
+  border: 1px solid #e2e8f0; border-radius: 10px;
+  font-size: 13px; font-family: inherit; font-weight: 500;
+  background: #fff; color: #334155;
+  outline: none; transition: all 0.2s;
 }
 .f-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
-.f-input::placeholder { color: #94a3b8; font-weight: 500; }
+.f-input::placeholder { color: #94a3b8; }
 
 .near-btn {
   background: linear-gradient(135deg, #dc2626, #b91c1c);
-  color: #fff;
-  border: 0;
-  padding: 11px 20px;
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 13.5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  white-space: nowrap;
-  font-family: inherit;
+  color: #fff; border: 0;
+  padding: 11px 20px; border-radius: 10px;
+  font-weight: 700; cursor: pointer;
+  font-size: 13px; display: inline-flex;
+  align-items: center; gap: 7px;
+  white-space: nowrap; font-family: inherit;
   transition: all 0.2s;
 }
 .near-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 16px -8px rgba(220,38,38,0.5); }
@@ -574,20 +540,68 @@ businesses = results.flat();
 .near-btn i { font-size: 12px; }
 
 .results-count {
-  font-size: 12.5px;
-  color: #64748b;
-  font-weight: 700;
-  padding: 9px 14px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  font-size: 12.5px; color: #64748b; font-weight: 700;
+  padding: 9px 14px; background: #fff;
+  border: 1px solid #e2e8f0; border-radius: 10px;
   white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.results-count i { color: #dc2626; }
+
+/* ════════ CATEGORY GRID (Desktop: Pills Wrap) ════════ */
+.cat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 4px 0;
+}
+
+.cat-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-left: auto;
+  padding: 7px 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+  line-height: 1;
+  height: 32px;
+  transition: all 0.15s ease;
 }
-.results-count i { color: #dc2626; }
+.cat-chip i { font-size: 11px; color: #94a3b8; transition: color 0.15s; }
+.cat-chip:hover {
+  border-color: #fecaca; background: #fef2f2;
+  color: #dc2626; transform: translateY(-1px);
+}
+.cat-chip:hover i { color: #dc2626; }
+.cat-chip.active {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: #dc2626;
+  color: #fff;
+  box-shadow: 0 6px 14px -6px rgba(220,38,38,0.4);
+}
+.cat-chip.active i { color: #fff; }
+.cat-chip.all {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-color: #0f172a;
+  color: #fff;
+}
+.cat-chip.all i { color: #fbbf24; }
+.cat-chip.all:hover {
+  box-shadow: 0 6px 14px -6px rgba(15,23,42,0.4);
+}
+.cat-chip.all.active {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: #dc2626;
+}
+.cat-chip.all.active i { color: #fff; }
 
 /* ════════ CARDS (UNCHANGED) ════════ */
 .biz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
@@ -683,58 +697,68 @@ businesses = results.flat();
 .dir-page .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
 .dir-page .pagination span { color: #94a3b8; padding: 8px 4px; font-weight: 700; }
 
-/* ════════ MOBILE REFINEMENTS ════════ */
+/* ════════ MOBILE — 5-COLUMN BOXY GRID ════════ */
 @media (max-width: 768px) {
-  .dir-page { padding: 20px 0 48px; }
-  .dir-container { padding: 0 14px; }
+  .dir-page { padding: 18px 0 48px; }
+  .dir-container { padding: 0 10px; }
 
-  .dir-head { flex-direction: column; align-items: flex-start; margin-bottom: 14px; padding: 4px 0 12px; }
-  .dir-head h1 { font-size: 20px; margin-bottom: 2px; letter-spacing: -0.3px; }
-  .dir-head p { font-size: 12.5px; }
-
-  /* Category pills — compact horizontal scroll */
-  .cat-pills {
-    gap: 6px;
-    margin-bottom: 12px;
-    padding-bottom: 6px;
-  }
-  .cat-pill {
-    min-width: 74px;
-    height: 58px;
-    padding: 6px 8px;
-    border-radius: 9px;
-  }
-  .cp-icon { font-size: 15px; margin-bottom: 3px; }
-  .cp-name { font-size: 10px; line-height: 1.1; }
+  .dir-head { flex-direction: column; align-items: flex-start; margin-bottom: 12px; padding: 4px 0 10px; }
+  .dir-head h1 { font-size: 19px; margin-bottom: 2px; letter-spacing: -0.3px; }
+  .dir-head p { font-size: 12px; }
 
   /* Filters */
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 10px 0;
+  .filters { flex-direction: column; align-items: stretch; gap: 8px; padding: 0 0 10px; margin-bottom: 10px; }
+  .search-wrap { min-width: 0; }
+  .f-input { padding: 10px 13px 10px 36px; font-size: 12.5px; border-radius: 9px; }
+  .search-icon { left: 12px; font-size: 11px; }
+  .near-btn { width: 100%; justify-content: center; padding: 10px 16px; font-size: 12.5px; }
+  .results-count { justify-content: center; padding: 8px 12px; font-size: 11.5px; white-space: normal; text-align: center; }
+
+  /* Category Grid — 5 columns, boxy, compact */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
     margin-bottom: 14px;
+    padding: 0;
   }
-  .f-input {
+  .cat-chip {
     width: 100%;
-    min-width: 0;
-    padding: 11px 14px;
-    font-size: 13.5px;
-    border-radius: 10px;
-  }
-  .near-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 11px 16px;
-    font-size: 13px;
-  }
-  .results-count {
-    margin-left: 0;
-    justify-content: center;
-    white-space: normal;
+    height: 40px;
+    padding: 3px 1px;
+    flex-direction: column;
+    gap: 2px;
+    border-radius: 5px;
+    font-size: 7.5px;
+    font-weight: 700;
     text-align: center;
-    padding: 8px 12px;
-    font-size: 12px;
+    line-height: 1;
+    white-space: normal;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    transform: none !important;
+  }
+  .cat-chip i {
+    font-size: 11px;
+    margin: 0;
+    line-height: 1;
+  }
+  .cat-chip span {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 7.5px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.2px;
+    word-break: break-word;
+  }
+  .cat-chip.active {
+    box-shadow: 0 3px 8px -3px rgba(220,38,38,0.4);
+  }
+  .cat-chip.all {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
   }
 
   /* Cards */
@@ -745,6 +769,10 @@ businesses = results.flat();
 }
 
 @media (max-width: 400px) {
+  .cat-grid { gap: 2px; }
+  .cat-chip { height: 38px; border-radius: 4px; }
+  .cat-chip i { font-size: 10px; }
+  .cat-chip span { font-size: 7px; }
   .biz-grid .card-stats { grid-template-columns: 1fr; }
 }
 </style>
