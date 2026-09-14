@@ -1,0 +1,463 @@
+---
+// ─── Billing Studio Demo Page ───
+const title = "Billing Studio Demo — PCMC Diary";
+const description = "Try the invoice, quotation, proforma & proposal maker. Fully working demo — no login needed.";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content="index, follow" />
+
+  <!-- CDN Libraries (is:inline keeps them as-is) -->
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style is:global>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #eef1f5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+  </style>
+</head>
+<body>
+
+<div id="pcmd-billing-demo" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; padding:16px 12px; background:#eef1f5; border-radius:16px;">
+
+  <!-- ============ DEMO BANNER ============ -->
+  <div style="max-width:1000px; margin:0 auto 14px; background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%); color:#fff; padding:14px 20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <div>
+      <div style="font-size:0.95rem; font-weight:700; letter-spacing:0.3px;">&#127916; Live Demo &#8212; Billing Studio</div>
+      <div style="font-size:0.72rem; color:#b8b8cc; margin-top:2px;">This is a fully working demo. Try creating an invoice and downloading it.</div>
+    </div>
+    <a href="https://billingstudio.pcmcdiary.com" target="_blank" style="background:#d43b3b; color:#fff; padding:8px 16px; border-radius:50px; font-size:0.75rem; font-weight:600; text-decoration:none;">Get Full Version &rarr;</a>
+  </div>
+
+  <!-- ============ TOOLBAR ============ -->
+  <div class="demo-toolbar" style="max-width:1000px; margin:0 auto 14px; background:#fff; border:1px solid #e5e7eb; padding:12px 14px; border-radius:14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center;">
+
+    <div class="demo-seg" style="display:flex; gap:2px; background:#f8fafc; padding:3px; border-radius:999px; border:1px solid #e5e7eb;">
+      <button class="demo-doc-btn active" data-doc="invoice" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Invoice</button>
+      <button class="demo-doc-btn" data-doc="proforma" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Proforma</button>
+      <button class="demo-doc-btn" data-doc="quotation" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Quotation</button>
+      <button class="demo-doc-btn" data-doc="proposal" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Proposal</button>
+    </div>
+
+    <div class="demo-seg" style="display:flex; gap:2px; background:#f8fafc; padding:3px; border-radius:999px; border:1px solid #e5e7eb;">
+      <button id="demo-gst-on" class="demo-gst-btn" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">With GST</button>
+      <button id="demo-gst-off" class="demo-gst-btn active" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Without GST</button>
+    </div>
+
+    <button id="demo-add-row" style="background:#fff; color:#0f172a; border:1px solid #e5e7eb; padding:9px 16px; border-radius:999px; font-size:0.72rem; font-weight:600; cursor:pointer; font-family:inherit;">+ Add Line</button>
+    <button id="demo-download" style="background:#1e3a5f; color:#fff; border:none; padding:9px 16px; border-radius:999px; font-size:0.72rem; font-weight:600; cursor:pointer; font-family:inherit;">&#11015; Download</button>
+    <button id="demo-print" style="background:#fff; color:#0f172a; border:1px solid #e5e7eb; padding:9px 16px; border-radius:999px; font-size:0.72rem; font-weight:600; cursor:pointer; font-family:inherit;">&#128424; Print</button>
+
+  </div>
+
+  <!-- ============ INVOICE CANVAS ============ -->
+  <div style="max-width:1000px; margin:0 auto;">
+
+    <div id="demo-doc" style="background:#fff; max-width:794px; margin:0 auto; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; color:#0f172a; font-size:14px; line-height:1.55; font-variant-numeric:tabular-nums;">
+
+      <!-- BANNER -->
+      <div style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:34px 40px; display:flex; justify-content:space-between; align-items:center; gap:24px; min-height:124px; position:relative; overflow:hidden;">
+        <div style="position:absolute; right:-60px; top:-60px; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none;"></div>
+        <div style="display:flex; gap:16px; align-items:center; flex:1; min-width:0; position:relative; z-index:1;">
+          <div style="width:60px; height:60px; background:#fff; border-radius:14px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; box-shadow:0 6px 20px -6px rgba(0,0,0,0.25);">
+            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEi2G0UUWPHL9444BBONEoAfhRp3pTKc3gSt0iNdnlZ6nPT6e0EuamQAiA7TIlfqBiuKXsb92v7s9HpUlNY0JTlhWUGorlwXkpdSs1A6dkQ6gM4r6Y58Ymgnm8XNBKzQMvfWrUVqtp5LOYUIoz45nN-HwpeVnIwtBNJgkWMtP2XtvwXacyLjtPYuBwAQxO0=s1600" alt="PCMC Diary" style="width:100%; height:100%; object-fit:contain; padding:6px;">
+          </div>
+          <div style="min-width:0;">
+            <div style="font-size:1.15rem; font-weight:700; letter-spacing:0.005em; line-height:1.3;">PCMC Diary</div>
+            <div style="font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.8; margin-top:5px; font-weight:500;">Business Directory</div>
+          </div>
+        </div>
+        <div id="demo-doc-title" style="font-size:2.2rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; line-height:1; white-space:nowrap; flex-shrink:0; position:relative; z-index:1;">INVOICE</div>
+      </div>
+
+      <!-- INFO ROW -->
+      <div style="display:flex; gap:40px; padding:32px 40px; align-items:flex-start; border-bottom:1px solid #f1f5f9; flex-wrap:wrap;">
+        <div style="flex:1; min-width:220px;">
+          <div style="font-size:0.95rem; font-weight:700; margin-bottom:12px;">Invoice to:</div>
+          <input type="text" id="demo-c-name" value="ABC Industries Pvt. Ltd." placeholder="Customer name" style="display:block; width:100%; border:none; background:transparent; font-size:0.92rem; font-weight:700; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
+          <input type="text" id="demo-c-addr" value="Plot 45, MIDC Bhosari, Pune - 411026" placeholder="Address" style="display:block; width:100%; border:none; background:transparent; font-size:0.9rem; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
+          <input type="tel" id="demo-c-phone" value="+91 98765 43210" placeholder="Phone" style="display:block; width:100%; border:none; background:transparent; font-size:0.9rem; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
+        </div>
+        <div style="flex-shrink:0; min-width:240px; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
+            <span style="font-weight:700;">Invoice No:</span>
+            <span style="font-weight:500; text-align:right;">PCMD-20260911-4521</span>
+          </div>
+          <div style="display:flex; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
+            <span style="font-weight:700;">Date:</span>
+            <span id="demo-date" style="font-weight:500;">11-Sep-2026</span>
+          </div>
+          <div id="demo-valid-row" style="display:none; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
+            <span style="font-weight:700;">Valid till:</span>
+            <span id="demo-valid" style="font-weight:500;">11-Oct-2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <table id="demo-items" style="width:100%; border-collapse:collapse; table-layout:fixed;">
+        <thead>
+          <tr>
+            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 6px; text-align:center; width:5%; white-space:nowrap;">SL</th>
+            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 14px; text-align:left; width:34%;">Item Description</th>
+            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:center; width:17%;">Schedule</th>
+            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:8%;">Qty</th>
+            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:13%;">Rate</th>
+            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:16%;">Total</th>
+            <th class="demo-act-head" style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:14px 4px; text-align:center; width:7%;"></th>
+          </tr>
+        </thead>
+        <tbody id="demo-items-body"></tbody>
+      </table>
+
+      <div style="padding:0 40px;">
+        <button id="demo-add-row2" style="width:100%; background:transparent; border:1.5px dashed #cbd5e1; color:#64748b; padding:13px; border-radius:10px; font-size:0.82rem; font-weight:600; margin-top:8px; cursor:pointer; font-family:inherit; transition:all 0.15s;">+ Add another line</button>
+      </div>
+
+      <!-- BOTTOM -->
+      <div style="display:flex; gap:40px; padding:32px 40px 24px; align-items:flex-start; flex-wrap:wrap;">
+
+        <div style="flex:1; min-width:220px;">
+          <div style="font-size:0.95rem; font-weight:700; margin-bottom:10px;">Payment Info:</div>
+          <div style="font-size:0.86rem; color:#475569; line-height:1.9;">
+            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">Name</span><span style="color:#0f172a; font-weight:500;">PCMC Diary Services</span></div>
+            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">Bank</span><span style="color:#0f172a; font-weight:500;">Bank of India (Saving)</span></div>
+            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">A/C</span><span style="color:#0f172a; font-weight:500;">008018210004498</span></div>
+            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">IFSC</span><span style="color:#0f172a; font-weight:500;">BKID0000080</span></div>
+            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">UPI</span><span style="color:#0f172a; font-weight:500;">pcmcdiary@upi</span></div>
+          </div>
+
+          <div style="margin-top:24px;">
+            <div style="font-size:0.95rem; font-weight:700; margin-bottom:10px;">Notes:</div>
+            <div style="font-size:0.82rem; color:#64748b; line-height:1.85;">
+              &bull; 100% advance or as per agreement<br>
+              &bull; UPI / NEFT / RTGS accepted<br>
+              <span id="demo-gst-note" style="display:none;">&bull; GST @ 18% applicable</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex-shrink:0; min-width:280px; display:flex; flex-direction:column; gap:6px; padding-top:4px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; padding:9px 0; font-size:0.86rem;">
+            <span style="font-weight:700; text-transform:uppercase; font-size:0.76rem; letter-spacing:0.08em; color:#475569;">Sub Total:</span>
+            <span id="demo-subtotal" style="font-weight:700; color:#0f172a;">&#8377;0.00</span>
+          </div>
+          <div id="demo-tax-row" style="display:none; justify-content:space-between; align-items:baseline; padding:9px 0; font-size:0.86rem;">
+            <span style="font-weight:700; text-transform:uppercase; font-size:0.76rem; letter-spacing:0.08em; color:#475569;">Tax (18%):</span>
+            <span id="demo-tax" style="font-weight:700; color:#0f172a;">&#8377;0.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:18px 22px; border-radius:10px; margin-top:12px; box-shadow:0 8px 20px -8px rgba(44,127,184,0.4);">
+            <span style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:800; opacity:0.95;">Total:</span>
+            <span id="demo-total" style="font-size:1.35rem; font-weight:800; letter-spacing:-0.015em;">&#8377;0.00</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 40px 6px; border-top:1px solid #f1f5f9; background:#fafbfc; gap:20px; flex-wrap:wrap; font-size:0.8rem;">
+        <span style="font-weight:700; color:#0f172a;">Thank you for your business</span>
+        <span style="color:#475569; font-weight:500;">PCMC Diary &middot; 87939 33347 &middot; info@pcmcdiary.com</span>
+      </div>
+
+      <div style="text-align:center; padding:8px 40px 16px; font-size:0.68rem; color:#94a3b8; background:#fafbfc; letter-spacing:0.04em; font-weight:500;">
+        Powered by <a href="https://pcmcdiary.com" target="_blank" style="color:#2c7fb8; text-decoration:none; font-weight:700;">pcmcdiary.com</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============ BELOW-DEMO CTA ============ -->
+  <div style="max-width:1000px; margin:20px auto 0; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:28px 24px; text-align:center;">
+    <div style="font-size:1.1rem; font-weight:700; color:#0f172a; margin-bottom:8px;">Like what you see?</div>
+    <div style="font-size:0.85rem; color:#475569; margin-bottom:20px; line-height:1.6;">Get your own branded version in 2 minutes. Add your logo, bank details, and start billing today.</div>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <a href="https://billingstudio.pcmcdiary.com" target="_blank" style="background:#1e3a5f; color:#fff; padding:13px 28px; border-radius:50px; font-size:0.85rem; font-weight:700; text-decoration:none;">Get Full Version &rarr;</a>
+      <a href="https://wa.me/918793933347?text=Hi%2C%20I%20saw%20the%20Billing%20Studio%20demo.%20I%20want%20to%20subscribe%20(%E2%82%B9499%2Fyear)." target="_blank" style="background:#25d366; color:#fff; padding:13px 28px; border-radius:50px; font-size:0.85rem; font-weight:700; text-decoration:none;">&#128172; WhatsApp to Buy</a>
+    </div>
+  </div>
+
+</div>
+
+<script is:inline>
+(function(){
+  var root = document.getElementById('pcmd-billing-demo');
+  if (!root) return;
+  var $ = function(id){ return document.getElementById(id); };
+
+  var RS = '\u20B9';
+  var EM = '\u2014';
+  var BL = '\u2022';
+
+  var items = [];
+  var docType = 'invoice';
+  var gstOn = false;
+
+  var SAMPLE_ITEMS = [
+    { service: 'Business Directory Listing ' + EM + ' PCMC', schedule: 'Yearly', qty: 1, rate: 1500 },
+    { service: 'Featured Placement ' + EM + ' Homepage', schedule: 'Monthly', qty: 1, rate: 800 },
+    { service: 'WhatsApp Lead Alerts', schedule: 'Monthly', qty: 3, rate: 200 }
+  ];
+
+  function money(n){
+    return RS + Math.abs(Number(n) || 0).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function esc(s){
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function todayStr(){
+    var d = new Date();
+    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return String(d.getDate()).padStart(2,'0') + '-' + m[d.getMonth()] + '-' + d.getFullYear();
+  }
+  function addDaysStr(days){
+    var d = new Date();
+    d.setDate(d.getDate() + days);
+    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return String(d.getDate()).padStart(2,'0') + '-' + m[d.getMonth()] + '-' + d.getFullYear();
+  }
+
+  function renderItems(){
+    var tb = $('demo-items-body');
+    tb.innerHTML = '';
+    items.forEach(function(it, i){
+      var tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid #f1f5f9';
+      if (i % 2 === 1) tr.style.background = '#f8fafc';
+
+      tr.innerHTML =
+        '<td style="padding:14px 6px; text-align:center; font-weight:700; color:#2c7fb8; font-size:0.9rem;">' + (i+1) + '</td>' +
+        '<td style="padding:14px 14px;"><input type="text" data-i="' + i + '" data-f="service" value="' + esc(it.service) + '" placeholder="Service description" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:500; padding:4px 0; outline:none;"></td>' +
+        '<td style="padding:14px 8px; text-align:center;"><select data-i="' + i + '" data-f="schedule" style="border:none; background:transparent; font-size:0.85rem; font-family:inherit; color:#0f172a; font-weight:500; text-align:center; cursor:pointer; outline:none; padding:4px 0; width:100%;">' +
+          ['One-time','Monthly','Quarterly','Half-Yearly','Yearly','AMC'].map(function(s){ return '<option value="'+s+'"'+(s===it.schedule?' selected':'')+'>'+s+'</option>'; }).join('') +
+        '</select></td>' +
+        '<td style="padding:14px 8px; text-align:right;"><input type="number" min="0" data-i="' + i + '" data-f="qty" value="' + it.qty + '" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:600; text-align:right; padding:4px 0; outline:none;"></td>' +
+        '<td style="padding:14px 8px; text-align:right;"><input type="number" min="0" data-i="' + i + '" data-f="rate" value="' + it.rate + '" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:600; text-align:right; padding:4px 0; outline:none;"></td>' +
+        '<td style="padding:14px 8px; text-align:right; font-weight:700; color:#0f172a; font-size:0.88rem;">' + money(it.qty * it.rate) + '</td>' +
+        '<td class="demo-act-cell demo-no-print" style="padding:12px 4px; text-align:center;">' +
+          '<button class="demo-row-del" data-i="' + i + '" title="Remove" style="width:24px; height:24px; border-radius:50%; border:1px solid #e2e8f0; background:#f1f5f9; color:#64748b; font-size:0.7rem; font-weight:700; cursor:pointer; font-family:inherit; vertical-align:middle;">&#10005;</button>' +
+        '</td>';
+      tb.appendChild(tr);
+    });
+    recalc();
+  }
+
+  function recalc(){
+    var sub = 0;
+    items.forEach(function(it){ sub += (Number(it.qty) || 0) * (Number(it.rate) || 0); });
+    var tax = gstOn ? sub * 0.18 : 0;
+    var total = Math.round(sub + tax);
+    $('demo-subtotal').textContent = money(sub);
+    $('demo-tax').textContent = money(tax);
+    $('demo-total').textContent = money(total);
+    $('demo-tax-row').style.display = gstOn ? 'flex' : 'none';
+    $('demo-gst-note').style.display = gstOn ? '' : 'none';
+  }
+
+  $('demo-items-body').addEventListener('input', function(e){
+    var t = e.target;
+    if (!t.dataset || !t.dataset.f) return;
+    var i = +t.dataset.i;
+    var f = t.dataset.f;
+    items[i][f] = t.value;
+    if (f === 'qty' || f === 'rate') {
+      var cell = t.closest('tr').querySelector('td:nth-child(6)');
+      if (cell) cell.textContent = money(items[i].qty * items[i].rate);
+    }
+    recalc();
+  });
+
+  $('demo-items-body').addEventListener('change', function(e){
+    var t = e.target;
+    if (!t.dataset || !t.dataset.f) return;
+    items[+t.dataset.i][t.dataset.f] = t.value;
+  });
+
+  $('demo-items-body').addEventListener('click', function(e){
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var i = +btn.dataset.i;
+    if (btn.classList.contains('demo-row-del')){
+      if (items.length <= 1) { alert('At least one line required'); return; }
+      items.splice(i, 1);
+    }
+    renderItems();
+  });
+
+  function addRow() {
+    items.push({ service:'', schedule:'One-time', qty:1, rate:0 });
+    renderItems();
+  }
+  $('demo-add-row').addEventListener('click', addRow);
+  $('demo-add-row2').addEventListener('click', addRow);
+
+  var titles = { invoice:'INVOICE', proforma:'PROFORMA', quotation:'QUOTATION', proposal:'PROPOSAL' };
+  var showValidFor = { quotation:true, proposal:true };
+
+  document.querySelectorAll('.demo-doc-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.demo-doc-btn').forEach(function(b){
+        b.style.background = 'transparent';
+        b.style.color = '#475569';
+        b.style.fontWeight = '500';
+        b.classList.remove('active');
+      });
+      btn.style.background = '#1e3a5f';
+      btn.style.color = '#fff';
+      btn.style.fontWeight = '600';
+      btn.classList.add('active');
+
+      docType = btn.dataset.doc;
+      $('demo-doc-title').textContent = titles[docType];
+
+      if (showValidFor[docType]){
+        $('demo-valid-row').style.display = 'flex';
+        $('demo-valid').textContent = addDaysStr(30);
+      } else {
+        $('demo-valid-row').style.display = 'none';
+      }
+    });
+  });
+
+  function setGst(on){
+    gstOn = on;
+    $('demo-gst-on').style.background = on ? '#1e3a5f' : 'transparent';
+    $('demo-gst-on').style.color = on ? '#fff' : '#475569';
+    $('demo-gst-on').style.fontWeight = on ? '600' : '500';
+    $('demo-gst-off').style.background = !on ? '#1e3a5f' : 'transparent';
+    $('demo-gst-off').style.color = !on ? '#fff' : '#475569';
+    $('demo-gst-off').style.fontWeight = !on ? '600' : '500';
+    recalc();
+  }
+  $('demo-gst-on').addEventListener('click', function(){ setGst(true); });
+  $('demo-gst-off').addEventListener('click', function(){ setGst(false); });
+
+  $('demo-print').addEventListener('click', function(){
+    var actCells = document.querySelectorAll('.demo-act-cell, .demo-act-head');
+    var toolbar = document.querySelector('.demo-toolbar');
+    actCells.forEach(function(c){ c.dataset.prev = c.style.display; c.style.display = 'none'; });
+    if (toolbar) toolbar.style.display = 'none';
+    window.print();
+    setTimeout(function(){
+      actCells.forEach(function(c){ c.style.display = c.dataset.prev || ''; });
+      if (toolbar) toolbar.style.display = '';
+    }, 500);
+  });
+
+  function openModal(){
+    var m = document.createElement('div');
+    m.style.cssText = 'position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:99999; padding:20px;';
+    m.innerHTML =
+      '<div style="background:#fff; border-radius:20px; padding:34px 30px 22px; max-width:400px; width:100%; text-align:center; box-shadow:0 30px 80px -20px rgba(15,23,42,0.4); font-family:inherit;">' +
+        '<div style="font-size:1.15rem; font-weight:700; color:#0f172a; margin-bottom:4px;">Download Document</div>' +
+        '<div style="font-size:0.82rem; color:#64748b; margin-bottom:20px;">Choose a format</div>' +
+        '<button id="demo-dl-png" style="display:flex; align-items:center; gap:14px; width:100%; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:15px 18px; margin-bottom:10px; text-align:left; cursor:pointer; font-family:inherit;">' +
+          '<div style="width:44px; height:44px; background:#f8fafc; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">&#128247;</div>' +
+          '<div><div style="font-size:0.9rem; font-weight:600; color:#0f172a;">PNG Image</div><div style="font-size:0.72rem; color:#94a3b8;">Best for WhatsApp</div></div>' +
+        '</button>' +
+        '<button id="demo-dl-pdf" style="display:flex; align-items:center; gap:14px; width:100%; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:15px 18px; margin-bottom:10px; text-align:left; cursor:pointer; font-family:inherit;">' +
+          '<div style="width:44px; height:44px; background:#f8fafc; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">&#128196;</div>' +
+          '<div><div style="font-size:0.9rem; font-weight:600; color:#0f172a;">PDF Document</div><div style="font-size:0.72rem; color:#94a3b8;">Best for email & printing</div></div>' +
+        '</button>' +
+        '<button id="demo-dl-cancel" style="background:transparent; border:none; color:#94a3b8; font-size:0.82rem; font-weight:500; padding:10px; width:100%; cursor:pointer; font-family:inherit;">Cancel</button>' +
+      '</div>';
+
+    document.body.appendChild(m);
+    m.addEventListener('click', function(e){ if (e.target === m) m.remove(); });
+    document.getElementById('demo-dl-cancel').addEventListener('click', function(){ m.remove(); });
+    document.getElementById('demo-dl-png').addEventListener('click', function(){ m.remove(); downloadAs('png'); });
+    document.getElementById('demo-dl-pdf').addEventListener('click', function(){ m.remove(); downloadAs('pdf'); });
+  }
+
+  $('demo-download').addEventListener('click', openModal);
+
+  async function downloadAs(format) {
+    var doc = $('demo-doc');
+    var actCells = document.querySelectorAll('.demo-act-cell, .demo-act-head');
+    actCells.forEach(function(c){ c.style.display = 'none'; });
+
+    try {
+      if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
+      await new Promise(function(r){ setTimeout(r, 100); });
+
+      var W = Math.round(doc.getBoundingClientRect().width);
+      var H = Math.round(doc.scrollHeight);
+
+      var canvas = await html2canvas(doc, {
+        scale: 2, backgroundColor: '#ffffff', useCORS: true, allowTaint: false, logging: false,
+        width: W, height: H, windowWidth: W, windowHeight: H, scrollX: 0, scrollY: 0, x: 0, y: 0
+      });
+
+      var PAD = 60;
+      var padded = document.createElement('canvas');
+      padded.width = canvas.width + PAD * 2;
+      padded.height = canvas.height + PAD * 2;
+      var ctx = padded.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, padded.width, padded.height);
+      ctx.drawImage(canvas, PAD, PAD);
+
+      var filename = 'pcmc-diary-' + docType + '-' + new Date().toISOString().slice(0,10);
+
+      if (format === 'png') {
+        await new Promise(function(resolve){
+          padded.toBlob(function(blob){
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.download = filename + '.png';
+            link.href = url;
+            link.click();
+            setTimeout(function(){ URL.revokeObjectURL(url); }, 3000);
+            resolve();
+          }, 'image/png', 1.0);
+        });
+      } else {
+        var jsPDF = window.jspdf.jsPDF;
+        var pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4', compress:true });
+        var pageW = pdf.internal.pageSize.getWidth();
+        var pageH = pdf.internal.pageSize.getHeight();
+        var imgData = padded.toDataURL('image/jpeg', 0.95);
+        var imgRatio = padded.height / padded.width;
+        var imgW = pageW;
+        var imgH = imgW * imgRatio;
+        if (imgH <= pageH) {
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
+        } else {
+          var remaining = imgH, y = 0;
+          while (remaining > 0) {
+            pdf.addImage(imgData, 'JPEG', 0, y, imgW, imgH);
+            remaining -= pageH;
+            if (remaining > 0) { pdf.addPage(); y = -(imgH - remaining); }
+          }
+        }
+        pdf.save(filename + '.pdf');
+      }
+    } catch(err) {
+      alert('Download failed: ' + err.message);
+    } finally {
+      actCells.forEach(function(c){ c.style.display = ''; });
+    }
+  }
+
+  $('demo-date').textContent = todayStr();
+  items = SAMPLE_ITEMS.slice();
+  renderItems();
+  setGst(false);
+
+})();
+</script>
+
+</body>
+</html>
