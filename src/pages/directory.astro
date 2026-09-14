@@ -71,16 +71,7 @@ businesses = results.flat();
       </div>
 
       <div class="filters">
-        <select id="locFilter" class="f-select">
-          <option value="all">All Locations</option>
-          {locations.map(l => <option value={l.locationName}>{l.locationName}</option>)}
-        </select>
-        <select id="sortFilter" class="f-select">
-          <option value="featured">Featured First</option>
-          <option value="rating">Top Rated</option>
-          <option value="name">Name A-Z</option>
-        </select>
-        <input type="text" id="searchInput" class="f-input" placeholder="Search…" />
+        <input type="text" id="searchInput" class="f-input" placeholder="Search business, service, or area…" />
         <button id="nearMeBtn" class="near-btn">
           <i class="fa-solid fa-location-crosshairs"></i> Near Me
         </button>
@@ -105,7 +96,6 @@ businesses = results.flat();
   const state = {
     search: '',
     category: 'all',
-    location: 'all',
     sort: 'featured',
     page: 1,
     filtered: [...ALL],
@@ -139,6 +129,16 @@ businesses = results.flat();
     if (km < 1) return `${Math.round(km * 1000)} m`;
     if (km < 10) return `${km.toFixed(1)} km`;
     return `${Math.round(km)} km`;
+  }
+
+  // ============ SCROLL HELPER ============
+  // Landing on first listing — NOT scrolling to page top
+  function scrollToFirstListing() {
+    const grid = document.getElementById('bizGrid');
+    if (!grid) return;
+    const rect = grid.getBoundingClientRect();
+    const targetY = rect.top + window.pageYOffset - 12;
+    window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
   }
 
   // ============ HELPERS ============
@@ -276,11 +276,6 @@ businesses = results.flat();
       list = list.filter(b => b.categoryId === state.category);
     }
 
-    // Location filter (skip when Near Me is on)
-    if (!state.nearMe && state.location !== 'all') {
-      list = list.filter(b => (b.location || '') === state.location || (b.serviceArea || '').indexOf(state.location) !== -1);
-    }
-
     // Search filter
     if (state.search) {
       const q = state.search.toLowerCase();
@@ -344,7 +339,11 @@ businesses = results.flat();
     const rcEl = document.getElementById('resultsCount');
     if (state.nearMe) {
       const withCoords = state.filtered.filter(b => b._dist != null).length;
-      rcEl.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> ${total} sorted by distance (${withCoords} with GPS)`;
+      if (withCoords === 0) {
+        rcEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> GPS data unavailable — showing ${total} businesses`;
+      } else {
+        rcEl.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> ${total} sorted by distance`;
+      }
     } else {
       rcEl.innerHTML = `<i class="fa-solid fa-store"></i> ${total} business${total !== 1 ? 'es' : ''}`;
     }
@@ -373,7 +372,7 @@ businesses = results.flat();
       btn.addEventListener('click', () => {
         state.page = parseInt(btn.dataset.page);
         render();
-        window.scrollTo({ top: 200, behavior: 'smooth' });
+        scrollToFirstListing();
       });
     });
   }
@@ -385,61 +384,47 @@ businesses = results.flat();
     document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.category = btn.dataset.cat;
-    applyFilters();
-    window.scrollTo({ top: 200, behavior: 'smooth' });
-  });
 
-  document.getElementById('locFilter').addEventListener('change', e => {
-    state.location = e.target.value;
-    if (state.location !== 'all' && state.nearMe) {
-      state.nearMe = false;
-      state.userLocation = null;
-      const nb = document.getElementById('nearMeBtn');
-      nb.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
-      nb.classList.remove('active');
-    }
-    applyFilters();
-  });
+    // Auto-scroll active pill into view
+    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
-  document.getElementById('sortFilter').addEventListener('change', e => {
-    state.sort = e.target.value;
-    if (state.nearMe) {
-      state.nearMe = false;
-      state.userLocation = null;
-      const nb = document.getElementById('nearMeBtn');
-      nb.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
-      nb.classList.remove('active');
-    }
     applyFilters();
+    // Land on first listing, NOT page top
+    setTimeout(scrollToFirstListing, 50);
   });
 
   document.getElementById('searchInput').addEventListener('input', e => {
     clearTimeout(window._t);
-    window._t = setTimeout(() => { state.search = e.target.value; applyFilters(); }, 250);
+    window._t = setTimeout(() => {
+      state.search = e.target.value;
+      applyFilters();
+    }, 250);
   });
 
   // ============ NEAR ME ============
   document.getElementById('nearMeBtn').addEventListener('click', () => {
     const btn = document.getElementById('nearMeBtn');
 
+    // OFF
     if (state.nearMe) {
       state.nearMe = false;
       state.userLocation = null;
       btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
       btn.classList.remove('active');
-      state.category = 'all';
-      state.location = 'all';
-      state.search = '';
-      document.getElementById('locFilter').value = 'all';
-      document.getElementById('searchInput').value = '';
-      document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-      document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
       applyFilters();
       return;
     }
 
+    // Check GPS support
     if (!navigator.geolocation) {
       alert('Your browser does not support location.');
+      return;
+    }
+
+    // Pre-check: do any businesses have GPS data?
+    const withGps = ALL.filter(b => getLatLng(b)).length;
+    if (withGps === 0) {
+      alert('Near Me is unavailable — business GPS data is being updated.\n\nPlease use the search box to find businesses by area name (e.g. "Wakad", "Nigdi").');
       return;
     }
 
@@ -458,26 +443,27 @@ businesses = results.flat();
 
         state.userLocation = { lat, lng };
         state.nearMe = true;
-
         state.category = 'all';
-        state.location = 'all';
         state.search = '';
-        document.getElementById('locFilter').value = 'all';
         document.getElementById('searchInput').value = '';
         document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
+        const allPill = document.querySelector('.cat-pill[data-cat="all"]');
+        if (allPill) {
+          allPill.classList.add('active');
+          allPill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
 
         btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me (ON)';
         btn.classList.add('active');
 
         applyFilters();
-        window.scrollTo({ top: 200, behavior: 'smooth' });
+        setTimeout(scrollToFirstListing, 50);
       },
       (err) => {
         btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Near Me';
         btn.classList.remove('active');
         let msg = 'Could not get your location.';
-        if (err.code === 1) msg = 'Location permission denied. Please enable location access in your browser.';
+        if (err.code === 1) msg = 'Location permission denied.\n\nPlease enable location access in your browser settings and try again.';
         if (err.code === 2) msg = 'Location unavailable. Try again.';
         if (err.code === 3) msg = 'Location request timed out. Try again.';
         alert(msg);
@@ -491,36 +477,119 @@ businesses = results.flat();
 </script>
 
 <style is:global>
-/* CSS unchanged — same as before */
 .dir-page { background: #f8fafc; min-height: 60vh; padding: 32px 0 60px; }
 .dir-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-.dir-head { padding: 8px 0 18px; border-bottom: 3px solid #dc2626; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }
+.dir-head { padding: 8px 0 18px; border-bottom: 3px solid #dc2626; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }
 .dir-head h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin: 0 8px 0 0; line-height: 1.2; letter-spacing: -0.5px; }
 .dir-head h1 span { color: #dc2626; }
 .dir-head p { color: #64748b; font-size: 14px; font-weight: 500; padding-bottom: 2px; }
 
-.cat-pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
-.cat-pill { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 6px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.2s; min-height: 72px; font-family: inherit; text-align: center; }
+/* ════════ CATEGORY PILLS — HORIZONTAL SCROLL ════════ */
+.cat-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+.cat-pills::-webkit-scrollbar { display: none; }
+
+.cat-pill {
+  flex: 0 0 auto;
+  min-width: 90px;
+  height: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  text-align: center;
+  scroll-snap-align: start;
+}
 .cat-pill:hover { border-color: #dc2626; background: #fef2f2; transform: translateY(-2px); }
 .cat-pill.active { background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #dc2626; color: #fff; }
-.cp-icon { font-size: 18px; line-height: 1; color: #64748b; margin-bottom: 6px; }
+.cp-icon { font-size: 17px; line-height: 1; color: #64748b; margin-bottom: 5px; }
 .cat-pill.active .cp-icon { color: #fff; }
 .cat-pill:hover .cp-icon { color: #dc2626; }
 .cat-pill.active:hover .cp-icon { color: #fff; }
-.cp-name { font-size: 11.5px; font-weight: 700; color: #334155; line-height: 1.2; }
+.cp-name { font-size: 11px; font-weight: 700; color: #334155; line-height: 1.15; }
 .cat-pill.active .cp-name { color: #fff; }
 
-.filters { display: flex; flex-wrap: wrap; margin-bottom: 24px; padding: 14px 0; border-bottom: 1px solid #e2e8f0; align-items: center; }
-.f-select, .f-input { padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13.5px; background: #fff; flex: 1; min-width: 130px; font-family: inherit; color: #334155; font-weight: 600; outline: none; margin-right: 10px; margin-bottom: 6px; }
-.f-select:focus, .f-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
-.near-btn { background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border: 0; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; white-space: nowrap; font-family: inherit; margin-right: 10px; margin-bottom: 6px; }
-.near-btn i { margin-right: 6px; font-size: 12px; }
-.near-btn:hover { transform: translateY(-1px); }
-.near-btn.active { background: linear-gradient(135deg, #059669, #047857); }
-.results-count { font-size: 12.5px; color: #64748b; font-weight: 700; margin-left: auto; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; white-space: nowrap; display: inline-flex; align-items: center; }
-.results-count i { color: #dc2626; margin-right: 7px; }
+/* ════════ FILTERS — SEARCH + NEAR ME ONLY ════════ */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+}
+.f-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 11px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fff;
+  font-family: inherit;
+  color: #334155;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.2s;
+}
+.f-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+.f-input::placeholder { color: #94a3b8; font-weight: 500; }
 
+.near-btn {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  border: 0;
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.near-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 16px -8px rgba(220,38,38,0.5); }
+.near-btn.active { background: linear-gradient(135deg, #059669, #047857); }
+.near-btn i { font-size: 12px; }
+
+.results-count {
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 700;
+  padding: 9px 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.results-count i { color: #dc2626; }
+
+/* ════════ CARDS (UNCHANGED) ════════ */
 .biz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 
 .biz-grid .biz-card {
@@ -614,24 +683,68 @@ businesses = results.flat();
 .dir-page .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
 .dir-page .pagination span { color: #94a3b8; padding: 8px 4px; font-weight: 700; }
 
+/* ════════ MOBILE REFINEMENTS ════════ */
 @media (max-width: 768px) {
-  .dir-head { flex-direction: column; align-items: flex-start; }
-  .dir-head h1 { font-size: 22px; margin-bottom: 4px; }
-  .cat-pills { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .cat-pill { min-height: 62px; padding: 8px 4px; }
-  .cp-icon { font-size: 16px; margin-bottom: 4px; }
-  .cp-name { font-size: 10.5px; }
-  .filters { flex-direction: column; align-items: stretch; }
-  .f-select, .f-input { width: 100%; margin-right: 0; }
-  .near-btn { justify-content: center; margin-right: 0; }
-  .results-count { margin-left: 0; justify-content: center; white-space: normal; text-align: center; }
+  .dir-page { padding: 20px 0 48px; }
+  .dir-container { padding: 0 14px; }
+
+  .dir-head { flex-direction: column; align-items: flex-start; margin-bottom: 14px; padding: 4px 0 12px; }
+  .dir-head h1 { font-size: 20px; margin-bottom: 2px; letter-spacing: -0.3px; }
+  .dir-head p { font-size: 12.5px; }
+
+  /* Category pills — compact horizontal scroll */
+  .cat-pills {
+    gap: 6px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+  }
+  .cat-pill {
+    min-width: 74px;
+    height: 58px;
+    padding: 6px 8px;
+    border-radius: 9px;
+  }
+  .cp-icon { font-size: 15px; margin-bottom: 3px; }
+  .cp-name { font-size: 10px; line-height: 1.1; }
+
+  /* Filters */
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 0;
+    margin-bottom: 14px;
+  }
+  .f-input {
+    width: 100%;
+    min-width: 0;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    border-radius: 10px;
+  }
+  .near-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 16px;
+    font-size: 13px;
+  }
+  .results-count {
+    margin-left: 0;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  /* Cards */
   .biz-grid { grid-template-columns: 1fr; gap: 14px; }
   .biz-grid .biz-card { padding: 18px 18px 0; }
   .biz-grid .card-stats { padding: 12px 14px; }
   .biz-grid .stat-val { font-size: 13px; }
 }
+
 @media (max-width: 400px) {
-  .cat-pills { grid-template-columns: repeat(2, 1fr); }
   .biz-grid .card-stats { grid-template-columns: 1fr; }
 }
 </style>
