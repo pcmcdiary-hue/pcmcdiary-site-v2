@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const CDN = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data';
-const LOGO = 'https://blogger.googleusercontent.com/img/a/AVvXsEi2G0UUWPHL9444BBONEoAfhRp3pTKc3gSt0iNdnlZ6nPT6e0EuamQAiA7TIlfqBiuKXsb92v7s9HpUlNY0JTlhWUGorlwXkpdSs1A6dkQ6gM4r6Y58Ymgnm8XNBKzQMvfWrUVqtp5LOYUIoz45nN-HwpeVnIwtBNJgkWMtP2XtvwXacyLjtPYuBwAQxO0=s1600';
 
 const catMeta = {
   'Food & Dining':              { icon: 'fa-utensils',            bg: 'linear-gradient(135deg,#fee2e2,#fecaca)', color: '#c62828' },
@@ -120,46 +119,70 @@ const mahiti = [
 
       <!-- ═══════════ HERO ═══════════ -->
       <section class="hero-card">
-        <img src={LOGO} alt="PCMC Diary" class="hero-logo" />
-        <div class="hero-eyebrow">
-          <span class="pulse-dot"></span>
-          Trusted by 10,000+ locals in PCMC
-        </div>
-        <h1 class="hero-h1">Exclusive Deals &amp; Local Savings</h1>
-        <p class="hero-p">Your friendly neighbourhood guide to smart savings across {locations.length} PCMC areas.</p>
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-grid-bg"></div>
 
-        <form class="hero-search" action="/directory" method="get">
-          <input type="search" name="q" placeholder="Search restaurants, gyms, doctors, CA…" />
-          <button type="submit">
-            Search <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </form>
+        <div class="hero-inner">
+          <div class="hero-brand">
+            <span class="brand-text">PCMC</span>
+            <span class="brand-text brand-accent">Diary</span>
+            <span class="brand-dot">.</span>
+          </div>
 
-        <div class="hero-quick">
-          <span>Popular:</span>
-          <a href="/category/CAT001">Food</a>
-          <a href="/category/CAT005">Fitness</a>
-          <a href="/category/CAT003">Doctors</a>
-          <a href="/category/CAT004">Salons</a>
-          <a href="/category/CAT002">Grocery</a>
-        </div>
+          <div class="hero-eyebrow">
+            <span class="pulse-dot"></span>
+            Trusted by 10,000+ locals in Pimpri-Chinchwad
+          </div>
 
-        <div class="trust-strip">
-          <div class="trust-item">
-            <div class="trust-num">{categories.length}<span>+</span></div>
-            <div class="trust-lbl">Categories</div>
+          <h1 class="hero-h1">
+            Exclusive Deals &amp;<br>
+            <span class="hero-h1-accent">Local Savings</span>
+          </h1>
+
+          <p class="hero-p">
+            Your friendly neighbourhood guide to smart savings across {locations.length} PCMC areas.
+          </p>
+
+          <form class="hero-search" action="/directory" method="get">
+            <div class="hero-search-icon">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <input type="search" name="q" placeholder="Search restaurants, gyms, doctors, CA…" />
+            <button type="submit">
+              Search <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+
+          <div class="hero-quick">
+            <span>Popular:</span>
+            <a href="/category/CAT001">Food</a>
+            <a href="/category/CAT005">Fitness</a>
+            <a href="/category/CAT003">Doctors</a>
+            <a href="/category/CAT004">Salons</a>
+            <a href="/category/CAT002">Grocery</a>
           </div>
-          <div class="trust-item">
-            <div class="trust-num">{locations.length}</div>
-            <div class="trust-lbl">Areas</div>
-          </div>
-          <div class="trust-item">
-            <div class="trust-num">500<span>+</span></div>
-            <div class="trust-lbl">Listed</div>
-          </div>
-          <div class="trust-item">
-            <div class="trust-num">21</div>
-            <div class="trust-lbl">Experts</div>
+
+          <div class="trust-strip">
+            <div class="trust-item">
+              <div class="trust-num">{categories.length}<span>+</span></div>
+              <div class="trust-lbl">Categories</div>
+            </div>
+            <div class="trust-div"></div>
+            <div class="trust-item">
+              <div class="trust-num">{locations.length}</div>
+              <div class="trust-lbl">Areas</div>
+            </div>
+            <div class="trust-div"></div>
+            <div class="trust-item">
+              <div class="trust-num">500<span>+</span></div>
+              <div class="trust-lbl">Listed</div>
+            </div>
+            <div class="trust-div"></div>
+            <div class="trust-item">
+              <div class="trust-num">21</div>
+              <div class="trust-lbl">Experts</div>
+            </div>
           </div>
         </div>
       </section>
@@ -439,60 +462,111 @@ body {
 
 /* ═══════════ HERO ═══════════ */
 .hero-card {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #7f1d1d 100%);
-  border-radius: 28px;
-  padding: 48px 32px 40px;
-  text-align: center;
   position: relative;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 0%, rgba(220,38,38,0.35), transparent 55%),
+    radial-gradient(ellipse 70% 60% at 90% 100%, rgba(217,119,6,0.25), transparent 55%),
+    linear-gradient(135deg, #0a0f1e 0%, #1a1f35 50%, #2a1530 100%);
+  border-radius: 28px;
+  padding: 72px 32px 48px;
+  text-align: center;
   overflow: hidden;
   margin-bottom: 24px;
+  box-shadow:
+    0 32px 72px -28px rgba(10,15,30,0.5),
+    0 12px 32px -12px rgba(220,38,38,0.15);
+  isolation: isolate;
 }
-.hero-card::before {
-  content: '';
-  position: absolute;
-  top: -50%; right: -15%;
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(217,119,6,0.28), transparent 60%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-.hero-card::after {
-  content: '';
-  position: absolute;
-  bottom: -60%; left: -12%;
-  width: 450px; height: 450px;
-  background: radial-gradient(circle, rgba(220,38,38,0.35), transparent 60%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-.hero-card > * { position: relative; z-index: 2; }
 
-.hero-logo {
-  height: 68px;
-  width: auto;
-  max-width: 260px;
-  object-fit: contain;
-  background: rgba(255,255,255,0.98);
-  padding: 12px 20px;
-  border-radius: 16px;
+.hero-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, #000 30%, transparent 80%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-orb-1 {
+  top: -120px; right: -80px;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(220,38,38,0.55), transparent 70%);
+}
+.hero-orb-2 {
+  bottom: -140px; left: -60px;
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(217,119,6,0.4), transparent 70%);
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── Brand Name ── */
+.hero-brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
   margin-bottom: 22px;
-  box-shadow: 0 16px 40px -12px rgba(0,0,0,0.55);
-  display: inline-block;
+  padding: 6px 20px 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  letter-spacing: -1.2px;
+  line-height: 1;
+}
+.brand-text {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1.5px;
+}
+.brand-accent {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 55%, #d97706 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: italic;
+  padding-right: 2px;
+}
+.brand-dot {
+  font-size: 36px;
+  font-weight: 800;
+  color: #dc2626;
+  line-height: 0.7;
+  margin-left: -1px;
 }
 
+/* ── Eyebrow pill ── */
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  padding: 7px 16px;
+  padding: 8px 18px;
   border-radius: 50px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  font-size: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(16px);
+  font-size: 12.5px;
   font-weight: 700;
   color: rgba(255,255,255,0.9);
-  margin-bottom: 20px;
-  letter-spacing: 0.4px;
+  margin-bottom: 26px;
+  letter-spacing: 0.3px;
 }
 .pulse-dot {
   width: 7px; height: 7px;
@@ -507,37 +581,67 @@ body {
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 }
 
+/* ── Heading ── */
 .hero-h1 {
-  font-size: 46px;
+  font-size: 58px;
   font-weight: 800;
   color: #fff;
-  letter-spacing: -1.6px;
-  line-height: 1.08;
-  margin: 0 0 14px;
+  letter-spacing: -2.2px;
+  line-height: 1.02;
+  margin: 0 0 20px;
 }
-.hero-p {
-  font-size: 16px;
-  color: rgba(255,255,255,0.72);
-  line-height: 1.6;
-  margin: 0 auto 32px;
-  max-width: 600px;
+.hero-h1-accent {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 45%, #d97706 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: italic;
+  padding-right: 6px;
 }
 
+.hero-p {
+  font-size: 17px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  margin: 0 auto 36px;
+  max-width: 580px;
+  font-weight: 400;
+}
+
+/* ── Search ── */
 .hero-search {
   display: flex;
   align-items: center;
-  gap: 8px;
-  max-width: 680px;
-  margin: 0 auto 20px;
-  padding: 8px 8px 8px 22px;
+  gap: 6px;
+  max-width: 720px;
+  margin: 0 auto 24px;
+  padding: 8px 8px 8px 18px;
   background: rgba(255,255,255,0.98);
-  border-radius: 18px;
-  box-shadow: 0 20px 50px -16px rgba(0,0,0,0.55), 0 6px 20px -6px rgba(0,0,0,0.35);
+  border-radius: 20px;
+  box-shadow:
+    0 28px 60px -20px rgba(0,0,0,0.6),
+    0 10px 24px -8px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  position: relative;
+  transition: all 0.3s;
+}
+.hero-search:focus-within {
+  box-shadow:
+    0 28px 60px -20px rgba(0,0,0,0.6),
+    0 10px 24px -8px rgba(0,0,0,0.4),
+    0 0 0 4px rgba(220,38,38,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+.hero-search-icon {
+  color: #94a3b8;
+  font-size: 15px;
+  padding-left: 6px;
+  flex-shrink: 0;
 }
 .hero-search input {
   flex: 1;
   border: 0;
-  padding: 14px 4px;
+  padding: 15px 6px;
   font-size: 15.5px;
   font-family: inherit;
   font-weight: 500;
@@ -551,23 +655,28 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 28px;
+  padding: 14px 26px;
   border: 0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #dc2626, #7f1d1d);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   color: #fff;
   font-family: inherit;
   font-size: 14.5px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 8px 20px -6px rgba(220,38,38,0.5);
+  box-shadow: 0 10px 24px -8px rgba(220,38,38,0.6);
   white-space: nowrap;
+  letter-spacing: -0.1px;
 }
-.hero-search button:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(220,38,38,0.6); }
+.hero-search button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px -8px rgba(220,38,38,0.7);
+}
 .hero-search button i { font-size: 12px; transition: transform 0.2s; }
 .hero-search button:hover i { transform: translateX(3px); }
 
+/* ── Quick links ── */
 .hero-quick {
   display: flex;
   align-items: center;
@@ -575,40 +684,45 @@ body {
   flex-wrap: wrap;
   gap: 8px;
   font-size: 13px;
-  color: rgba(255,255,255,0.55);
-  margin-bottom: 36px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 40px;
 }
 .hero-quick span { font-weight: 600; }
 .hero-quick a {
   color: rgba(255,255,255,0.85);
   text-decoration: none;
-  padding: 6px 14px;
+  padding: 7px 15px;
   border-radius: 50px;
   background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.12);
+  font-weight: 700;
   font-size: 12.5px;
   transition: all 0.2s;
+  backdrop-filter: blur(10px);
 }
 .hero-quick a:hover {
   background: rgba(255,255,255,0.14);
-  border-color: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.3);
   text-decoration: none;
   transform: translateY(-1px);
+  color: #fff;
 }
 
+/* ── Trust strip ── */
 .trust-strip {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 56px;
-  padding-top: 32px;
+  gap: 24px;
+  padding: 28px 24px 4px;
   border-top: 1px solid rgba(255,255,255,0.1);
   flex-wrap: wrap;
+  max-width: 720px;
+  margin: 0 auto;
 }
-.trust-item { text-align: center; }
+.trust-item { text-align: center; min-width: 80px; }
 .trust-num {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -1.2px;
@@ -619,9 +733,14 @@ body {
   font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.45);
   font-weight: 700;
   margin-top: 8px;
+}
+.trust-div {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.12);
 }
 
 /* ═══════════ WIDGET BOX ═══════════ */
@@ -1376,7 +1495,7 @@ body {
 
 /* ═══════════ RESPONSIVE ═══════════ */
 @media (max-width: 1024px) {
-  .hero-h1 { font-size: 38px; letter-spacing: -1.2px; }
+  .hero-h1 { font-size: 46px; letter-spacing: -1.6px; }
   .ex-featured { grid-template-columns: 1fr; gap: 28px; padding: 32px; }
   .ex-feat-right { flex-direction: row; }
   .ex-stat { flex: 1; }
@@ -1389,40 +1508,57 @@ body {
   .home-container { padding: 0 12px; }
   .widget-box { padding: 18px 16px 20px; border-radius: 18px; margin-bottom: 16px; }
 
-  .hero-card { padding: 32px 18px 28px; border-radius: 20px; }
-  .hero-logo { height: 44px; padding: 8px 14px; border-radius: 12px; margin-bottom: 16px; }
-  .hero-eyebrow { font-size: 10.5px; padding: 5px 12px; margin-bottom: 16px; }
-  .hero-h1 { font-size: 28px; letter-spacing: -0.8px; margin-bottom: 10px; }
-  .hero-p { font-size: 13.5px; margin-bottom: 22px; }
-  .hero-search { flex-direction: column; padding: 10px; gap: 8px; border-radius: 14px; }
-  .hero-search input { background: #f8fafc; border-radius: 11px; padding: 13px 15px; width: 100%; font-size: 14px; }
-  .hero-search button { width: 100%; justify-content: center; padding: 14px; }
-  .hero-quick { margin-bottom: 24px; gap: 6px; }
+  /* HERO */
+  .hero-card { padding: 40px 18px 32px; border-radius: 22px; }
+  .hero-brand { padding: 5px 14px 6px; border-radius: 12px; margin-bottom: 18px; }
+  .brand-text { font-size: 22px; letter-spacing: -0.8px; }
+  .brand-dot { font-size: 26px; }
+  .hero-eyebrow { font-size: 10.5px; padding: 6px 14px; margin-bottom: 18px; }
+  .hero-h1 { font-size: 32px; letter-spacing: -1.1px; margin-bottom: 14px; }
+  .hero-p { font-size: 13.5px; margin-bottom: 24px; }
+  .hero-search { flex-direction: column; padding: 10px; gap: 8px; border-radius: 16px; }
+  .hero-search-icon { display: none; }
+  .hero-search input {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 13px 16px;
+    width: 100%;
+    font-size: 14.5px;
+  }
+  .hero-search button { width: 100%; justify-content: center; padding: 14px; border-radius: 12px; }
+  .hero-quick { margin-bottom: 26px; gap: 6px; }
   .hero-quick a { padding: 5px 11px; font-size: 11.5px; }
-  .trust-strip { gap: 24px; padding-top: 22px; }
+  .trust-strip { gap: 16px; padding: 22px 8px 2px; }
   .trust-num { font-size: 22px; }
-  .trust-lbl { font-size: 9.5px; letter-spacing: 1px; margin-top: 6px; }
+  .trust-lbl { font-size: 9.5px; margin-top: 6px; }
+  .trust-div { display: none; }
+  .trust-item { min-width: 60px; }
 
+  /* BOX HEAD */
   .box-head { margin-bottom: 16px; padding-bottom: 12px; }
   .box-icon { width: 36px; height: 36px; font-size: 14px; border-radius: 10px; }
   .box-title { font-size: 17px; }
   .box-badge { font-size: 9.5px; padding: 4px 10px; }
   .box-link { font-size: 11.5px; padding: 7px 14px; }
 
+  /* DEALS */
   .deal-card { min-width: 140px; padding: 16px 10px 12px; }
   .deal-icon { font-size: 28px; }
   .deal-discount { font-size: 18px; }
   .deal-desc { font-size: 11px; }
 
+  /* LOCATIONS */
   .loc-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .loc-card { padding: 14px 6px 12px; border-radius: 12px 3px 12px 3px; }
   .loc-name { font-size: 12px; }
 
+  /* CATEGORIES */
   .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 10px 6px; }
   .cat-card { padding: 10px 3px 8px; border-radius: 14px; }
   .cat-bg { width: 42px; height: 42px; font-size: 18px; margin-bottom: 6px; }
   .cat-name { font-size: 10px; }
 
+  /* EXPERT */
   .ex-featured { padding: 22px; border-radius: 18px; gap: 18px; }
   .ex-feat-title { font-size: 22px; letter-spacing: -0.5px; }
   .ex-feat-desc { font-size: 13px; margin-bottom: 16px; }
@@ -1434,6 +1570,7 @@ body {
   .ex-grid { grid-template-columns: 1fr; gap: 10px; }
   .ex-card { padding: 16px; }
 
+  /* REAL ESTATE */
   .re-promo { padding: 30px 20px; border-radius: 18px; }
   .re-title { font-size: 24px; letter-spacing: -0.6px; }
   .re-desc { font-size: 13px; margin-bottom: 20px; }
@@ -1445,12 +1582,14 @@ body {
   .re-card-title { font-size: 13px; }
   .re-card-desc { font-size: 12px; }
 
+  /* MAHITIPURNA */
   .mahiti-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .mahiti-card { padding: 14px 8px 12px; border-radius: 14px 4px 14px 4px; }
   .mahiti-icon { font-size: 24px; margin-bottom: 6px; }
   .mahiti-name { font-size: 12px; }
   .mahiti-desc { font-size: 10px; }
 
+  /* FINAL */
   .final-cta { padding: 44px 22px 40px; border-radius: 20px; }
   .final-cta h2 { font-size: 26px; letter-spacing: -0.7px; }
   .final-cta p { font-size: 13.5px; margin-bottom: 24px; }
@@ -1459,8 +1598,9 @@ body {
 }
 
 @media (max-width: 400px) {
-  .hero-h1 { font-size: 23px; }
-  .hero-logo { height: 38px; }
+  .hero-h1 { font-size: 26px; }
+  .brand-text { font-size: 19px; }
+  .brand-dot { font-size: 22px; }
   .loc-grid { grid-template-columns: repeat(2, 1fr); }
   .cat-grid { grid-template-columns: repeat(4, 1fr); }
   .trust-num { font-size: 20px; }
