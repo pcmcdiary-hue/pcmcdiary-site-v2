@@ -82,7 +82,7 @@ try {
 const deals = [
   { badge: '🔥 HOT',  icon: 'fa-pizza-slice',   discount: '30% OFF', desc: 'Pizza & Burgers', code: 'PIZZA30',   theme: 'hot'  },
   { badge: '⭐ BEST', icon: 'fa-mug-saucer',    discount: 'BUY 1 GET 1', desc: 'Coffee & Donuts', code: 'BOGO2024', theme: 'bogo' },
-  { badge: '🎁 FREE', icon: 'fa-utensils',      discount: 'FREE LUNCH', desc: 'With Main Course', code: 'LUNCHFREE', theme: 'free' },
+  { badge: '🎁 FREE', icon: 'fa-utensils',      discount: 'FREE LUNCH', desc: 'with Purchase of Main Course', code: 'LUNCHFREE', theme: 'free' },
   { badge: '⚡ FLASH', icon: 'fa-cart-shopping', discount: '50% OFF', desc: 'Limited Time!', code: 'FLASH50', theme: 'flash' },
   { badge: '🎉 COMBO', icon: 'fa-burger',       discount: 'MEAL DEAL', desc: '2 Meals + Drink', code: 'MEALDEAL', theme: 'combo' },
   { badge: '🎁 FREE', icon: 'fa-gift',          discount: 'FREE GIFT', desc: 'Orders ₹499+', code: 'GIFTGIFT', theme: 'gift' },
@@ -91,12 +91,12 @@ const deals = [
 ];
 
 const experts = [
-  { name: 'Dr. Saala', cat: 'Health', icon: 'fa-heart-pulse', grad: 'linear-gradient(135deg,#ef4444,#b91c1c)', sample: '5 early signs of diabetes you should not ignore', slug: 'dr-saala', readers: '8.4k' },
-  { name: 'Arthik Saala', cat: 'Finance', icon: 'fa-coins', grad: 'linear-gradient(135deg,#10b981,#047857)', sample: 'How to save ₹46,800 tax this year (legally)', slug: 'arthik-saala', readers: '6.2k' },
-  { name: 'Vastu Saala', cat: 'Vastu', icon: 'fa-compass', grad: 'linear-gradient(135deg,#8b5cf6,#5b21b6)', sample: 'Kitchen direction: why it affects your relationships', slug: 'vastu-saala', readers: '5.1k' },
-  { name: 'Fit Saala', cat: 'Fitness', icon: 'fa-dumbbell', grad: 'linear-gradient(135deg,#f97316,#c2410c)', sample: 'Lose 5 kg in 8 weeks — without giving up roti', slug: 'fit-saala', readers: '7.3k' },
-  { name: 'Kanoon Saala', cat: 'Legal', icon: 'fa-scale-balanced', grad: 'linear-gradient(135deg,#334155,#0f172a)', sample: 'Rent agreement: 7 clauses you must check', slug: 'kanoon-saala', readers: '4.8k' },
-  { name: 'Rashi Saala', cat: 'Astrology', icon: 'fa-star', grad: 'linear-gradient(135deg,#a855f7,#7c3aed)', sample: 'Your weekly rashi phal — career & health', slug: 'rashi-saala', readers: '9.1k' }
+  { name: 'Dr. Advisor', cat: 'Health', icon: 'fa-heart-pulse', grad: 'linear-gradient(135deg,#ef4444,#b91c1c)', sample: '5 early signs of diabetes you should not ignore', slug: 'dr-advisor', readers: '8.4k' },
+  { name: 'Arthik Advisor', cat: 'Finance', icon: 'fa-coins', grad: 'linear-gradient(135deg,#10b981,#047857)', sample: 'How to save ₹46,800 in taxes this year (legally)', slug: 'arthik-advisor', readers: '6.2k' },
+  { name: 'Vastu Advisor', cat: 'Vastu', icon: 'fa-compass', grad: 'linear-gradient(135deg,#8b5cf6,#5b21b6)', sample: 'Kitchen direction: why it affects your relationships', slug: 'vastu-advisor', readers: '5.1k' },
+  { name: 'Fit Advisor', cat: 'Fitness', icon: 'fa-dumbbell', grad: 'linear-gradient(135deg,#f97316,#c2410c)', sample: 'Lose 5 kg in 8 weeks — without giving up roti', slug: 'fit-advisor', readers: '7.3k' },
+  { name: 'Kanoon Advisor', cat: 'Legal', icon: 'fa-scale-balanced', grad: 'linear-gradient(135deg,#334155,#0f172a)', sample: 'Rent agreement: 7 clauses you must check', slug: 'kanoon-advisor', readers: '4.8k' },
+  { name: 'Rashi Advisor', cat: 'Astrology', icon: 'fa-star', grad: 'linear-gradient(135deg,#a855f7,#7c3aed)', sample: 'Your weekly rashi phal — career & health', slug: 'rashi-advisor', readers: '9.1k' }
 ];
 
 const mahiti = [
@@ -106,9 +106,9 @@ const mahiti = [
   { icon: 'fa-coins',     color: '#2e7d32', title: 'आर्थिक सल्ला',          desc: 'आर्थिक मार्गदर्शन' },
   { icon: 'fa-briefcase', color: '#6a1b9a', title: 'रोजगार संधी',           desc: 'नोकरी व करिअर' },
   { icon: 'fa-trophy',    color: '#bf360c', title: 'स्पर्धा व बक्षिसे',     desc: 'स्पर्धा, बक्षिसे' },
-  { icon: 'fa-female',    color: '#d81b60', title: 'महिलांसाठी खास',        desc: 'स्त्रीयांसाठी उपयुक्त' },
+  { icon: 'fa-female',    color: '#d81b60', title: 'महिलांसाठी खास',        desc: 'स्त्रियांसाठी उपयुक्त' },
   { icon: 'fa-child',     color: '#f57c00', title: 'लहान मुलांसाठी खास',    desc: 'खास उपक्रम' },
-  { icon: 'fa-book-open', color: '#1565c0', title: 'इतर मार्गदर्शन',        desc: 'विविध विषय' }
+  { icon: 'fa-book-open', color: '#1565c0', title: 'इतर मार्गदर्शन',        desc: 'इतर विविध विषय' }
 ];
 ---
 
@@ -257,14 +257,14 @@ const mahiti = [
         </div>
       </section>
 
-      <!-- ═══════════ EXPERT SALLA ═══════════ -->
+      <!-- ═══════════ EXPERT ADVICE ═══════════ -->
       <section class="widget-box section-expert">
         <div class="box-head">
           <div class="box-head-left">
             <span class="box-icon icon-gold"><i class="fa-solid fa-crown"></i></span>
-            <span class="box-title">PCMC <em>Expert Salla</em></span>
+            <span class="box-title">PCMC <em>Expert Advice</em></span>
           </div>
-          <a href="/expert-salla" class="box-link link-gold">All Experts <i class="fa-solid fa-arrow-right"></i></a>
+          <a href="/expert-advice" class="box-link link-gold">All Experts <i class="fa-solid fa-arrow-right"></i></a>
         </div>
 
         <div class="ex-featured">
@@ -273,14 +273,14 @@ const mahiti = [
               <i class="fa-solid fa-crown"></i>
               Column of the month
             </div>
-            <h3 class="ex-feat-title">Dr. Saala — <em>Your weekly health companion</em></h3>
-            <p class="ex-feat-desc">Practical medical advice for PCMC families. Seasonal tips, home remedies, when to see a doctor &amp; how to read reports — in plain language.</p>
+            <h3 class="ex-feat-title">Dr. Advisor — <em>Your weekly health companion</em></h3>
+            <p class="ex-feat-desc">Practical medical advice for PCMC families. Get seasonal tips, home remedies, guidance on when to see a doctor, and report explanations — in plain language.</p>
             <div class="ex-feat-meta">
               <span><i class="fa-solid fa-calendar"></i> Weekly</span>
               <span><i class="fa-solid fa-eye"></i> 8,400+ readers</span>
               <span><i class="fa-solid fa-user-doctor"></i> Verified MD</span>
             </div>
-            <a href="/search/label/dr-saala" class="ex-feat-btn">
+            <a href="/search/label/dr-advisor" class="ex-feat-btn">
               <i class="fa-solid fa-book-open"></i>
               Read latest article
             </a>
@@ -397,7 +397,7 @@ const mahiti = [
         </div>
         <div class="mahiti-grid">
           {mahiti.map(m => (
-            <a href="/expert-salla" class="mahiti-card">
+            <a href="/expert-advice" class="mahiti-card">
               <span class="mahiti-icon" style={`color: ${m.color};`}><i class={`fa-solid ${m.icon}`}></i></span>
               <span class="mahiti-name">{m.title}</span>
               <span class="mahiti-desc">{m.desc}</span>
@@ -1036,7 +1036,7 @@ body {
   text-align: center;
 }
 
-/* ═══════════ EXPERT SALLA ═══════════ */
+/* ═══════════ EXPERT ADVICE ═══════════ */
 .section-expert {
   background: linear-gradient(180deg, #fefcf8 0%, #fff 100%);
 }
