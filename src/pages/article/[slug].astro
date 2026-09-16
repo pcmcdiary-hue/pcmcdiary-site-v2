@@ -13,20 +13,34 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const { Content } = await article.render();
 
+// Updated: "Saala" → "Advisor", and old keys kept as aliases for backward compatibility
 const expertSlugs = {
-  'Dr. Saala': 'dr-saala',
-  'Arthik Saala': 'arthik-saala',
-  'Vastu Saala': 'vastu-saala',
-  'Fit Saala': 'fit-saala',
-  'Kanoon Saala': 'kanoon-saala',
-  'Rashi Saala': 'rashi-saala',
-  'Career Saala': 'career-saala',
-  'Beauty Saala': 'beauty-saala',
-  'Food Saala': 'food-saala',
-  'Tech Saala': 'tech-saala',
+  // New names
+  'Dr. Advisor':    'dr-advisor',
+  'Arthik Advisor': 'arthik-advisor',
+  'Vastu Advisor':  'vastu-advisor',
+  'Fit Advisor':    'fit-advisor',
+  'Kanoon Advisor': 'kanoon-advisor',
+  'Rashi Advisor':  'rashi-advisor',
+  'Career Advisor': 'career-advisor',
+  'Beauty Advisor': 'beauty-advisor',
+  'Food Advisor':   'food-advisor',
+  'Tech Advisor':   'tech-advisor',
+
+  // Old aliases (so existing content still works until you update frontmatter)
+  'Dr. Saala':    'dr-advisor',
+  'Arthik Saala': 'arthik-advisor',
+  'Vastu Saala':  'vastu-advisor',
+  'Fit Saala':    'fit-advisor',
+  'Kanoon Saala': 'kanoon-advisor',
+  'Rashi Saala':  'rashi-advisor',
+  'Career Saala': 'career-advisor',
+  'Beauty Saala': 'beauty-advisor',
+  'Food Saala':   'food-advisor',
+  'Tech Saala':   'tech-advisor',
 };
 
-const expertSlug = expertSlugs[article.data.expert] || 'expert-salla';
+const expertSlug = expertSlugs[article.data.expert] || 'expert-advice';
 ---
 
 <BaseLayout title={article.data.title} description={article.data.excerpt || article.data.title}>
@@ -38,7 +52,7 @@ const expertSlug = expertSlugs[article.data.expert] || 'expert-salla';
       <nav class="breadcrumb">
         <a href="/"><i class="fa-solid fa-house"></i> Home</a>
         <i class="fa-solid fa-chevron-right sep"></i>
-        <a href="/expert-salla">Expert Salla</a>
+        <a href="/expert-advice">Expert Advice</a>
         <i class="fa-solid fa-chevron-right sep"></i>
         <span>{article.data.expert}</span>
       </nav>
@@ -108,8 +122,8 @@ const expertSlug = expertSlugs[article.data.expert] || 'expert-salla';
 
       <!-- Back -->
       <div class="article-back">
-        <a href="/expert-salla">
-          <i class="fa-solid fa-arrow-left"></i> Back to Expert Salla
+        <a href="/expert-advice">
+          <i class="fa-solid fa-arrow-left"></i> Back to Expert Advice
         </a>
       </div>
 
