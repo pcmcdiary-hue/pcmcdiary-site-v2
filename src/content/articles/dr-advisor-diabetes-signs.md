@@ -1,6 +1,6 @@
 ---
 title: "Diabetes ke 5 Early Signs Jo Aapko Kabhi Ignore Nahi Karne Chahiye"
-expert: "Dr. Saala"
+expert: "Dr. Advisor"
 author: "Dr. Rajesh Sharma, MD"
 category: "Health"
 date: "2026-09-14"
