@@ -5,16 +5,16 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 export async function getStaticPaths() {
   // Sab kuch function ke andar — no scope issues
   const expertSlugs = {
-    'dr-saala':     { name: 'Dr. Saala',     tagline: 'Health & Wellness', icon: 'fa-user-doctor',       color: '#dc2626' },
-    'arthik-saala': { name: 'Arthik Saala',  tagline: 'Money & Finance',   icon: 'fa-indian-rupee-sign', color: '#059669' },
-    'vastu-saala':  { name: 'Vastu Saala',   tagline: 'Vastu & Home',      icon: 'fa-house-chimney',     color: '#d97706' },
-    'fit-saala':    { name: 'Fit Saala',     tagline: 'Fitness & Diet',    icon: 'fa-dumbbell',          color: '#7c3aed' },
-    'kanoon-saala': { name: 'Kanoon Saala',  tagline: 'Legal Advice',      icon: 'fa-scale-balanced',    color: '#334155' },
-    'rashi-saala':  { name: 'Rashi Saala',   tagline: 'Astrology',         icon: 'fa-star',              color: '#0891b2' },
-    'career-saala': { name: 'Career Saala',  tagline: 'Jobs & Career',     icon: 'fa-briefcase',         color: '#2563eb' },
-    'beauty-saala': { name: 'Beauty Saala',  tagline: 'Beauty & Skin',     icon: 'fa-spa',               color: '#db2777' },
-    'food-saala':   { name: 'Food Saala',    tagline: 'Food & Recipes',    icon: 'fa-utensils',          color: '#ea580c' },
-    'tech-saala':   { name: 'Tech Saala',    tagline: 'Tech & Gadgets',    icon: 'fa-microchip',         color: '#475569' }
+    'dr-advisor':     { name: 'Dr. Advisor',     tagline: 'Health & Wellness', icon: 'fa-user-doctor',       color: '#dc2626' },
+    'arthik-advisor': { name: 'Arthik Advisor',  tagline: 'Money & Finance',   icon: 'fa-indian-rupee-sign', color: '#059669' },
+    'vastu-advisor':  { name: 'Vastu Advisor',   tagline: 'Vastu & Home',      icon: 'fa-house-chimney',     color: '#d97706' },
+    'fit-advisor':    { name: 'Fit Advisor',     tagline: 'Fitness & Diet',    icon: 'fa-dumbbell',          color: '#7c3aed' },
+    'kanoon-advisor': { name: 'Kanoon Advisor',  tagline: 'Legal Advice',      icon: 'fa-scale-balanced',    color: '#334155' },
+    'rashi-advisor':  { name: 'Rashi Advisor',   tagline: 'Astrology',         icon: 'fa-star',              color: '#0891b2' },
+    'career-advisor': { name: 'Career Advisor',  tagline: 'Jobs & Career',     icon: 'fa-briefcase',         color: '#2563eb' },
+    'beauty-advisor': { name: 'Beauty Advisor',  tagline: 'Beauty & Skin',     icon: 'fa-spa',               color: '#db2777' },
+    'food-advisor':   { name: 'Food Advisor',    tagline: 'Food & Recipes',    icon: 'fa-utensils',          color: '#ea580c' },
+    'tech-advisor':   { name: 'Tech Advisor',    tagline: 'Tech & Gadgets',    icon: 'fa-microchip',         color: '#475569' }
   };
 
   return Object.entries(expertSlugs).map(([slug, data]) => ({
@@ -31,7 +31,7 @@ const articles = allArticles
 ---
 
 <BaseLayout 
-  title={`${expertData.name} — Expert Salla | PCMC Diary`}
+  title={`${expertData.name} — Expert Advice | PCMC Diary`}
   description={`${expertData.tagline} articles by ${expertData.name} on PCMC Diary.`}
 >
 
@@ -42,7 +42,7 @@ const articles = allArticles
         <div class="expert-hero-icon">
           <i class={`fa-solid ${expertData.icon}`}></i>
         </div>
-        <div class="hero-badge">Expert Salla</div>
+        <div class="hero-badge">Expert Advice</div>
         <h1>{expertData.name}</h1>
         <p class="hero-tagline">{expertData.tagline}</p>
         <div class="hero-count">
@@ -58,7 +58,7 @@ const articles = allArticles
         <nav class="breadcrumb">
           <a href="/"><i class="fa-solid fa-house"></i> Home</a>
           <i class="fa-solid fa-chevron-right sep"></i>
-          <a href="/expert-salla">Expert Salla</a>
+          <a href="/expert-advice">Expert Advice</a>
           <i class="fa-solid fa-chevron-right sep"></i>
           <span>{expertData.name}</span>
         </nav>
@@ -85,14 +85,14 @@ const articles = allArticles
             <div class="cs-icon"><i class="fa-solid fa-hourglass-half"></i></div>
             <h3>Coming Soon</h3>
             <p>{expertData.name} ke articles jald hi aa rahe hain.</p>
-            <a href="/expert-salla" class="cs-btn">
+            <a href="/expert-advice" class="cs-btn">
               <i class="fa-solid fa-arrow-left"></i> Back to All Experts
             </a>
           </div>
         )}
 
         <div class="back-cta">
-          <a href="/expert-salla">
+          <a href="/expert-advice">
             <i class="fa-solid fa-arrow-left"></i> All Experts
           </a>
         </div>
