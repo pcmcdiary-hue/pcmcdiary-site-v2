@@ -1,793 +1,396 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
-// Get all articles
-const articles = await getCollection('articles');
-
-// Expert list with metadata
-const experts = [
-  {
-    name: 'Dr. Saala',
-    slug: 'dr-saala',
-    tagline: 'Health & Wellness',
-    desc: 'Medical advice, symptoms, prevention aur healthy living tips — verified doctors se.',
-    icon: 'fa-user-doctor',
-    color: '#dc2626',
-    gradient: 'linear-gradient(135deg, #dc2626, #991b1b)',
-    category: 'Health'
-  },
-  {
-    name: 'Arthik Saala',
-    slug: 'arthik-saala',
-    tagline: 'Money & Finance',
-    desc: 'Tax, investment, GST, loan aur savings ke practical tips — CA aur finance experts se.',
-    icon: 'fa-indian-rupee-sign',
-    color: '#059669',
-    gradient: 'linear-gradient(135deg, #059669, #047857)',
-    category: 'Finance'
-  },
-  {
-    name: 'Vastu Saala',
-    slug: 'vastu-saala',
-    tagline: 'Vastu & Home',
-    desc: 'Ghar, office aur shop ke liye simple Vastu tips — bina tod-phod ke.',
-    icon: 'fa-house-chimney',
-    color: '#d97706',
-    gradient: 'linear-gradient(135deg, #d97706, #b45309)',
-    category: 'Vastu'
-  },
-  {
-    name: 'Fit Saala',
-    slug: 'fit-saala',
-    tagline: 'Fitness & Diet',
-    desc: 'Workout, weight loss, diet plan aur gym tips — certified trainers se.',
-    icon: 'fa-dumbbell',
-    color: '#7c3aed',
-    gradient: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
-    category: 'Fitness'
-  },
-  {
-    name: 'Kanoon Saala',
-    slug: 'kanoon-saala',
-    tagline: 'Legal Advice',
-    desc: 'Property, family, consumer aur business law ke simple explanations.',
-    icon: 'fa-scale-balanced',
-    color: '#0f172a',
-    gradient: 'linear-gradient(135deg, #334155, #0f172a)',
-    category: 'Legal'
-  },
-  {
-    name: 'Rashi Saala',
-    slug: 'rashi-saala',
-    tagline: 'Astrology',
-    desc: 'Daily rashi, weekly predictions aur astrology insights.',
-    icon: 'fa-star',
-    color: '#0891b2',
-    gradient: 'linear-gradient(135deg, #0891b2, #0e7490)',
-    category: 'Astrology'
-  },
-  {
-    name: 'Career Saala',
-    slug: 'career-saala',
-    tagline: 'Jobs & Career',
-    desc: 'Resume tips, interview prep, skill development aur job search guidance.',
-    icon: 'fa-briefcase',
-    color: '#2563eb',
-    gradient: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-    category: 'Career'
-  },
-  {
-    name: 'Beauty Saala',
-    slug: 'beauty-saala',
-    tagline: 'Beauty & Skin',
-    desc: 'Skin care, hair care aur beauty tips — dermatologist approved.',
-    icon: 'fa-spa',
-    color: '#db2777',
-    gradient: 'linear-gradient(135deg, #db2777, #be185d)',
-    category: 'Beauty'
-  },
-  {
-    name: 'Food Saala',
-    slug: 'food-saala',
-    tagline: 'Food & Recipes',
-    desc: 'PCMC ke best restaurants, recipes aur food reviews.',
-    icon: 'fa-utensils',
-    color: '#ea580c',
-    gradient: 'linear-gradient(135deg, #ea580c, #c2410c)',
-    category: 'Food'
-  },
-  {
-    name: 'Tech Saala',
-    slug: 'tech-saala',
-    tagline: 'Tech & Gadgets',
-    desc: 'Mobile, laptop, apps aur tech reviews — simple bhasha me.',
-    icon: 'fa-microchip',
-    color: '#475569',
-    gradient: 'linear-gradient(135deg, #64748b, #334155)',
-    category: 'Tech'
-  }
-];
-
-// Count articles per expert
-function countArticles(expertName) {
-  return articles.filter(a => a.data.expert === expertName).length;
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map(article => ({
+    params: { slug: article.slug },
+    props: { article }
+  }));
 }
 
-// Latest 3 articles per expert (for preview)
-function latestArticles(expertName, limit = 3) {
-  return articles
-    .filter(a => a.data.expert === expertName)
-    .sort((a, b) => new Date(b.data.date) - new Date(a.data.date))
-    .slice(0, limit);
-}
+const { article } = Astro.props;
+const { Content } = await article.render();
 
-// Total stats
-const totalArticles = articles.length;
-const activeExperts = experts.filter(e => countArticles(e.name) > 0).length;
+// Updated: "Saala" → "Advisor", and old keys kept as aliases for backward compatibility
+const expertSlugs = {
+  // New names
+  'Dr. Advisor':    'dr-advisor',
+  'Arthik Advisor': 'arthik-advisor',
+  'Vastu Advisor':  'vastu-advisor',
+  'Fit Advisor':    'fit-advisor',
+  'Kanoon Advisor': 'kanoon-advisor',
+  'Rashi Advisor':  'rashi-advisor',
+  'Career Advisor': 'career-advisor',
+  'Beauty Advisor': 'beauty-advisor',
+  'Food Advisor':   'food-advisor',
+  'Tech Advisor':   'tech-advisor',
+
+  // Old aliases (so existing content still works until you update frontmatter)
+  'Dr. Saala':    'dr-advisor',
+  'Arthik Saala': 'arthik-advisor',
+  'Vastu Saala':  'vastu-advisor',
+  'Fit Saala':    'fit-advisor',
+  'Kanoon Saala': 'kanoon-advisor',
+  'Rashi Saala':  'rashi-advisor',
+  'Career Saala': 'career-advisor',
+  'Beauty Saala': 'beauty-advisor',
+  'Food Saala':   'food-advisor',
+  'Tech Saala':   'tech-advisor',
+};
+
+const expertSlug = expertSlugs[article.data.expert] || 'expert-advice';
 ---
 
-<BaseLayout 
-  title="Expert Salla — PCMC Diary"
-  description="PCMC ke top experts se Health, Finance, Vastu, Legal, Career aur zyada topics pe trusted articles. Sirf PCMC Diary pe."
->
+<BaseLayout title={article.data.title} description={article.data.excerpt || article.data.title}>
 
-  <div class="experts-page">
+  <div class="article-page">
+    <div class="article-container">
 
-    <!-- HERO -->
-    <section class="experts-hero">
-      <div class="hero-inner">
-        <div class="hero-badge">
-          <i class="fa-solid fa-award"></i> Expert Salla
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right sep"></i>
+        <a href="/expert-advice">Expert Advice</a>
+        <i class="fa-solid fa-chevron-right sep"></i>
+        <span>{article.data.expert}</span>
+      </nav>
+
+      <!-- Article Header -->
+      <header class="article-header">
+        <div class="article-cat-badge">
+          <i class="fa-solid fa-tag"></i>
+          {article.data.category}
         </div>
-        <h1>PCMC Ke <span class="hl">Top Experts</span> Se Seekho</h1>
-        <p class="hero-sub">
-          Health, Finance, Vastu, Legal, Career aur zyada — har topic pe trusted advice.
-          Sirf verified experts se. Sirf PCMC Diary pe.
-        </p>
-        <div class="hero-stats">
-          <div class="hs-item">
-            <div class="hs-num">{activeExperts}</div>
-            <div class="hs-lbl">Active Experts</div>
+        <h1>{article.data.title}</h1>
+        {article.data.excerpt && (
+          <p class="article-excerpt">{article.data.excerpt}</p>
+        )}
+        <div class="article-meta">
+          {article.data.author && (
+            <span><i class="fa-solid fa-user-doctor"></i> {article.data.author}</span>
+          )}
+          <span><i class="fa-solid fa-user-tie"></i> {article.data.expert}</span>
+          <span><i class="fa-solid fa-calendar"></i> {article.data.date}</span>
+          {article.data.readTime && (
+            <span><i class="fa-solid fa-clock"></i> {article.data.readTime}</span>
+          )}
+        </div>
+      </header>
+
+      <!-- Article Body -->
+      <article class="article-body">
+        <Content />
+      </article>
+
+      <!-- Tags -->
+      {article.data.tags && article.data.tags.length > 0 && (
+        <div class="article-tags">
+          <span class="tag-label">Tags:</span>
+          {article.data.tags.map(tag => (
+            <span class="tag-chip">#{tag}</span>
+          ))}
+        </div>
+      )}
+
+      <!-- Author Footer -->
+      <div class="article-author-box">
+        <div class="author-icon">
+          <i class="fa-solid fa-user-doctor"></i>
+        </div>
+        <div class="author-info">
+          <div class="author-name">{article.data.expert}</div>
+          <div class="author-desc">
+            Expert column on PCMC Diary. Get weekly insights on {article.data.category.toLowerCase()}.
           </div>
-          <div class="hs-div"></div>
-          <div class="hs-item">
-            <div class="hs-num">{totalArticles}</div>
-            <div class="hs-lbl">Articles Published</div>
-          </div>
-          <div class="hs-div"></div>
-          <div class="hs-item">
-            <div class="hs-num">10K+</div>
-            <div class="hs-lbl">Monthly Readers</div>
-          </div>
+          <a href={`/search/label/${expertSlug}`} class="author-link">
+            Read more from {article.data.expert} <i class="fa-solid fa-arrow-right"></i>
+          </a>
         </div>
       </div>
-    </section>
 
-    <!-- EXPERTS GRID -->
-    <section class="experts-section">
-      <div class="section-inner">
-
-        <div class="section-head">
-          <h2><i class="fa-solid fa-users-viewfinder"></i> All Experts</h2>
-          <p>Har expert apne field ka master hai. Click karo aur unke articles padho.</p>
+      <!-- CTA -->
+      <div class="article-cta">
+        <div class="cta-icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <div class="cta-text">
+          <h4>Want to write for PCMC Diary?</h4>
+          <p>Share your expertise with 10,000+ PCMC readers.</p>
         </div>
-
-        <div class="experts-grid">
-          {experts.map((expert) => {
-            const count = countArticles(expert.name);
-            const latest = latestArticles(expert.name);
-            return (
-              <div class="expert-card" style={`--accent: ${expert.color};`}>
-                
-                <!-- Card Head -->
-                <div class="expert-head">
-                  <div class="expert-icon" style={`background: ${expert.gradient};`}>
-                    <i class={`fa-solid ${expert.icon}`}></i>
-                  </div>
-                  <div class="expert-title">
-                    <h3>{expert.name}</h3>
-                    <span class="expert-tag">{expert.tagline}</span>
-                  </div>
-                  {count > 0 && (
-                    <div class="expert-count">{count}</div>
-                  )}
-                </div>
-
-                <!-- Description -->
-                <p class="expert-desc">{expert.desc}</p>
-
-                <!-- Latest Articles Preview -->
-                {latest.length > 0 ? (
-                  <div class="expert-articles">
-                    <div class="ea-label">
-                      <i class="fa-solid fa-fire"></i> Latest Articles
-                    </div>
-                    {latest.map((article) => (
-                      <a href={`/article/${article.slug}`} class="ea-item">
-                        <i class="fa-solid fa-file-lines"></i>
-                        <span>{article.data.title}</span>
-                      </a>
-                    ))}
-                  </div>
-                ) : (
-                  <div class="expert-coming-soon">
-                    <i class="fa-solid fa-hourglass-half"></i>
-                    <span>Articles coming soon</span>
-                  </div>
-                )}
-
-                <!-- CTA -->
-                <a href={`/search/label/${expert.slug}`} class="expert-cta">
-                  {count > 0 ? `Read All ${count} Articles` : 'Coming Soon'}
-                  <i class="fa-solid fa-arrow-right"></i>
-                </a>
-
-              </div>
-            );
-          })}
-        </div>
-
+        <a href="/sponsor-package" class="cta-btn">Sponsor Now <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-    </section>
 
-    <!-- SPONSOR CTA -->
-    <section class="sponsor-cta">
-      <div class="cta-inner">
-        <div class="cta-icon-wrap">
-          <i class="fa-solid fa-bullhorn"></i>
-        </div>
-        <div class="cta-content">
-          <h3>Apne Business Ko Promote Karo</h3>
-          <p>PCMC ke 10,000+ readers tak pahuncho. Expert article sponsorship se apna brand grow karo.</p>
-        </div>
-        <a href="/sponsor-package" class="cta-btn">
-          Sponsor Now <i class="fa-solid fa-arrow-right"></i>
+      <!-- Back -->
+      <div class="article-back">
+        <a href="/expert-advice">
+          <i class="fa-solid fa-arrow-left"></i> Back to Expert Advice
         </a>
       </div>
-    </section>
 
-    <!-- WRITER CTA -->
-    <section class="writer-cta">
-      <div class="writer-inner">
-        <div class="writer-icon">
-          <i class="fa-solid fa-pen-fancy"></i>
-        </div>
-        <div class="writer-content">
-          <h3>Aap Expert Ho? PCMC Diary Pe Likho</h3>
-          <p>Apni expertise share karo aur PCMC community ki madad karo. Free publishing platform.</p>
-        </div>
-        <a href="/contact" class="writer-btn">
-          Apply as Writer <i class="fa-solid fa-arrow-right"></i>
-        </a>
-      </div>
-    </section>
-
+    </div>
   </div>
 
 </BaseLayout>
 
 <style is:global>
+.article-page { background: #f8fafc; padding: 32px 0 72px; min-height: 60vh; }
+.article-container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
 
-/* ═══════════ PAGE BASE ═══════════ */
-.experts-page {
-  background: #f8fafc;
-  min-height: 60vh;
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: #64748b;
+  margin-bottom: 24px; flex-wrap: wrap;
 }
+.breadcrumb a { color: #475569; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.breadcrumb a:hover { color: #dc2626; }
+.breadcrumb a i { font-size: 11px; }
+.breadcrumb .sep { font-size: 9px; opacity: 0.5; }
+.breadcrumb span { color: #dc2626; font-weight: 700; }
 
-/* ═══════════ HERO ═══════════ */
-.experts-hero {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
-  padding: 72px 24px 80px;
-  position: relative;
-  overflow: hidden;
-  color: #fff;
-}
-.experts-hero::before {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 320px; height: 320px;
-  background: radial-gradient(circle, rgba(220,38,38,0.22) 0%, transparent 70%);
-  border-radius: 50%;
-}
-.experts-hero::after {
-  content: '';
-  position: absolute;
-  bottom: -80px; left: -60px;
-  width: 280px; height: 280px;
-  background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%);
-  border-radius: 50%;
-}
-.hero-inner {
-  max-width: 980px;
-  margin: 0 auto;
-  text-align: center;
-  position: relative;
-  z-index: 2;
-}
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 22px;
-  box-shadow: 0 12px 30px -10px rgba(220,38,38,0.6);
-}
-.hero-badge i { font-size: 12px; color: #fbbf24; }
-.experts-hero h1 {
-  font-size: 48px;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -1.6px;
-  margin: 0 0 18px;
-}
-.experts-hero h1 .hl {
-  background: linear-gradient(135deg, #fbbf24, #d97706);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.hero-sub {
-  font-size: 17px;
-  line-height: 1.6;
-  color: rgba(255,255,255,0.75);
-  max-width: 640px;
-  margin: 0 auto 40px;
-}
-.hero-stats {
-  display: inline-flex;
-  align-items: center;
-  gap: 32px;
-  padding: 20px 36px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px;
-  backdrop-filter: blur(12px);
-}
-.hs-item { text-align: center; }
-.hs-num {
-  font-size: 28px;
-  font-weight: 800;
-  color: #fbbf24;
-  letter-spacing: -0.8px;
-  line-height: 1;
-  margin-bottom: 6px;
-}
-.hs-lbl {
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-.hs-div {
-  width: 1px;
-  height: 36px;
-  background: rgba(255,255,255,0.15);
-}
-
-/* ═══════════ EXPERTS SECTION ═══════════ */
-.experts-section {
-  padding: 64px 24px 32px;
-}
-.section-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.section-head {
-  text-align: center;
-  margin-bottom: 44px;
-}
-.section-head h2 {
-  font-size: 32px;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.8px;
-  margin: 0 0 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-.section-head h2 i { color: #dc2626; font-size: 26px; }
-.section-head p {
-  font-size: 15px;
-  color: #64748b;
-  margin: 0;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ═══════════ EXPERTS GRID ═══════════ */
-.experts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 22px;
-}
-
-.expert-card {
+.article-header {
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 20px;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
+  padding: 40px 44px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04);
 }
-.expert-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: var(--accent);
-  opacity: 0;
-  transition: opacity 0.25s;
-}
-.expert-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent);
-  box-shadow: 0 20px 40px -20px rgba(15,23,42,0.2);
-}
-.expert-card:hover::before { opacity: 1; }
 
-.expert-head {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-.expert-icon {
-  width: 58px;
-  height: 58px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 22px;
-  flex-shrink: 0;
-  box-shadow: 0 10px 22px -10px rgba(15,23,42,0.4);
-}
-.expert-title { flex: 1; min-width: 0; }
-.expert-title h3 {
-  font-size: 19px;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0 0 4px;
-  letter-spacing: -0.3px;
-}
-.expert-tag {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-}
-.expert-count {
-  padding: 6px 12px;
-  background: #fef2f2;
+.article-cat-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
   border: 1px solid #fecaca;
   color: #b91c1c;
   border-radius: 50px;
-  font-size: 12px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.expert-desc {
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: #64748b;
-  margin: 0 0 18px;
-}
-
-/* ─── Article Previews ─── */
-.expert-articles {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-bottom: 18px;
-  flex: 1;
-}
-.ea-label {
   font-size: 11px;
   font-weight: 800;
-  color: #dc2626;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.ea-label i { font-size: 10px; }
-.ea-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px dashed #e2e8f0;
-  text-decoration: none;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
-  transition: color 0.2s;
-}
-.ea-item:last-child { border-bottom: none; padding-bottom: 0; }
-.ea-item:first-child { padding-top: 0; }
-.ea-item i {
-  color: #94a3b8;
-  font-size: 11px;
-  margin-top: 3px;
-  flex-shrink: 0;
-}
-.ea-item:hover { color: #dc2626; }
-.ea-item:hover i { color: #dc2626; }
-
-/* ─── Coming Soon State ─── */
-.expert-coming-soon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 22px 16px;
-  background: linear-gradient(135deg, #fefce8, #fef9c3);
-  border: 1.5px dashed #fde047;
-  border-radius: 14px;
   margin-bottom: 18px;
-  flex: 1;
-  color: #854d0e;
+}
+.article-cat-badge i { font-size: 10px; }
+
+.article-header h1 {
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1.2px;
+  color: #0f172a;
+  margin: 0 0 16px;
+}
+
+.article-excerpt {
+  font-size: 16.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 24px;
+  font-weight: 500;
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   font-size: 13px;
-  font-weight: 700;
+  color: #64748b;
+  font-weight: 600;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
 }
-.expert-coming-soon i {
+.article-meta span { display: inline-flex; align-items: center; gap: 7px; }
+.article-meta i { color: #dc2626; font-size: 12px; }
+
+.article-body {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 44px;
   font-size: 16px;
-  color: #ca8a04;
+  line-height: 1.75;
+  color: #334155;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04);
 }
-
-/* ─── Card CTA ─── */
-.expert-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  padding: 13px 22px;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: #fff;
-  border-radius: 12px;
-  font-size: 13.5px;
-  font-weight: 800;
-  text-decoration: none;
-  transition: all 0.2s;
-  margin-top: auto;
-}
-.expert-cta:hover {
-  background: linear-gradient(135deg, var(--accent), #0f172a);
-  transform: translateY(-2px);
-  text-decoration: none;
-  box-shadow: 0 12px 24px -10px rgba(15,23,42,0.4);
-}
-.expert-cta i {
-  font-size: 11px;
-  transition: transform 0.2s;
-}
-.expert-cta:hover i { transform: translateX(3px); }
-
-/* ═══════════ SPONSOR CTA ═══════════ */
-.sponsor-cta {
-  padding: 32px 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.cta-inner {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  padding: 36px 40px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border-radius: 24px;
-  color: #fff;
-  flex-wrap: wrap;
-  box-shadow: 0 30px 60px -30px rgba(15,23,42,0.5);
-  position: relative;
-  overflow: hidden;
-}
-.cta-inner::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(251,191,36,0.15), transparent 70%);
-  border-radius: 50%;
-}
-.cta-icon-wrap {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: rgba(251,191,36,0.12);
-  border: 1px solid rgba(251,191,36,0.3);
-  color: #fbbf24;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.article-body :global(h2) {
   font-size: 26px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-.cta-content { flex: 1; min-width: 240px; position: relative; z-index: 1; }
-.cta-content h3 {
-  font-size: 20px;
-  font-weight: 800;
-  margin: 0 0 6px;
-  letter-spacing: -0.3px;
-}
-.cta-content p {
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  margin: 0;
-  line-height: 1.55;
-  max-width: 500px;
-}
-.cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 14px 28px;
-  background: linear-gradient(135deg, #fbbf24, #d97706);
-  color: #0f0a0a;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 800;
-  text-decoration: none;
-  transition: all 0.2s;
-  box-shadow: 0 14px 30px -10px rgba(212,160,23,0.6);
-  white-space: nowrap;
-  position: relative;
-  z-index: 1;
-}
-.cta-btn:hover {
-  transform: translateY(-2px);
-  text-decoration: none;
-  box-shadow: 0 18px 36px -10px rgba(212,160,23,0.7);
-}
-.cta-btn i {
-  font-size: 11px;
-  transition: transform 0.2s;
-}
-.cta-btn:hover i { transform: translateX(3px); }
-
-/* ═══════════ WRITER CTA ═══════════ */
-.writer-cta {
-  padding: 32px 24px 80px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.writer-inner {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 32px 40px;
-  background: linear-gradient(135deg, #fef2f2, #fff);
-  border: 1.5px solid #fecaca;
-  border-radius: 24px;
-  flex-wrap: wrap;
-}
-.writer-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
-  box-shadow: 0 12px 24px -10px rgba(220,38,38,0.5);
-}
-.writer-content { flex: 1; min-width: 240px; }
-.writer-content h3 {
-  font-size: 19px;
   font-weight: 800;
   color: #0f172a;
-  margin: 0 0 6px;
+  margin: 36px 0 16px;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+}
+.article-body :global(h2:first-child) { margin-top: 0; }
+.article-body :global(h3) {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 28px 0 12px;
   letter-spacing: -0.3px;
 }
-.writer-content p {
-  font-size: 13.5px;
-  color: #64748b;
-  margin: 0;
-  line-height: 1.55;
-  max-width: 500px;
-}
-.writer-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 13px 26px;
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  color: #fff;
+.article-body :global(p) { margin: 0 0 20px; }
+.article-body :global(strong) { color: #0f172a; font-weight: 700; }
+.article-body :global(a) { color: #dc2626; font-weight: 600; text-decoration: none; }
+.article-body :global(a:hover) { text-decoration: underline; }
+.article-body :global(ul),
+.article-body :global(ol) { margin: 0 0 20px 24px; }
+.article-body :global(li) { margin-bottom: 10px; line-height: 1.7; }
+.article-body :global(img) {
+  max-width: 100%;
+  height: auto;
   border-radius: 12px;
-  font-size: 13.5px;
+  margin: 24px 0;
+  display: block;
+  box-shadow: 0 4px 12px -8px rgba(15,23,42,0.15);
+}
+.article-body :global(blockquote) {
+  border-left: 4px solid #dc2626;
+  padding: 12px 0 12px 20px;
+  margin: 24px 0;
+  font-style: italic;
+  color: #475569;
+  background: #fef2f2;
+  border-radius: 0 12px 12px 0;
+}
+.article-body :global(code) {
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: ui-monospace, Menlo, monospace;
+  color: #b91c1c;
+}
+
+.article-tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  align-items: center;
+  margin-top: 24px;
+  padding: 20px 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+.tag-label { font-size: 12.5px; font-weight: 700; color: #64748b; margin-right: 4px; }
+.tag-chip {
+  padding: 5px 12px;
+  background: #f1f5f9;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.article-author-box {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 24px;
+  padding: 28px;
+  background: linear-gradient(135deg, #fefcf8, #fff);
+  border: 1px solid #fde68a;
+  border-radius: 20px;
+}
+.author-icon {
+  width: 60px; height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 10px 20px -8px rgba(217,119,6,0.5);
+}
+.author-info { flex: 1; min-width: 0; }
+.author-name { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 6px; letter-spacing: -0.3px; }
+.author-desc { font-size: 13.5px; color: #64748b; line-height: 1.55; margin-bottom: 12px; }
+.author-link {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 800;
+  color: #b45309; text-decoration: none;
+  transition: gap 0.2s;
+}
+.author-link:hover { gap: 11px; }
+.author-link i { font-size: 11px; }
+
+.article-cta {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 24px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 20px;
+  color: #fff;
+  flex-wrap: wrap;
+  box-shadow: 0 20px 40px -20px rgba(15,23,42,0.3);
+}
+.cta-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: rgba(251,191,36,0.15);
+  border: 1px solid rgba(251,191,36,0.35);
+  color: #fbbf24;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.cta-text { flex: 1; min-width: 200px; }
+.cta-text h4 { font-size: 17px; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.2px; }
+.cta-text p { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 24px;
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #0f0a0a;
+  border-radius: 11px;
   font-weight: 800;
+  font-size: 13.5px;
   text-decoration: none;
   transition: all 0.2s;
-  box-shadow: 0 12px 26px -10px rgba(220,38,38,0.5);
+  box-shadow: 0 10px 24px -8px rgba(212,160,23,0.5);
   white-space: nowrap;
 }
-.writer-btn:hover {
+.cta-btn:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 14px 30px -8px rgba(212,160,23,0.6); }
+.cta-btn i { font-size: 11px; transition: transform 0.2s; }
+.cta-btn:hover i { transform: translateX(3px); }
+
+.article-back {
+  text-align: center;
+  margin-top: 32px;
+}
+.article-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 50px;
+  color: #334155;
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.article-back a:hover {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
   transform: translateY(-2px);
   text-decoration: none;
-  box-shadow: 0 16px 32px -10px rgba(220,38,38,0.6);
 }
-.writer-btn i {
-  font-size: 11px;
-  transition: transform 0.2s;
-}
-.writer-btn:hover i { transform: translateX(3px); }
 
-/* ═══════════ RESPONSIVE ═══════════ */
 @media (max-width: 768px) {
-  .experts-hero { padding: 52px 18px 60px; }
-  .experts-hero h1 { font-size: 32px; letter-spacing: -1px; }
-  .hero-sub { font-size: 15px; margin-bottom: 32px; }
-  .hero-stats {
-    padding: 16px 24px;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .hs-num { font-size: 22px; }
-  .hs-lbl { font-size: 10px; }
-
-  .experts-section { padding: 44px 16px 20px; }
-  .section-head h2 { font-size: 24px; }
-  .section-head h2 i { font-size: 20px; }
-  .section-head p { font-size: 14px; }
-
-  .experts-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-  .expert-card { padding: 24px 22px; border-radius: 18px; }
-  .expert-icon { width: 52px; height: 52px; font-size: 20px; border-radius: 14px; }
-  .expert-title h3 { font-size: 17px; }
-  .expert-desc { font-size: 13px; }
-
-  .cta-inner {
-    padding: 28px 24px;
-    border-radius: 20px;
-    text-align: center;
-    justify-content: center;
-  }
-  .cta-content h3 { font-size: 17px; }
-  .cta-content p { font-size: 13px; }
+  .article-page { padding: 20px 0 48px; }
+  .article-container { padding: 0 16px; }
+  .article-header { padding: 28px 24px 24px; border-radius: 16px; }
+  .article-header h1 { font-size: 26px; letter-spacing: -0.6px; }
+  .article-excerpt { font-size: 14.5px; }
+  .article-meta { gap: 14px; font-size: 12px; }
+  .article-body { padding: 28px 24px; font-size: 15.5px; border-radius: 16px; }
+  .article-body :global(h2) { font-size: 22px; }
+  .article-body :global(h3) { font-size: 17px; }
+  .article-author-box { padding: 22px; border-radius: 16px; }
+  .article-cta { padding: 22px; border-radius: 16px; text-align: center; justify-content: center; }
   .cta-btn { width: 100%; justify-content: center; }
-
-  .writer-inner {
-    padding: 26px 22px;
-    border-radius: 20px;
-    text-align: center;
-    justify-content: center;
-  }
-  .writer-content h3 { font-size: 17px; }
-  .writer-content p { font-size: 13px; }
-  .writer-btn { width: 100%; justify-content: center; }
-
-  .sponsor-cta, .writer-cta { padding-left: 16px; padding-right: 16px; }
-  .writer-cta { padding-bottom: 56px; }
 }
 </style>
