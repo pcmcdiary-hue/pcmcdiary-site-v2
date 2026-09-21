@@ -206,8 +206,7 @@ uniqueLocs.sort();
       '<header class="card-head">' +
         '<div class="avatar" style="background: linear-gradient(135deg, ' + c1 + ', ' + c2 + ')"><span>' + initial + '</span></div>' +
         '<div class="head-text">' +
-          '<h3 class="biz-name">' + name + '</h3>' +
-          (b.subCategory ? '<div class="biz-sub">' + b.subCategory + '</div>' : '') +
+'<h3 class="biz-name"><a href="/business/' + b.businessId + '" style="color:inherit;text-decoration:none;">' + name + '</a></h3>' +          (b.subCategory ? '<div class="biz-sub">' + b.subCategory + '</div>' : '') +
         '</div>' +
       '</header>' +
       (badgesHtml ? '<div class="card-badges">' + badgesHtml + '</div>' : '') +
