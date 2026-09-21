@@ -6,7 +6,7 @@ const SITE = 'https://pcmcdiary.com';
 export const GET: APIRoute = async () => {
   const urls: string[] = [];
 
-  // Static pages
+  // ===== Static pages =====
   const staticPages = [
     { path: '/', priority: '1.0', changefreq: 'daily' },
     { path: '/directory', priority: '0.9', changefreq: 'daily' },
@@ -34,21 +34,24 @@ export const GET: APIRoute = async () => {
     );
   }
 
-  // Category pages
+  // ===== Categories + Locations + Businesses (from CDN) =====
+  let categories: any[] = [];
   try {
     const catRes = await fetch(`${CDN}/categories.json`);
     const catData = await catRes.json();
-    const cats = catData.categories || [];
-    for (const cat of cats) {
-      urls.push(
-        `  <url>\n` +
-        `    <loc>${SITE}/category/${cat.categoryId}</loc>\n` +
-        `    <changefreq>daily</changefreq>\n` +
-        `    <priority>0.8</priority>\n` +
-        `  </url>`
-      );
-    }
+    categories = catData.categories || [];
   } catch (e) { /* ignore */ }
+
+  // Category pages
+  for (const cat of categories) {
+    urls.push(
+      `  <url>\n` +
+      `    <loc>${SITE}/category/${cat.categoryId}</loc>\n` +
+      `    <changefreq>daily</changefreq>\n` +
+      `    <priority>0.8</priority>\n` +
+      `  </url>`
+    );
+  }
 
   // Location pages
   try {
@@ -65,6 +68,45 @@ export const GET: APIRoute = async () => {
       );
     }
   } catch (e) { /* ignore */ }
+
+  // ===== Business pages + Claim pages (fetch each category) =====
+  const bizResults = await Promise.all(
+    categories.map(async (cat) => {
+      try {
+        const res = await fetch(`${CDN}/${cat.file}`);
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
+      } catch (e) { return []; }
+    })
+  );
+
+  const allBusinesses = bizResults.flat();
+
+  for (const biz of allBusinesses) {
+    if (!biz.businessId) continue;
+
+    // Business detail page
+    urls.push(
+      `  <url>\n` +
+      `    <loc>${SITE}/business/${biz.businessId}</loc>\n` +
+      `    <changefreq>weekly</changefreq>\n` +
+      `    <priority>0.7</priority>\n` +
+      `  </url>`
+    );
+
+    // Claim page (only for unverified)
+    const tier = (biz.tier || '').toLowerCase();
+    const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(tier);
+    if (!isVerified) {
+      urls.push(
+        `  <url>\n` +
+        `    <loc>${SITE}/claim/${biz.businessId}</loc>\n` +
+        `    <changefreq>monthly</changefreq>\n` +
+        `    <priority>0.4</priority>\n` +
+        `  </url>`
+      );
+    }
+  }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
