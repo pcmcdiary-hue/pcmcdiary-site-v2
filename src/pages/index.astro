@@ -114,6 +114,19 @@ const mahiti = [
 
 <BaseLayout title="Home" description="PCMC Diary — Exclusive local deals & savings across Pimpri-Chinchwad.">
 
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "PCMC Diary",
+    "url": "https://pcmcdiary.com",
+    "description": "Trusted local business directory for Pimpri-Chinchwad. Find verified businesses, exclusive coupons & expert advice.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://pcmcdiary.com/directory?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+
   <div class="home-wrap">
     <div class="home-container">
 
