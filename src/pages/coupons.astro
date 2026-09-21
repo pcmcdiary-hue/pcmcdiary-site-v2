@@ -52,9 +52,25 @@ const results = await Promise.all(
   })
 );
 deals = results.flat();
+
+const offerCatalogSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "OfferCatalog",
+  "name": "PCMC Diary Coupons & Deals",
+  "url": "https://pcmcdiary.com/coupons",
+  "description": "Exclusive coupons and deals from " + deals.length + " local businesses in Pimpri-Chinchwad.",
+  "numberOfItems": deals.length,
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "PCMC Diary",
+    "url": "https://pcmcdiary.com"
+  }
+});
 ---
 
 <BaseLayout title="Coupons & Deals" description="Exclusive coupons and deals from local PCMC businesses.">
+
+  <script type="application/ld+json" set:html={offerCatalogSchema} />
 
   <div class="cp-page">
 
