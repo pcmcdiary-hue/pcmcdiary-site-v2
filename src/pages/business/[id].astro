@@ -1,0 +1,200 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const categoriesUrl = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/categories.json';
+  const catsRes = await fetch(categoriesUrl);
+  const catsData = await catsRes.json();
+  const categories = catsData.categories || [];
+
+  const allPaths = [];
+
+  for (const cat of categories) {
+    try {
+      const res = await fetch('https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/' + cat.file);
+      const businesses = await res.json();
+      if (!Array.isArray(businesses)) continue;
+
+      for (const biz of businesses) {
+        if (!biz.businessId) continue;
+        allPaths.push({
+          params: { id: biz.businessId },
+          props: { biz, category: cat }
+        });
+      }
+    } catch (e) {
+      // skip category
+    }
+  }
+
+  return allPaths;
+}
+
+const { biz, category } = Astro.props;
+const name = biz.businessName || 'Business';
+const phone = (biz.phone || '').replace(/\s/g, '');
+const waPhone = phone.replace(/^91/, '');
+const rating = parseFloat(biz.rating) || 0;
+const reviews = parseInt(biz.reviews) || 0;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": name,
+  "telephone": phone,
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": biz.address || '',
+    "addressLocality": biz.location || '',
+    "addressRegion": "Maharashtra",
+    "postalCode": String(biz.pincode || '').replace('.0','')
+  },
+  "aggregateRating": rating > 0 ? {
+    "@type": "AggregateRating",
+    "ratingValue": rating,
+    "reviewCount": reviews || 1
+  } : undefined
+};
+---
+
+<BaseLayout
+  title={name + ' - ' + (biz.subCategory || category.categoryName) + ' in ' + (biz.location || 'PCMC') + ' | PCMC Diary'}
+  description={(biz.description || name + ' in ' + (biz.location || 'PCMC') + '. Call ' + phone)}
+>
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<div class="biz-page">
+  <div class="biz-container">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <i class="fa-solid fa-chevron-right sep"></i>
+      <a href="/directory">Directory</a>
+      <i class="fa-solid fa-chevron-right sep"></i>
+      <a href={'/category/' + category.categoryId}>{category.categoryName}</a>
+      <i class="fa-solid fa-chevron-right sep"></i>
+      <span>{name}</span>
+    </nav>
+
+    <header class="biz-header">
+      <div class="biz-avatar">{(name.charAt(0) || 'B').toUpperCase()}</div>
+      <div class="biz-head-text">
+        <h1>{name}</h1>
+        <p class="biz-sub">{biz.subCategory} · {biz.location}</p>
+        {rating > 0 && (
+          <div class="biz-rating">
+            <i class="fa-solid fa-star"></i>
+            <strong>{rating.toFixed(1)}</strong>
+            {reviews > 0 && <span>({reviews} reviews)</span>}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <div class="biz-actions">
+      {phone && <a href={'tel:' + phone} class="btn btn-call"><i class="fa-solid fa-phone"></i> Call {phone}</a>}
+      {waPhone && <a href={'https://wa.me/91' + waPhone} target="_blank" rel="noopener" class="btn btn-wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>}
+      {biz.googleMap && <a href={biz.googleMap} target="_blank" rel="noopener" class="btn btn-map"><i class="fa-solid fa-map-location-dot"></i> Directions</a>}
+      {biz.website && <a href={biz.website} target="_blank" rel="noopener" class="btn btn-web"><i class="fa-solid fa-globe"></i> Website</a>}
+    </div>
+
+    <section class="biz-info">
+      <h2>About</h2>
+      {biz.description && <p>{biz.description}</p>}
+
+      <div class="info-grid">
+        {biz.address && (
+          <div class="info-row">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>{biz.address}</span>
+          </div>
+        )}
+        {biz.timing && (
+          <div class="info-row">
+            <i class="fa-regular fa-clock"></i>
+            <span>{biz.timing}</span>
+          </div>
+        )}
+        {biz.email && (
+          <div class="info-row">
+            <i class="fa-solid fa-envelope"></i>
+            <a href={'mailto:' + biz.email}>{biz.email}</a>
+          </div>
+        )}
+      </div>
+    </section>
+
+    {biz.deals && (
+      <section class="biz-deal">
+        <i class="fa-solid fa-gift"></i>
+        <div>
+          <strong>Special Offer</strong>
+          <p>{biz.deals}</p>
+          {biz.dealCode && <code>Use code: {biz.dealCode}</code>}
+        </div>
+      </section>
+    )}
+
+    <section class="biz-claim">
+      <h2>Is this your business?</h2>
+      <p>Claim this listing for free to add photos, update timings, and get a verified badge.</p>
+      <a href={'/claim/' + biz.businessId} class="btn btn-claim">
+        <i class="fa-solid fa-circle-check"></i> Claim this business — Free
+      </a>
+    </section>
+
+  </div>
+</div>
+
+<style>
+.biz-page { padding: 24px 16px 60px; background: #f8fafc; min-height: 100vh; }
+.biz-container { max-width: 900px; margin: 0 auto; }
+.breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 24px; color: #64748b; }
+.breadcrumb a { color: #64748b; text-decoration: none; }
+.breadcrumb a:hover { color: #dc2626; }
+.breadcrumb .sep { font-size: 9px; color: #cbd5e1; }
+
+.biz-header { display: flex; gap: 20px; align-items: flex-start; background: #fff; padding: 28px; border-radius: 16px; border: 1px solid #e8ecf1; margin-bottom: 20px; }
+.biz-avatar { width: 72px; height: 72px; border-radius: 16px; background: linear-gradient(135deg, #dc2626, #991b1b); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 32px; font-weight: 800; flex-shrink: 0; }
+.biz-head-text { flex: 1; }
+.biz-head-text h1 { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px; line-height: 1.2; }
+.biz-sub { color: #64748b; font-size: 14px; margin: 0 0 10px; }
+.biz-rating { display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 5px 10px; border-radius: 8px; font-size: 13px; }
+.biz-rating i { color: #f59e0b; }
+
+.biz-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.biz-actions .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; text-decoration: none; transition: all 0.2s; }
+.btn-call { background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; }
+.btn-wa { background: linear-gradient(135deg, #25d366, #15803d); color: #fff; }
+.btn-map { background: #fff; color: #1e293b; border: 1px solid #e2e8f0; }
+.btn-web { background: #fff; color: #1e293b; border: 1px solid #e2e8f0; }
+.biz-actions .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(0,0,0,0.25); }
+
+.biz-info { background: #fff; padding: 28px; border-radius: 16px; border: 1px solid #e8ecf1; margin-bottom: 20px; }
+.biz-info h2 { font-size: 18px; font-weight: 800; margin: 0 0 14px; color: #0f172a; }
+.biz-info p { color: #334155; line-height: 1.6; margin-bottom: 16px; }
+.info-grid { display: flex; flex-direction: column; gap: 12px; }
+.info-row { display: flex; align-items: flex-start; gap: 12px; color: #475569; font-size: 14px; }
+.info-row i { color: #dc2626; margin-top: 3px; }
+.info-row a { color: #2563eb; text-decoration: none; }
+
+.biz-deal { display: flex; gap: 16px; align-items: flex-start; background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fde68a; padding: 20px 24px; border-radius: 16px; margin-bottom: 20px; }
+.biz-deal i { font-size: 24px; color: #d97706; }
+.biz-deal strong { display: block; color: #78350f; margin-bottom: 4px; }
+.biz-deal p { color: #78350f; margin: 0 0 6px; }
+.biz-deal code { background: #fff; padding: 3px 8px; border-radius: 6px; color: #92400e; font-size: 13px; }
+
+.biz-claim { background: #fff; padding: 28px; border-radius: 16px; border: 1px solid #e8ecf1; text-align: center; }
+.biz-claim h2 { font-size: 18px; font-weight: 800; margin: 0 0 8px; }
+.biz-claim p { color: #64748b; margin-bottom: 18px; font-size: 14px; }
+.btn-claim { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #059669, #047857); color: #fff; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; }
+
+@media (max-width: 640px) {
+  .biz-header { flex-direction: column; padding: 20px; }
+  .biz-head-text h1 { font-size: 20px; }
+  .biz-avatar { width: 56px; height: 56px; font-size: 24px; }
+}
+</style>
+
+</BaseLayout>
