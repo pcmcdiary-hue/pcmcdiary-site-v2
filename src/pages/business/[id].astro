@@ -22,9 +22,7 @@ export async function getStaticPaths() {
           props: { biz, category: cat }
         });
       }
-    } catch (e) {
-      // skip category
-    }
+    } catch (e) {}
   }
 
   return allPaths;
@@ -36,6 +34,10 @@ const phone = (biz.phone || '').replace(/\s/g, '');
 const waPhone = phone.replace(/^91/, '');
 const rating = parseFloat(biz.rating) || 0;
 const reviews = parseInt(biz.reviews) || 0;
+
+const tier = (biz.tier || '').toLowerCase();
+const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(tier);
+const isClaimed = biz.unclaimed === false || biz.claimed === true;
 
 const schema = {
   "@context": "https://schema.org",
@@ -82,6 +84,17 @@ const schema = {
       <div class="biz-head-text">
         <h1>{name}</h1>
         <p class="biz-sub">{biz.subCategory} · {biz.location}</p>
+        <div class="biz-badges">
+          {isVerified && (
+            <span class="badge badge-verified"><i class="fa-solid fa-circle-check"></i> Verified</span>
+          )}
+          {tier === 'featured' && (
+            <span class="badge badge-featured"><i class="fa-solid fa-star"></i> Featured</span>
+          )}
+          {(tier === 'premium' || tier === 'premium_pro') && (
+            <span class="badge badge-premium"><i class="fa-solid fa-crown"></i> {tier === 'premium_pro' ? 'Premium Pro' : 'Premium'}</span>
+          )}
+        </div>
         {rating > 0 && (
           <div class="biz-rating">
             <i class="fa-solid fa-star"></i>
@@ -136,13 +149,25 @@ const schema = {
       </section>
     )}
 
-    <section class="biz-claim">
-      <h2>Is this your business?</h2>
-      <p>Claim this listing for free to add photos, update timings, and get a verified badge.</p>
-      <a href={'/claim/' + biz.businessId} class="btn btn-claim">
-        <i class="fa-solid fa-circle-check"></i> Claim this business — Free
-      </a>
-    </section>
+    {!isVerified && (
+      <section class="biz-claim">
+        <h2>Is this your business?</h2>
+        <p>Claim this listing for free to add photos, update timings, and get a verified badge.</p>
+        <a href={'/claim/' + biz.businessId + '/'} class="btn btn-claim">
+          <i class="fa-solid fa-circle-check"></i> Claim this business — Free
+        </a>
+      </section>
+    )}
+
+    {isVerified && (
+      <section class="biz-verified-note">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+          <strong>Verified Business</strong>
+          <p>This listing has been verified by PCMC Diary. Own this business? <a href={'/claim/' + biz.businessId + '/'}>Manage this listing</a></p>
+        </div>
+      </section>
+    )}
 
   </div>
 </div>
@@ -160,6 +185,12 @@ const schema = {
 .biz-head-text { flex: 1; }
 .biz-head-text h1 { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px; line-height: 1.2; }
 .biz-sub { color: #64748b; font-size: 14px; margin: 0 0 10px; }
+.biz-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.badge i { font-size: 10px; }
+.badge-verified { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; border: 1px solid #6ee7b7; }
+.badge-featured { background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #78350f; }
+.badge-premium { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #854d0e; border: 1px solid #fcd34d; }
 .biz-rating { display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 5px 10px; border-radius: 8px; font-size: 13px; }
 .biz-rating i { color: #f59e0b; }
 
@@ -189,6 +220,12 @@ const schema = {
 .biz-claim h2 { font-size: 18px; font-weight: 800; margin: 0 0 8px; }
 .biz-claim p { color: #64748b; margin-bottom: 18px; font-size: 14px; }
 .btn-claim { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #059669, #047857); color: #fff; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; }
+
+.biz-verified-note { display: flex; gap: 16px; align-items: flex-start; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #bbf7d0; padding: 20px 24px; border-radius: 16px; }
+.biz-verified-note > i { font-size: 24px; color: #059669; }
+.biz-verified-note strong { display: block; color: #065f46; margin-bottom: 4px; }
+.biz-verified-note p { color: #065f46; margin: 0; font-size: 13.5px; }
+.biz-verified-note a { color: #047857; font-weight: 700; }
 
 @media (max-width: 640px) {
   .biz-header { flex-direction: column; padding: 20px; }
