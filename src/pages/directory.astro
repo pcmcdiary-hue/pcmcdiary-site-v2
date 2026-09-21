@@ -19,7 +19,6 @@ const iconMap = {
   'Interior & Exterior Design': 'fa-paint-roller','Consulting Services': 'fa-handshake','Specialty Stores': 'fa-store'
 };
 
-// Short names for mobile grid (2-line safe)
 const shortNameMap = {
   'Food & Dining': 'Food','Grocery & Kirana': 'Grocery','Health & Medical': 'Health',
   'Beauty & Personal Care': 'Beauty','Fitness & Wellness': 'Fitness','Education & Learning': 'Edu',
@@ -127,7 +126,6 @@ businesses = results.flat();
     userLocation: null
   };
 
-  // ============ DISTANCE ============
   function haversine(lat1, lng1, lat2, lng2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -155,7 +153,6 @@ businesses = results.flat();
     return `${Math.round(km)} km`;
   }
 
-  // ============ SCROLL HELPER ============
   function scrollToFirstListing() {
     const grid = document.getElementById('bizGrid');
     if (!grid) return;
@@ -164,7 +161,6 @@ businesses = results.flat();
     window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
   }
 
-  // ============ HELPERS ============
   function tierRank(b) {
     const t = (b.tier || '').toLowerCase();
     if (t === 'featured') return 1;
@@ -225,7 +221,6 @@ businesses = results.flat();
     return out.join('');
   }
 
-  // ============ CARD ============
   function renderCard(b) {
     const t = (b.tier || '').toLowerCase();
     const isPremium = ['featured','premium','premium_pro'].indexOf(t) !== -1;
@@ -277,7 +272,7 @@ businesses = results.flat();
         <header class="card-head">
           <div class="avatar" style="background: linear-gradient(135deg, ${c1}, ${c2})"><span>${initial}</span></div>
           <div class="head-text">
-            <h3 class="biz-name">${name}</h3>
+            <h3 class="biz-name"><a href="/business/${b.businessId}" class="biz-link">${name}</a></h3>
             ${b.subCategory ? `<div class="biz-sub">${b.subCategory}</div>` : ''}
           </div>
         </header>
@@ -290,7 +285,6 @@ businesses = results.flat();
     `;
   }
 
-  // ============ FILTERS ============
   function applyFilters() {
     let list = [...ALL];
 
@@ -323,7 +317,6 @@ businesses = results.flat();
       withDist.sort((a, b) => a._dist - b._dist);
       list = withDist.concat(withoutDist);
     } else {
-      // ─── ROTATION CODE (UNCHANGED) ───
       if (state.sort === 'featured') {
         const tiers = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
         for (const b of list) {
@@ -350,7 +343,6 @@ businesses = results.flat();
     render();
   }
 
-  // ============ RENDER ============
   function render() {
     const total = state.filtered.length;
     const totalPages = Math.ceil(total / PER_PAGE) || 1;
@@ -398,17 +390,13 @@ businesses = results.flat();
     });
   }
 
-  // ============ EVENTS ============
   document.getElementById('catPills').addEventListener('click', e => {
     const btn = e.target.closest('.cat-chip');
     if (!btn) return;
     document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.category = btn.dataset.cat;
-
-    // Auto-scroll pill into view (mobile horizontal scroll — optional)
     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-
     applyFilters();
     setTimeout(scrollToFirstListing, 50);
   });
@@ -421,7 +409,6 @@ businesses = results.flat();
     }, 250);
   });
 
-  // ============ NEAR ME ============
   document.getElementById('nearMeBtn').addEventListener('click', () => {
     const btn = document.getElementById('nearMeBtn');
 
@@ -489,7 +476,6 @@ businesses = results.flat();
     );
   });
 
-  // Init
   applyFilters();
 </script>
 
@@ -502,7 +488,6 @@ businesses = results.flat();
 .dir-head h1 span { color: #dc2626; }
 .dir-head p { color: #64748b; font-size: 14px; font-weight: 500; padding-bottom: 2px; }
 
-/* ════════ SEARCH + NEAR ME ════════ */
 .filters {
   display: flex; flex-wrap: wrap; gap: 10px;
   margin-bottom: 14px; padding: 0 0 14px;
@@ -548,7 +533,6 @@ businesses = results.flat();
 }
 .results-count i { color: #dc2626; }
 
-/* ════════ CATEGORY GRID (Desktop: Pills Wrap) ════════ */
 .cat-grid {
   display: flex;
   flex-wrap: wrap;
@@ -603,7 +587,6 @@ businesses = results.flat();
 }
 .cat-chip.all.active i { color: #fff; }
 
-/* ════════ CARDS (UNCHANGED) ════════ */
 .biz-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 
 .biz-grid .biz-card {
@@ -628,6 +611,8 @@ businesses = results.flat();
 .biz-grid .avatar { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; flex-shrink: 0; box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18); }
 .biz-grid .head-text { flex: 1; min-width: 0; padding-top: 2px; }
 .biz-grid .biz-name { font-size: 16.5px; font-weight: 800; color: #0f172a; margin: 0 0 5px 0; line-height: 1.28; letter-spacing: -0.4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.biz-grid .biz-name .biz-link { color: inherit; text-decoration: none; display: block; }
+.biz-grid .biz-name .biz-link:hover { color: #dc2626; }
 .biz-grid .biz-sub { font-size: 12.5px; color: #64748b; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .biz-grid .card-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
@@ -697,7 +682,6 @@ businesses = results.flat();
 .dir-page .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
 .dir-page .pagination span { color: #94a3b8; padding: 8px 4px; font-weight: 700; }
 
-/* ════════ MOBILE — 5-COLUMN BOXY GRID ════════ */
 @media (max-width: 768px) {
   .dir-page { padding: 18px 0 48px; }
   .dir-container { padding: 0 10px; }
@@ -706,7 +690,6 @@ businesses = results.flat();
   .dir-head h1 { font-size: 19px; margin-bottom: 2px; letter-spacing: -0.3px; }
   .dir-head p { font-size: 12px; }
 
-  /* Filters */
   .filters { flex-direction: column; align-items: stretch; gap: 8px; padding: 0 0 10px; margin-bottom: 10px; }
   .search-wrap { min-width: 0; }
   .f-input { padding: 10px 13px 10px 36px; font-size: 12.5px; border-radius: 9px; }
@@ -714,7 +697,6 @@ businesses = results.flat();
   .near-btn { width: 100%; justify-content: center; padding: 10px 16px; font-size: 12.5px; }
   .results-count { justify-content: center; padding: 8px 12px; font-size: 11.5px; white-space: normal; text-align: center; }
 
-  /* Category Grid — 5 columns, boxy, compact */
   .cat-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -761,7 +743,6 @@ businesses = results.flat();
     background: linear-gradient(135deg, #0f172a, #1e293b);
   }
 
-  /* Cards */
   .biz-grid { grid-template-columns: 1fr; gap: 14px; }
   .biz-grid .biz-card { padding: 18px 18px 0; }
   .biz-grid .card-stats { padding: 12px 14px; }
