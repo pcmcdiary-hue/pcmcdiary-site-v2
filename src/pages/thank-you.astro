@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Thank You | PCMC Diary" description="Registration received. We'll contact you soon.">
+
+<div class="ty-page">
+  <div class="ty-box">
+    <div class="ty-icon">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h1>Registration Received!</h1>
+    <p>Thank you for registering your business on PCMC Diary. Our team will verify your details and contact you on WhatsApp within 24 hours.</p>
+
+    <div class="ty-steps">
+      <div class="ty-step">
+        <div class="ty-num">1</div>
+        <div>
+          <strong>Verification</strong>
+          <p>Team reviews your details</p>
+        </div>
+      </div>
+      <div class="ty-step">
+        <div class="ty-num">2</div>
+        <div>
+          <strong>WhatsApp Contact</strong>
+          <p>We'll reach you within 24 hours</p>
+        </div>
+      </div>
+      <div class="ty-step">
+        <div class="ty-num">3</div>
+        <div>
+          <strong>Listing Live</strong>
+          <p>Your business goes live</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ty-actions">
+      <a href="/" class="ty-btn ty-btn-primary">
+        <i class="fa-solid fa-house"></i> Go Home
+      </a>
+      <a href="/directory" class="ty-btn ty-btn-secondary">
+        <i class="fa-solid fa-store"></i> Browse Directory
+      </a>
+    </div>
+
+    <p class="ty-note">
+      <i class="fa-solid fa-envelope"></i>
+      Confirmation email bhej di gayi hai. Inbox check karein.
+    </p>
+  </div>
+</div>
+
+<style>
+.ty-page {
+  background: #f8fafc;
+  min-height: 70vh;
+  padding: 60px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ty-box {
+  max-width: 560px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e8ecf1;
+  border-radius: 22px;
+  padding: 44px 36px;
+  text-align: center;
+  box-shadow: 0 20px 48px -24px rgba(15,23,42,0.12);
+}
+.ty-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669, #047857);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 22px;
+  font-size: 40px;
+  color: #fff;
+  box-shadow: 0 16px 32px -12px rgba(5,150,105,0.4);
+}
+.ty-box h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.6px;
+  margin: 0 0 12px;
+}
+.ty-box > p {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.ty-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.ty-step {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+.ty-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ty-step strong {
+  display: block;
+  font-size: 13.5px;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+.ty-step p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.ty-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.ty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.ty-btn-primary {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  color: #fff;
+  box-shadow: 0 10px 22px -8px rgba(185,28,28,0.5);
+}
+.ty-btn-secondary {
+  background: #fff;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+.ty-btn:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.ty-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: #f0fdf4;
+  padding: 10px 16px;
+  border-radius: 50px;
+  border: 1px solid #bbf7d0;
+  font-weight: 600;
+}
+.ty-note i { color: #059669; }
+
+@media (max-width: 640px) {
+  .ty-box { padding: 32px 22px; }
+  .ty-box h1 { font-size: 22px; }
+  .ty-icon { width: 68px; height: 68px; font-size: 32px; }
+  .ty-actions { flex-direction: column; }
+  .ty-btn { width: 100%; justify-content: center; }
+}
+</style>
+
+</BaseLayout>
