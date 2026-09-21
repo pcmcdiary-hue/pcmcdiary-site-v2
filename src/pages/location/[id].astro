@@ -213,7 +213,7 @@ uniqueCats.sort(function(a, b) { return a.name.localeCompare(b.name); });
       '<header class="card-head">' +
         '<div class="avatar" style="background: linear-gradient(135deg, ' + c1 + ', ' + c2 + ')"><span>' + initial + '</span></div>' +
         '<div class="head-text">' +
-          '<h3 class="biz-name">' + name + '</h3>' +
+          '<h3 class="biz-name"><a href="/business/' + b.businessId + '" class="biz-link">' + name + '</a></h3>' +
           (b.subCategory ? '<div class="biz-sub">' + b.subCategory + '</div>' : '') +
         '</div>' +
       '</header>' +
@@ -512,6 +512,8 @@ filtered = []
 .biz-grid .avatar { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; flex-shrink: 0; box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18); }
 .biz-grid .head-text { flex: 1; min-width: 0; padding-top: 2px; }
 .biz-grid .biz-name { font-size: 16.5px; font-weight: 800; color: #0f172a; margin: 0 0 5px 0; line-height: 1.28; letter-spacing: -0.4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.biz-grid .biz-name .biz-link { color: inherit; text-decoration: none; display: block; }
+.biz-grid .biz-name .biz-link:hover { color: #dc2626; }
 .biz-grid .biz-sub { font-size: 12.5px; color: #64748b; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .biz-grid .card-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
