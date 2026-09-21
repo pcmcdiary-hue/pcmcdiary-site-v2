@@ -56,6 +56,30 @@ uniqueLocs.sort();
 
 <BaseLayout title={category.categoryName + ' in PCMC'} description={'Find ' + category.categoryName + ' businesses in Pimpri-Chinchwad.'}>
 
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": category.categoryName + " in Pimpri-Chinchwad",
+    "url": "https://pcmcdiary.com/category/" + category.categoryId,
+    "description": "Find " + businesses.length + " verified " + category.categoryName + " businesses in Pimpri-Chinchwad, Pune.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "PCMC Diary",
+      "url": "https://pcmcdiary.com"
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": businesses.length,
+      "itemListElement": businesses.slice(0, 10).map(function(b, i) {
+        return {
+          "@type": "ListItem",
+          "position": i + 1,
+          "url": "https://pcmcdiary.com/business/" + b.businessId
+        };
+      })
+    }
+  })} />
+
   <div class="cat-page">
 
     <section class="cat-hero">
