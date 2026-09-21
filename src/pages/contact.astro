@@ -1,262 +1,549 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const CDN = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data';
+
+const iconMap = {
+  'Food & Dining': 'fa-utensils','Grocery & Kirana': 'fa-cart-shopping','Health & Medical': 'fa-stethoscope',
+  'Beauty & Personal Care': 'fa-spa','Fitness & Wellness': 'fa-dumbbell','Education & Learning': 'fa-graduation-cap',
+  'Fashion & Apparel': 'fa-shirt','Jewelry & Gold': 'fa-gem','Electronics & Gadgets': 'fa-laptop',
+  'Home & Interior': 'fa-couch','Automotive': 'fa-car','Domestic Services': 'fa-broom',
+  'IT & Digital Services': 'fa-code','Logistics & Movers': 'fa-truck-fast','Hospitality & Travel': 'fa-plane',
+  'Entertainment & Events': 'fa-film','Kids & Baby': 'fa-child','Books & Stationery': 'fa-book',
+  'Gardening & Outdoor': 'fa-seedling','Pet Care': 'fa-paw','Real Estate & Property': 'fa-building',
+  'Finance & Legal': 'fa-coins','Packaging & Printing': 'fa-print','Cafes & Quick Bites': 'fa-mug-hot',
+  'Shopping & Retail': 'fa-bag-shopping','Communication & Internet': 'fa-wifi','Security Services': 'fa-shield-halved',
+  'Alternative Medicine': 'fa-leaf','Photography & Video': 'fa-camera','Celebrations & Gifts': 'fa-gift',
+  'Government Services': 'fa-landmark','Utilities': 'fa-bolt','Daily Use Services': 'fa-screwdriver-wrench',
+  'Fitness Equipment': 'fa-person-running','Ayurveda & Wellness': 'fa-mortar-pestle','Coaches & Trainers': 'fa-chalkboard-user',
+  'Interior & Exterior Design': 'fa-paint-roller','Consulting Services': 'fa-handshake','Specialty Stores': 'fa-store'
+};
+
+let categories = [];
+let locations = [];
+let deals = [];
+
+try {
+  const catRes = await fetch(`${CDN}/categories.json`);
+  const catData = await catRes.json();
+  categories = (catData.categories || []).map(c => ({ ...c, iconClass: iconMap[c.categoryName] || 'fa-folder' }));
+} catch (e) { console.error(e); }
+
+try {
+  const locRes = await fetch(`${CDN}/locations.json`);
+  const locData = await locRes.json();
+  locations = locData.locations || [];
+} catch (e) { console.error(e); }
+
+const results = await Promise.all(
+  categories.map(async (cat) => {
+    try {
+      const res = await fetch(`${CDN}/${cat.file}`);
+      const data = await res.json();
+      return (Array.isArray(data) ? data : [])
+        .filter(b => b.deals && String(b.deals).trim())
+        .map(b => ({
+          ...b,
+          categoryId: cat.categoryId,
+          categoryName: cat.categoryName,
+          categoryIcon: cat.iconClass
+        }));
+    } catch (e) { return []; }
+  })
+);
+deals = results.flat();
 ---
 
-<BaseLayout title="Contact Us" description="Get in touch with PCMC Diary — for business listings, partnerships, or queries.">
+<BaseLayout title="Coupons & Deals" description="Exclusive coupons and deals from local PCMC businesses.">
 
-  <div class="page">
-    <div class="page-container">
-      <div class="page-header">
-        <div class="page-icon"><i class="fa-solid fa-envelope"></i></div>
-        <h1>Contact Us</h1>
-        <p class="page-sub">We usually reply within 24 hours</p>
-      </div>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "OfferCatalog",
+    "name": "PCMC Diary Coupons & Deals",
+    "url": "https://pcmcdiary.com/coupons",
+    "description": "Exclusive coupons and deals from " + deals.length + " local businesses in Pimpri-Chinchwad.",
+    "numberOfItems": deals.length,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "PCMC Diary",
+      "url": "https://pcmcdiary.com"
+    }
+  })} />
 
-      <div class="contact-grid">
+  <div class="cp-page">
 
-        <a href="mailto:info@pcmcdiary.com" class="contact-card">
-          <div class="contact-ic" style="background: linear-gradient(135deg,#dc2626,#991b1b)">
-            <i class="fa-solid fa-envelope"></i>
+    <section class="cp-hero">
+      <div class="cp-hero-bg"></div>
+      <div class="cp-container">
+        <nav class="breadcrumb">
+          <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+          <i class="fa-solid fa-chevron-right sep"></i>
+          <span>Coupons &amp; Deals</span>
+        </nav>
+        <div class="cp-hero-inner">
+          <div class="cp-hero-icon">
+            <i class="fa-solid fa-ticket"></i>
           </div>
-          <div class="contact-info">
-            <h3>Email</h3>
-            <p>info@pcmcdiary.com</p>
-            <span>Best for: General queries, listings, partnerships</span>
-          </div>
-        </a>
-
-        <a href="https://wa.me/918793932827" target="_blank" rel="noopener" class="contact-card">
-          <div class="contact-ic" style="background: linear-gradient(135deg,#25d366,#15803d)">
-            <i class="fa-brands fa-whatsapp"></i>
-          </div>
-          <div class="contact-info">
-            <h3>WhatsApp</h3>
-            <p>+91 87939 32827</p>
-            <span>Best for: Quick questions, urgent issues</span>
-          </div>
-        </a>
-
-        <a href="tel:+918793932827" class="contact-card">
-          <div class="contact-ic" style="background: linear-gradient(135deg,#0891b2,#0e7490)">
-            <i class="fa-solid fa-phone"></i>
-          </div>
-          <div class="contact-info">
-            <h3>Phone</h3>
-            <p>+91 87939 32827</p>
-            <span>Mon-Sat, 10 AM – 7 PM</span>
-          </div>
-        </a>
-
-        <div class="contact-card static">
-          <div class="contact-ic" style="background: linear-gradient(135deg,#2563eb,#1e40af)">
-            <i class="fa-solid fa-location-dot"></i>
-          </div>
-          <div class="contact-info">
-            <h3>Location</h3>
-            <p>Nigdi, Pimpri-Chinchwad</p>
-            <span>Maharashtra, India</span>
+          <div class="cp-hero-text">
+            <h1>Coupons &amp; Deals</h1>
+            <p>{deals.length} exclusive offers from local PCMC businesses</p>
           </div>
         </div>
-
       </div>
+    </section>
 
-      <div class="cta-section">
-        <h2><i class="fa-solid fa-store"></i> Want to List Your Business?</h2>
-        <p>Register your business on PCMC Diary and reach thousands of local customers. Free listings available.</p>
-        <div class="cta-btns">
-          <a href="/register" class="cta-btn primary">
-            <i class="fa-solid fa-circle-plus"></i> Register Business
-          </a>
-          <a href="/plans" class="cta-btn outline">
-            <i class="fa-solid fa-crown"></i> View Plans
-          </a>
+    <section class="cp-body">
+      <div class="cp-container">
+
+        <div class="cat-pills" id="catPills">
+          <button class="cat-pill active" data-cat="all">
+            <span class="cp-icon"><i class="fa-solid fa-border-all"></i></span>
+            <span class="cp-name">All</span>
+          </button>
+          {categories.map(c => (
+            <button class="cat-pill" data-cat={c.categoryId}>
+              <span class="cp-icon"><i class={`fa-solid ${c.iconClass}`}></i></span>
+              <span class="cp-name">{c.categoryName.length > 14 ? c.categoryName.substring(0, 12) + '…' : c.categoryName}</span>
+            </button>
+          ))}
         </div>
+
+        <div class="filters">
+          <select id="locFilter" class="f-select">
+            <option value="all">All Locations</option>
+            {locations.map(l => <option value={l.locationName}>{l.locationName}</option>)}
+          </select>
+          <select id="sortFilter" class="f-select">
+            <option value="expiry">Expiring Soon</option>
+            <option value="name">Name A-Z</option>
+            <option value="category">Category A-Z</option>
+          </select>
+          <input type="text" id="searchInput" class="f-input" placeholder="Search deals, code, business…" />
+          <span class="results-count" id="resultsCount">
+            <i class="fa-solid fa-ticket"></i> {deals.length} offers
+          </span>
+        </div>
+
+        <div class="coupon-grid" id="couponGrid"></div>
+
       </div>
-    </div>
+    </section>
+
   </div>
 
 </BaseLayout>
 
+<script define:vars={{ deals, categories, locations }}>
+  const ALL = deals || [];
+  const CATS = categories || [];
+  const LOCS = locations || [];
+
+  const state = {
+    search: '',
+    category: 'all',
+    location: 'all',
+    sort: 'expiry',
+    filtered: [...ALL]
+  };
+
+  function avatarColors(name) {
+    const pal = [['#dc2626','#991b1b'],['#ea580c','#c2410c'],['#d97706','#b45309'],['#ca8a04','#a16207'],['#65a30d','#4d7c0f'],['#059669','#047857'],['#0891b2','#0e7490'],['#0284c7','#0369a1'],['#4f46e5','#4338ca'],['#7c3aed','#6d28d9'],['#c026d3','#a21caf'],['#db2777','#be185d'],['#e11d48','#be123c'],['#9333ea','#7e22ce']];
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+    return pal[Math.abs(h) % pal.length];
+  }
+
+  function clean(p) { return (p || '').replace(/\s/g, ''); }
+
+  function formatDate(d) {
+    if (!d) return '';
+    try {
+      const date = new Date(d);
+      if (isNaN(date.getTime())) return '';
+      return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    } catch (e) { return ''; }
+  }
+
+  function getExpiryTime(b) {
+    if (!b.dealExpiry) return Infinity;
+    const t = new Date(b.dealExpiry).getTime();
+    return isNaN(t) ? Infinity : t;
+  }
+
+  function renderCoupon(b) {
+    const name = b.businessName || 'Business';
+    const initial = name.trim().charAt(0).toUpperCase();
+    const [c1, c2] = avatarColors(name);
+    const dealText = b.deals || '';
+    const code = b.dealCode || '';
+    const expiry = formatDate(b.dealExpiry);
+    const category = b.categoryName || '';
+    const catIcon = b.categoryIcon || 'fa-folder';
+    const location = b.location || '';
+
+    const waMsg = encodeURIComponent('Hi, I want to use the offer: ' + dealText + (code ? ' (Code: ' + code + ')' : ''));
+
+    return `
+      <article class="coupon-card">
+        <div class="coupon-accent" style="background: linear-gradient(90deg, ${c1}, ${c2})"></div>
+
+        <div class="coupon-top">
+          <div class="coupon-avatar" style="background: linear-gradient(135deg, ${c1}, ${c2})">
+            <span>${initial}</span>
+          </div>
+          <div class="coupon-head-text">
+            <h3 class="coupon-name"><a href="/business/${b.businessId}" class="coupon-link">${name}</a></h3>
+            <div class="coupon-meta">
+              <span class="coupon-cat"><i class="fa-solid ${catIcon}"></i> ${category}</span>
+              ${location ? `<span class="coupon-loc"><i class="fa-solid fa-location-dot"></i> ${location}</span>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="coupon-deal">
+          <div class="coupon-deal-icon"><i class="fa-solid fa-gift"></i></div>
+          <div class="coupon-deal-text">
+            <div class="coupon-deal-label">Exclusive Offer</div>
+            <div class="coupon-deal-desc">${dealText}</div>
+          </div>
+        </div>
+
+        ${code ? `
+        <div class="coupon-code-row">
+          <div class="coupon-code-box">
+            <span class="coupon-code-label">CODE</span>
+            <span class="coupon-code-val">${code}</span>
+          </div>
+          <button class="coupon-copy-btn" data-code="${code}" type="button">
+            <i class="fa-regular fa-copy"></i> Copy
+          </button>
+        </div>
+        ` : ''}
+
+        <div class="coupon-footer">
+          <div class="coupon-expiry">
+            ${expiry ? `<i class="fa-regular fa-clock"></i> Expires ${expiry}` : '<i class="fa-regular fa-clock"></i> Limited period'}
+          </div>
+          <div class="coupon-actions">
+            ${b.phone ? `<a href="tel:${clean(b.phone)}" class="cp-act cp-call" title="Call"><i class="fa-solid fa-phone"></i></a>` : ''}
+            ${b.phone ? `<a href="https://wa.me/${clean(b.phone)}?text=${waMsg}" target="_blank" rel="noopener" class="cp-act cp-wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function applyFilters() {
+    let list = [...ALL];
+
+    if (state.category !== 'all') {
+      list = list.filter(b => b.categoryId === state.category);
+    }
+
+    if (state.location !== 'all') {
+      list = list.filter(b => {
+        if ((b.location || '') === state.location) return true;
+        const sa = (b.serviceArea || '').split(',').map(s => s.trim());
+        return sa.includes(state.location);
+      });
+    }
+
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      list = list.filter(b =>
+        (b.businessName || '').toLowerCase().includes(q) ||
+        (b.deals || '').toLowerCase().includes(q) ||
+        (b.dealCode || '').toLowerCase().includes(q) ||
+        (b.categoryName || '').toLowerCase().includes(q) ||
+        (b.location || '').toLowerCase().includes(q) ||
+        (b.tags || '').toLowerCase().includes(q)
+      );
+    }
+
+    if (state.sort === 'expiry') {
+      list.sort((a, b) => getExpiryTime(a) - getExpiryTime(b));
+    } else if (state.sort === 'name') {
+      list.sort((a, b) => (a.businessName || '').localeCompare(b.businessName || ''));
+    } else if (state.sort === 'category') {
+      list.sort((a, b) => (a.categoryName || '').localeCompare(b.categoryName || ''));
+    }
+
+    state.filtered = list;
+    render();
+  }
+
+  function render() {
+    const total = state.filtered.length;
+    document.getElementById('resultsCount').innerHTML = `<i class="fa-solid fa-ticket"></i> ${total} offer${total !== 1 ? 's' : ''}`;
+
+    const grid = document.getElementById('couponGrid');
+    if (total === 0) {
+      grid.innerHTML = `<div class="empty"><i class="fa-solid fa-ticket"></i><h3>No coupons found</h3><p>Try adjusting your filters or search</p></div>`;
+      return;
+    }
+    grid.innerHTML = state.filtered.map(renderCoupon).join('');
+
+    grid.querySelectorAll('.coupon-copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const code = btn.dataset.code;
+        try {
+          await navigator.clipboard.writeText(code);
+          const original = btn.innerHTML;
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.innerHTML = original;
+            btn.classList.remove('copied');
+          }, 1500);
+        } catch (e) {
+          alert('Code: ' + code);
+        }
+      });
+    });
+  }
+
+  document.getElementById('catPills').addEventListener('click', e => {
+    const btn = e.target.closest('.cat-pill');
+    if (!btn) return;
+    document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.category = btn.dataset.cat;
+    applyFilters();
+    window.scrollTo({ top: 320, behavior: 'smooth' });
+  });
+
+  document.getElementById('locFilter').addEventListener('change', e => {
+    state.location = e.target.value;
+    applyFilters();
+  });
+  document.getElementById('sortFilter').addEventListener('change', e => {
+    state.sort = e.target.value;
+    applyFilters();
+  });
+  document.getElementById('searchInput').addEventListener('input', e => {
+    clearTimeout(window._t);
+    window._t = setTimeout(() => {
+      state.search = e.target.value;
+      applyFilters();
+    }, 250);
+  });
+
+  applyFilters();
+</script>
+
 <style is:global>
-.page {
-  background: #f8fafc;
-  padding: 40px 20px 80px;
-  min-height: 60vh;
-}
-.page-container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: #fff;
-  border-radius: 20px;
-  padding: 48px 52px;
-  box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -16px rgba(15,23,42,0.08);
-  border: 1px solid #f1f5f9;
-}
-.page-header {
-  text-align: center;
-  padding-bottom: 32px;
-  margin-bottom: 32px;
-  border-bottom: 1px solid #f1f5f9;
-}
-.page-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 16px;
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  color: #fff;
-  box-shadow: 0 12px 24px -8px rgba(220,38,38,0.4);
-}
-.page-header h1 {
-  font-size: 34px;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.8px;
-  margin: 0 0 8px;
-  line-height: 1.15;
-}
-.page-sub { font-size: 15px; color: #64748b; margin: 0; font-weight: 500; }
+.cp-page { background: #f8fafc; min-height: 60vh; }
+.cp-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-.contact-grid {
+.cp-hero {
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
+  color: #fff; padding: 32px 0 40px;
+  position: relative; overflow: hidden;
+}
+.cp-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px;
+  opacity: 0.6; pointer-events: none;
+}
+.cp-hero .cp-container { position: relative; z-index: 2; }
+
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.7);
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.breadcrumb a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
+.breadcrumb a:hover { color: #fde047; }
+.breadcrumb a i { font-size: 11px; }
+.breadcrumb .sep { font-size: 9px; opacity: 0.5; }
+.breadcrumb span { color: #fde047; font-weight: 700; }
+
+.cp-hero-inner { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.cp-hero-icon {
+  width: 76px; height: 76px; border-radius: 20px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: #fde047; flex-shrink: 0;
+}
+.cp-hero-text h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; line-height: 1.12; margin: 0 0 6px; }
+.cp-hero-text p { font-size: 14.5px; color: rgba(255,255,255,0.85); font-weight: 500; margin: 0; }
+
+.cp-body { padding: 32px 0 60px; }
+
+.cat-pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
+.cat-pill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 12px 6px; background: #fff; border: 1px solid #e2e8f0;
+  border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  min-height: 72px; font-family: inherit; text-align: center;
+}
+.cat-pill:hover { border-color: #dc2626; background: #fef2f2; transform: translateY(-2px); }
+.cat-pill.active { background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #dc2626; color: #fff; }
+.cp-icon { font-size: 18px; line-height: 1; color: #64748b; margin-bottom: 6px; }
+.cat-pill.active .cp-icon { color: #fff; }
+.cat-pill:hover .cp-icon { color: #dc2626; }
+.cat-pill.active:hover .cp-icon { color: #fff; }
+.cp-name { font-size: 11.5px; font-weight: 700; color: #334155; line-height: 1.2; }
+.cat-pill.active .cp-name { color: #fff; }
+
+.filters {
+  display: flex; flex-wrap: wrap; margin-bottom: 24px;
+  padding: 14px 0; border-bottom: 1px solid #e2e8f0; align-items: center;
+}
+.f-select, .f-input {
+  padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 13.5px; background: #fff; flex: 1; min-width: 140px;
+  font-family: inherit; color: #334155; font-weight: 600; outline: none;
+  margin-right: 10px; margin-bottom: 6px;
+}
+.f-select:focus, .f-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+.results-count {
+  font-size: 13px; color: #64748b; font-weight: 700;
+  margin-left: auto; padding: 8px 14px; background: #fff;
+  border: 1px solid #e2e8f0; border-radius: 8px;
+  white-space: nowrap; display: inline-flex; align-items: center;
+}
+.results-count i { color: #dc2626; margin-right: 7px; }
+
+.coupon-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 40px;
-}
-.contact-card {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 20px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  text-decoration: none;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.contact-card:not(.static):hover {
-  transform: translateY(-3px);
-  border-color: #fecaca;
-  box-shadow: 0 16px 32px -12px rgba(220,38,38,0.15);
-  text-decoration: none;
-}
-.contact-ic {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 20px;
-  flex-shrink: 0;
-  box-shadow: 0 8px 16px -6px rgba(15,23,42,0.25);
-}
-.contact-info { flex: 1; min-width: 0; }
-.contact-info h3 {
-  font-size: 15px;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0 0 4px;
-  letter-spacing: -0.2px;
-}
-.contact-info p {
-  font-size: 14px;
-  font-weight: 700;
-  color: #dc2626;
-  margin: 0 0 6px;
-  word-break: break-word;
-}
-.contact-info span {
-  font-size: 12px;
-  color: #94a3b8;
-  font-weight: 500;
-  display: block;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
 }
 
-.cta-section {
-  text-align: center;
-  padding: 36px 28px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border-radius: 20px;
-  color: #fff;
-  position: relative;
+.coupon-card {
+  position: relative; background: #fff; border: 1px solid #e8ecf1;
+  border-radius: 16px; padding: 22px; display: flex; flex-direction: column;
+  gap: 14px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 4px 12px -8px rgba(15, 23, 42, 0.04);
 }
-.cta-section::before {
-  content: '';
-  position: absolute;
-  top: -40%; right: -10%;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(220,38,38,0.35), transparent 65%);
-  border-radius: 50%;
+.coupon-card:hover {
+  border-color: #fecaca;
+  box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.12), 0 8px 16px -8px rgba(220, 38, 38, 0.08);
+  transform: translateY(-4px);
 }
-.cta-section > * { position: relative; z-index: 2; }
-.cta-section h2 {
-  font-size: 24px;
-  font-weight: 800;
-  margin: 0 0 10px;
-  letter-spacing: -0.4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.cta-section h2 i { color: #fde047; font-size: 20px; }
-.cta-section p {
-  font-size: 14.5px;
-  color: rgba(255,255,255,0.85);
-  margin: 0 0 22px;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
-}
-.cta-btns {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 24px;
-  border-radius: 11px;
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-.cta-btn.primary {
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  color: #fff;
-  box-shadow: 0 10px 24px -8px rgba(220,38,38,0.55);
-}
-.cta-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(220,38,38,0.65); text-decoration: none; }
-.cta-btn.outline {
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.25);
-}
-.cta-btn.outline:hover { background: rgba(255,255,255,0.16); text-decoration: none; transform: translateY(-2px); }
-.cta-btn i { font-size: 13px; }
+.coupon-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0.85; }
 
-@media (max-width: 640px) {
-  .page { padding: 20px 12px 60px; }
-  .page-container { padding: 32px 20px; border-radius: 16px; }
-  .page-header h1 { font-size: 26px; }
-  .page-icon { width: 54px; height: 54px; font-size: 22px; border-radius: 14px; }
-  .contact-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
-  .contact-card { padding: 16px; }
-  .contact-ic { width: 42px; height: 42px; font-size: 17px; border-radius: 10px; }
-  .cta-section { padding: 28px 20px; border-radius: 16px; }
-  .cta-section h2 { font-size: 20px; }
-  .cta-section p { font-size: 13.5px; }
+.coupon-top { display: flex; align-items: flex-start; gap: 12px; }
+.coupon-avatar {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 20px; letter-spacing: -0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px -6px rgba(15, 23, 42, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.coupon-head-text { flex: 1; min-width: 0; }
+.coupon-name {
+  font-size: 15.5px; font-weight: 800; color: #0f172a;
+  margin: 0 0 6px; line-height: 1.25; letter-spacing: -0.3px;
+  overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+}
+.coupon-name .coupon-link { color: inherit; text-decoration: none; }
+.coupon-name .coupon-link:hover { color: #dc2626; }
+.coupon-meta { display: flex; flex-wrap: wrap; gap: 10px; }
+.coupon-cat, .coupon-loc { font-size: 11.5px; font-weight: 600; color: #64748b; display: inline-flex; align-items: center; gap: 5px; }
+.coupon-cat i { color: #dc2626; font-size: 10px; }
+.coupon-loc i { color: #94a3b8; font-size: 10px; }
+
+.coupon-deal {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 14px 14px 18px;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fde68a; border-radius: 12px;
+  position: relative; overflow: hidden;
+}
+.coupon-deal::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, #f59e0b, #d97706); }
+.coupon-deal-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px; flex-shrink: 0;
+  box-shadow: 0 4px 12px -3px rgba(217, 119, 6, 0.5);
+}
+.coupon-deal-text { min-width: 0; flex: 1; }
+.coupon-deal-label { font-size: 9.5px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 4px; }
+.coupon-deal-desc {
+  font-size: 13.5px; font-weight: 800; color: #78350f; line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.coupon-code-row { display: flex; gap: 8px; }
+.coupon-code-box {
+  flex: 1; display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: #f8fafc;
+  border: 1.5px dashed #cbd5e1; border-radius: 10px;
+}
+.coupon-code-label { font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; }
+.coupon-code-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px;
+}
+.coupon-copy-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff; border: 0; border-radius: 10px;
+  font-size: 12.5px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.2s;
+  box-shadow: 0 6px 14px -6px rgba(220, 38, 38, 0.45);
+  white-space: nowrap;
+}
+.coupon-copy-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px -6px rgba(220, 38, 38, 0.55); }
+.coupon-copy-btn.copied { background: linear-gradient(135deg, #059669, #047857); box-shadow: 0 6px 14px -6px rgba(5, 150, 105, 0.45); }
+
+.coupon-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding-top: 14px; border-top: 1px solid #f1f5f9;
+  margin-top: auto;
+}
+.coupon-expiry { font-size: 11.5px; color: #94a3b8; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.coupon-expiry i { font-size: 11px; }
+.coupon-actions { display: flex; gap: 6px; }
+.cp-act {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none; font-size: 13px; transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.cp-call { background: #fff5f5; color: #991b1b; border-color: #fecaca; }
+.cp-call:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border-color: #dc2626; transform: translateY(-2px); text-decoration: none; }
+.cp-wa { background: #f0fdf4; color: #14532d; border-color: #bbf7d0; }
+.cp-wa:hover { background: linear-gradient(135deg, #25d366, #15803d); color: #fff; border-color: #25d366; transform: translateY(-2px); text-decoration: none; }
+
+.cp-page .empty {
+  grid-column: 1 / -1; text-align: center; padding: 80px 20px;
+  background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1;
+}
+.cp-page .empty i { font-size: 48px; color: #cbd5e1; margin-bottom: 16px; display: block; }
+.cp-page .empty h3 { font-size: 18px; font-weight: 800; color: #334155; margin: 0 0 6px; }
+.cp-page .empty p { font-size: 13.5px; color: #94a3b8; margin: 0; }
+
+@media (max-width: 768px) {
+  .cp-hero { padding: 24px 0 32px; }
+  .cp-hero-inner { gap: 16px; }
+  .cp-hero-icon { width: 60px; height: 60px; font-size: 26px; border-radius: 16px; }
+  .cp-hero-text h1 { font-size: 24px; }
+  .cat-pills { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .cat-pill { min-height: 62px; padding: 8px 4px; }
+  .cp-icon { font-size: 16px; margin-bottom: 4px; }
+  .cp-name { font-size: 10.5px; }
+  .filters { flex-direction: column; align-items: stretch; }
+  .f-select, .f-input { width: 100%; margin-right: 0; }
+  .results-count { margin-left: 0; justify-content: center; }
+  .coupon-grid { grid-template-columns: 1fr; gap: 14px; }
+  .coupon-card { padding: 18px; }
+  .coupon-code-row { flex-direction: column; }
+  .coupon-copy-btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 400px) {
+  .cat-pills { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
