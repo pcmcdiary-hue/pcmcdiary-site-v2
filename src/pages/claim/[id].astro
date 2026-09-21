@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const catsRes = await fetch('https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/categories.json');
+  const catsData = await catsRes.json();
+  const categories = catsData.categories || [];
+  const allPaths = [];
+
+  for (const cat of categories) {
+    try {
+      const res = await fetch('https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/' + cat.file);
+      const businesses = await res.json();
+      if (!Array.isArray(businesses)) continue;
+      for (const biz of businesses) {
+        if (!biz.businessId) continue;
+        allPaths.push({ params: { id: biz.businessId }, props: { biz } });
+      }
+    } catch (e) {}
+  }
+  return allPaths;
+}
+
+const { biz } = Astro.props;
+---
+
+<BaseLayout title={'Claim ' + biz.businessName + ' | PCMC Diary'} description="Claim your free business listing on PCMC Diary.">
+
+<div class="claim-page">
+  <div class="claim-box">
+    <h1>Claim this business</h1>
+    <div class="biz-preview">
+      <div class="avatar">{(biz.businessName || 'B').charAt(0)}</div>
+      <div>
+        <h2>{biz.businessName}</h2>
+        <p>{biz.subCategory} · {biz.location}</p>
+      </div>
+    </div>
+
+    <form id="claimForm">
+      <input type="hidden" name="businessId" value={biz.businessId} />
+      <input type="hidden" name="businessName" value={biz.businessName} />
+
+      <label>Your Name</label>
+      <input type="text" name="ownerName" required placeholder="Full name" />
+
+      <label>WhatsApp Number</label>
+      <input type="tel" name="whatsapp" pattern="[0-9]{10}" required placeholder="10 digit number" />
+
+      <label>Email (optional)</label>
+      <input type="email" name="email" placeholder="your@email.com" />
+
+      <button type="submit">Send Claim Request via WhatsApp</button>
+    </form>
+
+    <p class="note">
+      Free hai. 2 minute lagega. Hum aapko WhatsApp pe verify karenge.
+    </p>
+  </div>
+</div>
+
+<script>
+  document.getElementById('claimForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    const msg = 'CLAIM REQUEST%0A%0ABusiness: ' + data.businessName +
+                '%0AID: ' + data.businessId +
+                '%0AOwner: ' + data.ownerName +
+                '%0AWhatsApp: ' + data.whatsapp +
+                '%0AEmail: ' + (data.email || '-');
+    window.open('https://wa.me/918793932827?text=' + msg, '_blank');
+    alert('Claim request sent! We will verify and update your listing.');
+  });
+</script>
+
+<style>
+.claim-page { padding: 60px 16px; background: #f8fafc; min-height: 100vh; }
+.claim-box { max-width: 480px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 16px; border: 1px solid #e8ecf1; }
+.claim-box h1 { font-size: 24px; font-weight: 800; margin: 0 0 20px; }
+.biz-preview { display: flex; gap: 14px; align-items: center; padding: 16px; background: #f8fafc; border-radius: 12px; margin-bottom: 24px; }
+.biz-preview .avatar { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; }
+.biz-preview h2 { font-size: 16px; margin: 0 0 4px; }
+.biz-preview p { font-size: 13px; color: #64748b; margin: 0; }
+form { display: flex; flex-direction: column; gap: 8px; }
+label { font-size: 13px; font-weight: 600; color: #334155; margin-top: 8px; }
+input { padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-family: inherit; }
+input:focus { outline: none; border-color: #dc2626; }
+button { margin-top: 16px; padding: 14px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; }
+button:hover { transform: translateY(-1px); }
+.note { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 16px; }
+</style>
+
+</BaseLayout>
