@@ -58,7 +58,6 @@ deals = results.flat();
 
   <div class="cp-page">
 
-    <!-- HERO -->
     <section class="cp-hero">
       <div class="cp-hero-bg"></div>
       <div class="cp-container">
@@ -79,11 +78,9 @@ deals = results.flat();
       </div>
     </section>
 
-    <!-- BODY -->
     <section class="cp-body">
       <div class="cp-container">
 
-        <!-- CATEGORY PILLS -->
         <div class="cat-pills" id="catPills">
           <button class="cat-pill active" data-cat="all">
             <span class="cp-icon"><i class="fa-solid fa-border-all"></i></span>
@@ -97,7 +94,6 @@ deals = results.flat();
           ))}
         </div>
 
-        <!-- FILTERS -->
         <div class="filters">
           <select id="locFilter" class="f-select">
             <option value="all">All Locations</option>
@@ -182,7 +178,7 @@ deals = results.flat();
             <span>${initial}</span>
           </div>
           <div class="coupon-head-text">
-            <h3 class="coupon-name">${name}</h3>
+            <h3 class="coupon-name"><a href="/business/${b.businessId}" class="coupon-link">${name}</a></h3>
             <div class="coupon-meta">
               <span class="coupon-cat"><i class="fa-solid ${catIcon}"></i> ${category}</span>
               ${location ? `<span class="coupon-loc"><i class="fa-solid fa-location-dot"></i> ${location}</span>` : ''}
@@ -226,12 +222,10 @@ deals = results.flat();
   function applyFilters() {
     let list = [...ALL];
 
-    // Category
     if (state.category !== 'all') {
       list = list.filter(b => b.categoryId === state.category);
     }
 
-    // Location
     if (state.location !== 'all') {
       list = list.filter(b => {
         if ((b.location || '') === state.location) return true;
@@ -240,7 +234,6 @@ deals = results.flat();
       });
     }
 
-    // Search
     if (state.search) {
       const q = state.search.toLowerCase();
       list = list.filter(b =>
@@ -253,7 +246,6 @@ deals = results.flat();
       );
     }
 
-    // Sort
     if (state.sort === 'expiry') {
       list.sort((a, b) => getExpiryTime(a) - getExpiryTime(b));
     } else if (state.sort === 'name') {
@@ -277,7 +269,6 @@ deals = results.flat();
     }
     grid.innerHTML = state.filtered.map(renderCoupon).join('');
 
-    // Wire copy buttons
     grid.querySelectorAll('.coupon-copy-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const code = btn.dataset.code;
@@ -297,7 +288,6 @@ deals = results.flat();
     });
   }
 
-  // Category pills
   document.getElementById('catPills').addEventListener('click', e => {
     const btn = e.target.closest('.cat-pill');
     if (!btn) return;
@@ -324,7 +314,6 @@ deals = results.flat();
     }, 250);
   });
 
-  // Initial render
   applyFilters();
 </script>
 
@@ -372,7 +361,6 @@ deals = results.flat();
 
 .cp-body { padding: 32px 0 60px; }
 
-/* CATEGORY PILLS */
 .cat-pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
 .cat-pill {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -389,7 +377,6 @@ deals = results.flat();
 .cp-name { font-size: 11.5px; font-weight: 700; color: #334155; line-height: 1.2; }
 .cat-pill.active .cp-name { color: #fff; }
 
-/* FILTERS */
 .filters {
   display: flex; flex-wrap: wrap; margin-bottom: 24px;
   padding: 14px 0; border-bottom: 1px solid #e2e8f0; align-items: center;
@@ -409,14 +396,12 @@ deals = results.flat();
 }
 .results-count i { color: #dc2626; margin-right: 7px; }
 
-/* GRID */
 .coupon-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 18px;
 }
 
-/* CARD */
 .coupon-card {
   position: relative; background: #fff; border: 1px solid #e8ecf1;
   border-radius: 16px; padding: 22px; display: flex; flex-direction: column;
@@ -446,6 +431,8 @@ deals = results.flat();
   overflow: hidden; text-overflow: ellipsis;
   display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
 }
+.coupon-name .coupon-link { color: inherit; text-decoration: none; }
+.coupon-name .coupon-link:hover { color: #dc2626; }
 .coupon-meta { display: flex; flex-wrap: wrap; gap: 10px; }
 .coupon-cat, .coupon-loc { font-size: 11.5px; font-weight: 600; color: #64748b; display: inline-flex; align-items: center; gap: 5px; }
 .coupon-cat i { color: #dc2626; font-size: 10px; }
