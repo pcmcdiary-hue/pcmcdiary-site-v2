@@ -6,7 +6,6 @@ const SITE = 'https://pcmcdiary.com';
 export const GET: APIRoute = async () => {
   const urls: string[] = [];
 
-  // ===== Static pages =====
   const staticPages = [
     { path: '/', priority: '1.0', changefreq: 'daily' },
     { path: '/directory', priority: '0.9', changefreq: 'daily' },
@@ -34,7 +33,6 @@ export const GET: APIRoute = async () => {
     );
   }
 
-  // ===== Categories + Locations + Businesses (from CDN) =====
   let categories: any[] = [];
   try {
     const catRes = await fetch(`${CDN}/categories.json`);
@@ -42,7 +40,6 @@ export const GET: APIRoute = async () => {
     categories = catData.categories || [];
   } catch (e) { /* ignore */ }
 
-  // Category pages
   for (const cat of categories) {
     urls.push(
       `  <url>\n` +
@@ -53,7 +50,6 @@ export const GET: APIRoute = async () => {
     );
   }
 
-  // Location pages
   try {
     const locRes = await fetch(`${CDN}/locations.json`);
     const locData = await locRes.json();
@@ -69,7 +65,6 @@ export const GET: APIRoute = async () => {
     }
   } catch (e) { /* ignore */ }
 
-  // ===== Business pages + Claim pages (fetch each category) =====
   const bizResults = await Promise.all(
     categories.map(async (cat) => {
       try {
@@ -85,7 +80,6 @@ export const GET: APIRoute = async () => {
   for (const biz of allBusinesses) {
     if (!biz.businessId) continue;
 
-    // Business detail page
     urls.push(
       `  <url>\n` +
       `    <loc>${SITE}/business/${biz.businessId}</loc>\n` +
@@ -94,7 +88,6 @@ export const GET: APIRoute = async () => {
       `  </url>`
     );
 
-    // Claim page (only for unverified)
     const tier = (biz.tier || '').toLowerCase();
     const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(tier);
     if (!isVerified) {
