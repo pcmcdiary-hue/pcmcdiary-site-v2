@@ -22,6 +22,8 @@ export async function getStaticPaths() {
 }
 
 const { biz } = Astro.props;
+const phone = (biz.phone || '').replace(/\s/g, '');
+const waPhone = phone.replace(/^91/, '');
 ---
 
 <BaseLayout title={'Claim ' + biz.businessName + ' | PCMC Diary'} description="Claim your free business listing on PCMC Diary.">
@@ -37,41 +39,50 @@ const { biz } = Astro.props;
       </div>
     </div>
 
-    <form id="claimForm">
+    <form
+      id="claimForm"
+      action="https://formsubmit.co/info@pcmcdiary.com"
+      method="POST"
+    >
+      <input type="hidden" name="_subject" value="Claim Request — PCMC Diary" />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_next" value="https://pcmcdiary.com/thank-you" />
+      <input type="hidden" name="_autoresponse" value="Thank you for claiming your business on PCMC Diary! We have received your request. Our team will verify and contact you on WhatsApp within 24 hours. — Team PCMC Diary" />
+      <input type="text" name="_honey" style="display:none" />
+
       <input type="hidden" name="businessId" value={biz.businessId} />
       <input type="hidden" name="businessName" value={biz.businessName} />
 
-      <label>Your Name</label>
+      <label>Your Name <span>*</span></label>
       <input type="text" name="ownerName" required placeholder="Full name" />
 
-      <label>WhatsApp Number</label>
+      <label>WhatsApp Number <span>*</span></label>
       <input type="tel" name="whatsapp" pattern="[0-9]{10}" required placeholder="10 digit number" />
 
       <label>Email (optional)</label>
       <input type="email" name="email" placeholder="your@email.com" />
 
-      <button type="submit">Send Claim Request via WhatsApp</button>
+      <button type="submit">
+        <i class="fa-solid fa-paper-plane"></i>
+        Claim via Email
+      </button>
     </form>
 
+    <div class="backup">
+      <span>Email se nahi ho raha?</span>
+      <a href={'https://wa.me/918793932827?text=CLAIM%20REQUEST%0A%0ABusiness%3A%20' + encodeURIComponent(biz.businessName) + '%0AID%3A%20' + biz.businessId} target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i>
+        WhatsApp pe bhejein
+      </a>
+    </div>
+
     <p class="note">
+      <i class="fa-solid fa-shield-halved"></i>
       Free hai. 2 minute lagega. Hum aapko WhatsApp pe verify karenge.
     </p>
   </div>
 </div>
-
-<script>
-  document.getElementById('claimForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.target));
-    const msg = 'CLAIM REQUEST%0A%0ABusiness: ' + data.businessName +
-                '%0AID: ' + data.businessId +
-                '%0AOwner: ' + data.ownerName +
-                '%0AWhatsApp: ' + data.whatsapp +
-                '%0AEmail: ' + (data.email || '-');
-    window.open('https://wa.me/918793932827?text=' + msg, '_blank');
-    alert('Claim request sent! We will verify and update your listing.');
-  });
-</script>
 
 <style>
 .claim-page { padding: 60px 16px; background: #f8fafc; min-height: 100vh; }
@@ -83,11 +94,50 @@ const { biz } = Astro.props;
 .biz-preview p { font-size: 13px; color: #64748b; margin: 0; }
 form { display: flex; flex-direction: column; gap: 8px; }
 label { font-size: 13px; font-weight: 600; color: #334155; margin-top: 8px; }
+label span { color: #dc2626; }
 input { padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-family: inherit; }
 input:focus { outline: none; border-color: #dc2626; }
-button { margin-top: 16px; padding: 14px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; }
+button { margin-top: 16px; padding: 14px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 button:hover { transform: translateY(-1px); }
-.note { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 16px; }
+
+.backup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 11px;
+  flex-wrap: wrap;
+}
+.backup span { font-size: 12.5px; color: #64748b; font-weight: 600; }
+.backup a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: linear-gradient(135deg, #25d366, #15803d);
+  color: #fff;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 8px 18px -8px rgba(37,211,102,0.5);
+  white-space: nowrap;
+}
+.backup a:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 12px 24px -8px rgba(37,211,102,0.6); }
+
+.note { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.note i { color: #059669; }
+
+@media (max-width: 640px) {
+  .claim-box { padding: 24px 20px; }
+  .backup { flex-direction: column; }
+  .backup a { width: 100%; justify-content: center; }
+}
 </style>
 
 </BaseLayout>
