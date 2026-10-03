@@ -6,11 +6,12 @@ const DATA = {
   role: 'Authorised Payment Collection Partner',
   upi: 'BHARATPE09B9S1M8C3G33183@yesbankltd',
   qr: '/qr.png',
-  logo: '/logo.png'
+  logo: '/logo.png',
+  paymentLink: 'https://p.urpy.link/tyBF'
 };
 ---
 
-<BaseLayout title="Payment" description="Secure UPI payment page for PCMC Diary — scan QR or copy UPI ID.">
+<BaseLayout title="Payment" description="Secure payment page for PCMC Diary — choose a plan and pay via UroPay.">
 
   <div class="pay-page">
     <div class="pay-wrap">
@@ -30,7 +31,7 @@ const DATA = {
 
           <h1>Secure Payment Portal</h1>
           <p class="pay-sub">
-            Official payment page for PCMC Diary. Scan the QR code or copy the UPI ID to make your payment using any UPI app.
+            Official payment page for PCMC Diary. Choose your plan below and complete payment securely via UroPay.
           </p>
 
           <div class="pay-trust">
@@ -67,62 +68,54 @@ const DATA = {
             </div>
           </div>
 
-          <!-- QR + UPI grid -->
-          <div class="pay-grid">
+          <!-- Plan selection -->
+          <div class="plan-section">
+            <h3 class="plan-heading">Choose Your Plan</h3>
+            <p class="plan-sub">Tap the plan you want. You can change it any time before paying.</p>
 
-            <!-- QR card -->
-            <div class="qr-card">
-              <div class="qr-title">Scan &amp; Pay with any UPI App</div>
-              <button class="qr-frame" id="qrFrame" type="button" aria-label="Enlarge QR Code">
-                <img src={DATA.qr} alt={`UPI QR Code for ${DATA.name}`} />
-              </button>
-              <div class="qr-hint">Tap the QR code to enlarge</div>
+            <div class="plan-grid" id="planGrid">
+              <!-- Starter -->
+              <label class="plan-card" data-plan="starter" data-name="Starter Listing" data-price="999" data-price-label="₹999">
+                <input type="radio" name="pcmc-plan" class="plan-radio" value="999">
+                <span class="plan-check">✓</span>
+                <div class="plan-badge plan-badge-starter">Starter</div>
+                <div class="plan-name">Starter Listing</div>
+                <div class="plan-price">₹999</div>
+                <div class="plan-meta">1 year · Standard placement</div>
+                <span class="plan-pick">Select this plan</span>
+              </label>
 
-              <div class="qr-apps-wrap">
-                <div class="qr-apps-label">Accepted on all major UPI apps</div>
-                <div class="qr-apps">
-                  <div class="qr-app" title="PhonePe">PhonePe</div>
-                  <div class="qr-app" title="Google Pay">GPay</div>
-                  <div class="qr-app" title="Paytm">Paytm</div>
-                  <div class="qr-app" title="BHIM">BHIM</div>
-                </div>
-                <button class="btn-dl" id="dlBtn" type="button">
-                  <i class="fa-solid fa-download"></i>
-                  Download QR Code
-                </button>
-              </div>
+              <!-- Featured Pro (default) -->
+              <label class="plan-card is-selected" data-plan="pro" data-name="Featured Pro" data-price="4999" data-price-label="₹4,999">
+                <input type="radio" name="pcmc-plan" class="plan-radio" value="4999" checked>
+                <span class="plan-check">✓</span>
+                <div class="plan-popular">Most Popular</div>
+                <div class="plan-badge plan-badge-pro">Featured Pro</div>
+                <div class="plan-name">Featured Pro</div>
+                <div class="plan-price">₹4,999</div>
+                <div class="plan-meta">2 years · Top 10 Pool</div>
+                <span class="plan-pick">Selected</span>
+              </label>
+
+              <!-- VIP -->
+              <label class="plan-card" data-plan="vip" data-name="VIP Leader" data-price="9999" data-price-label="₹9,999">
+                <input type="radio" name="pcmc-plan" class="plan-radio" value="9999">
+                <span class="plan-check">✓</span>
+                <div class="plan-badge plan-badge-vip">VIP</div>
+                <div class="plan-name">VIP Leader</div>
+                <div class="plan-price">₹9,999</div>
+                <div class="plan-meta">2 years · Top 3 Pool + Homepage</div>
+                <span class="plan-pick">Select this plan</span>
+              </label>
             </div>
 
-            <!-- UPI card -->
-            <div class="upi-card">
-              <div class="upi-title">
-                <span class="upi-title-icon">@</span>
-                Official UPI ID
+            <!-- Selected summary -->
+            <div class="plan-summary" id="planSummary">
+              <div class="summary-label">
+                Selected plan: <strong id="sumName">Featured Pro</strong>
               </div>
-
-              <p class="upi-desc">
-                Use the UPI ID below in your preferred banking or UPI app. Never share your UPI PIN with anyone.
-              </p>
-
-              <div class="upi-box">
-                <div class="upi-label">UPI ID · Copy to Pay</div>
-                <div class="upi-value" id="upiValue">{DATA.upi}</div>
-              </div>
-
-              <button class="btn-copy" id="copyBtn" type="button">
-                <i class="fa-regular fa-copy"></i>
-                <span>Copy UPI ID</span>
-              </button>
-
-              <div class="secure-note">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>
-                  <strong>Security Check:</strong> After scanning, your UPI app must show
-                  <strong>{DATA.name}</strong>. Continue only when the displayed recipient matches.
-                </span>
-              </div>
+              <div class="summary-price" id="sumPrice">₹4,999</div>
             </div>
-
           </div>
         </div>
 
@@ -135,26 +128,31 @@ const DATA = {
           <div class="how-grid">
             <div class="how-item">
               <div class="how-num">1</div>
-              <div class="how-title">Scan QR</div>
-              <div class="how-desc">Open PhonePe, GPay, Paytm or BHIM and scan the QR code.</div>
+              <div class="how-title">Select Plan</div>
+              <div class="how-desc">Choose the plan that fits your business above.</div>
             </div>
             <div class="how-item">
               <div class="how-num">2</div>
-              <div class="how-title">Verify Name</div>
-              <div class="how-desc">Confirm the recipient is <strong>{DATA.name}</strong> before paying.</div>
+              <div class="how-title">Click Proceed</div>
+              <div class="how-desc">Press the “Proceed to Secure Payment” button below.</div>
             </div>
             <div class="how-item">
               <div class="how-num">3</div>
               <div class="how-title">Enter Amount</div>
-              <div class="how-desc">Enter the exact amount requested by PCMC Diary.</div>
+              <div class="how-desc">On UroPay, enter the <strong>exact amount</strong> for your plan.</div>
             </div>
             <div class="how-item">
               <div class="how-num">4</div>
-              <div class="how-title">Authorize</div>
-              <div class="how-desc">Review the details and enter your UPI PIN.</div>
+              <div class="how-title">Pay Securely</div>
+              <div class="how-desc">Pay via UPI, Card, or Netbanking. UroPay emails your receipt.</div>
             </div>
           </div>
         </div>
+
+        <!-- CTA Button -->
+        <a id="payBtn" href={DATA.paymentLink} class="btn-proceed" target="_blank" rel="noopener">
+          <span id="payBtnLabel">Proceed to Secure Payment — ₹4,999 →</span>
+        </a>
 
         <!-- Footer note -->
         <div class="pay-foot">
@@ -184,19 +182,9 @@ const DATA = {
   <!-- Toast -->
   <div class="pay-toast" id="toast" role="status" aria-live="polite"></div>
 
-  <!-- Lightbox -->
-  <div class="pay-lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged QR Code">
-    <div class="lightbox-content">
-      <button class="lightbox-close" id="lightboxClose" aria-label="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <img src={DATA.qr} alt="Enlarged UPI QR Code" />
-    </div>
-  </div>
-
 </BaseLayout>
 
-<script define:vars={{ upiValue: DATA.upi, userName: DATA.name, qrUrl: DATA.qr }}>
+<script define:vars={{ paymentLink: DATA.paymentLink }}>
   // Toast
   const toast = document.getElementById('toast');
   function showToast(msg) {
@@ -207,73 +195,57 @@ const DATA = {
     toast._t = setTimeout(() => toast.classList.remove('show'), 2400);
   }
 
-  // Copy UPI
-  const copyBtn = document.getElementById('copyBtn');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(upiValue);
-      } catch (e) {
-        const ta = document.createElement('textarea');
-        ta.value = upiValue;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); } catch (_) {}
-        ta.remove();
-      }
-      copyBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i><span>Copied Successfully</span>';
-      copyBtn.classList.add('copied');
-      showToast('✓ UPI ID copied to clipboard');
-      setTimeout(() => {
-        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i><span>Copy UPI ID</span>';
-        copyBtn.classList.remove('copied');
-      }, 2000);
+  // Plan selection
+  const cards      = Array.from(document.querySelectorAll('.plan-card'));
+  const sumName    = document.getElementById('sumName');
+  const sumPrice   = document.getElementById('sumPrice');
+  const payLabel   = document.getElementById('payBtnLabel');
+  const payBtn     = document.getElementById('payBtn');
+
+  function selectPlan(card) {
+    cards.forEach(c => {
+      const isThis = (c === card);
+      c.classList.toggle('is-selected', isThis);
+
+      const radio = c.querySelector('.plan-radio');
+      if (radio) radio.checked = isThis;
+
+      const pick = c.querySelector('.plan-pick');
+      if (pick) pick.textContent = isThis ? 'Selected' : 'Select this plan';
     });
+
+    const name  = card.getAttribute('data-name')  || '';
+    const label = card.getAttribute('data-price-label') || '';
+
+    if (sumName)  sumName.textContent = name;
+    if (sumPrice) sumPrice.textContent = label;
+    if (payLabel) payLabel.textContent = 'Proceed to Secure Payment — ' + label + ' →';
+    if (payBtn)   payBtn.href = paymentLink;
+
+    showToast('✓ ' + name + ' selected');
   }
 
-  // Download QR
-  const dlBtn = document.getElementById('dlBtn');
-  if (dlBtn) {
-    dlBtn.addEventListener('click', async () => {
-      try {
-        const res = await fetch(qrUrl, { mode: 'cors' });
-        if (!res.ok) throw new Error('failed');
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'PCMC-QR-' + userName.replace(/\s+/g, '_') + '.png';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-        showToast('✓ QR Code downloaded');
-      } catch (e) {
-        window.open(qrUrl, '_blank');
-        showToast('QR opened in new tab — save from there');
-      }
+  cards.forEach(card => {
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      selectPlan(card);
     });
-  }
 
-  // Lightbox
-  const lightbox = document.getElementById('lightbox');
-  const qrFrame = document.getElementById('qrFrame');
-  const lightboxClose = document.getElementById('lightboxClose');
-
-  function openLightbox() { lightbox?.classList.add('open'); }
-  function closeLightbox() { lightbox?.classList.remove('open'); }
-
-  qrFrame?.addEventListener('click', openLightbox);
-  lightboxClose?.addEventListener('click', closeLightbox);
-  lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox?.classList.contains('open')) closeLightbox();
+    const radio = card.querySelector('.plan-radio');
+    if (radio) {
+      radio.addEventListener('change', () => {
+        if (radio.checked) selectPlan(card);
+      });
+    }
   });
+
+  // Apply default state on load
+  const initial = document.querySelector('.plan-card.is-selected') || cards[1] || cards[0];
+  if (initial) selectPlan(initial);
 </script>
 
 <style is:global>
+/* ---------- EXISTING STYLES (unchanged) ---------- */
 .pay-page {
   background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
   min-height: 70vh;
@@ -387,7 +359,6 @@ const DATA = {
   border-radius: 18px;
   overflow: hidden;
 }
-
 .panel-head {
   display: flex;
   justify-content: space-between;
@@ -428,7 +399,6 @@ const DATA = {
   width: 6px; height: 6px; border-radius: 50%;
   background: #16a34a;
 }
-
 .payee {
   margin: 20px 22px;
   padding: 18px;
@@ -475,223 +445,189 @@ const DATA = {
 }
 .payee-badge i { font-size: 10px; }
 
-/* GRID */
-.pay-grid {
-  display: grid;
-  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
-  gap: 20px;
+/* ---------- PLAN SELECTION ---------- */
+.plan-section {
   padding: 0 22px 24px;
 }
-
-/* QR */
-.qr-card {
-  padding: 22px;
+.plan-heading {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 6px;
+  text-align: center;
+}
+.plan-sub {
+  text-align: center;
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0 0 20px;
+}
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.plan-card {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 22px 16px 18px;
   text-align: center;
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
 }
-.qr-title {
-  font-size: 13px;
+.plan-card:hover {
+  border-color: #fecaca;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px -18px rgba(15,23,42,0.35);
+}
+.plan-card.is-selected {
+  border-color: #b91c1c;
+  background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%);
+  box-shadow: 0 16px 32px -18px rgba(185,28,28,0.45);
+}
+.plan-card:has(.plan-radio:focus-visible) {
+  outline: 3px solid #fca5a5;
+  outline-offset: 3px;
+}
+.plan-radio {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+.plan-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #b91c1c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 22px;
+  text-align: center;
+  display: none;
+  box-shadow: 0 4px 10px -2px rgba(185,28,28,0.6);
+}
+.plan-card.is-selected .plan-check {
+  display: block;
+}
+.plan-popular {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #b91c1c;
+  color: #fff;
+  font-size: 9px;
   font-weight: 800;
-  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 12px;
+  border-radius: 100px;
+  white-space: nowrap;
 }
-.qr-frame {
-  display: block;
-  width: 220px;
-  height: 220px;
-  margin: 16px auto 12px;
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #cbd5e1;
-  border-radius: 14px;
-  box-shadow: 0 8px 20px -8px rgba(15,23,42,0.15);
-  cursor: zoom-in;
-  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
-  font-family: inherit;
-}
-.qr-frame:hover {
-  transform: translateY(-3px);
-  border-color: #94a3b8;
-  box-shadow: 0 16px 32px -12px rgba(15,23,42,0.2);
-}
-.qr-frame img {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  display: block;
-}
-.qr-hint {
-  font-size: 11.5px;
-  color: #64748b;
-  font-weight: 600;
-}
-
-.qr-apps-wrap {
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px dashed #e2e8f0;
-}
-.qr-apps-label {
+.plan-badge {
+  display: inline-block;
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.7px;
   text-transform: uppercase;
-  color: #94a3b8;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 100px;
   margin-bottom: 10px;
 }
-.qr-apps {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
+.plan-badge-starter { background: #eef2ff; color: #4f46e5; }
+.plan-badge-pro { background: #b91c1c; color: #fff; }
+.plan-badge-vip { background: #0f172a; color: #fbbf24; }
+.plan-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
 }
-.qr-app {
-  padding: 6px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+.plan-price {
+  font-size: 28px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.plan-meta {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 8px;
+}
+.plan-pick {
+  display: inline-block;
+  margin-top: 12px;
   font-size: 11px;
   font-weight: 800;
-  color: #475569;
-  transition: all 0.2s;
-}
-.qr-app:hover {
-  border-color: #94a3b8;
-  transform: translateY(-1px);
-}
-
-.btn-dl {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  width: 100%;
-  padding: 11px 14px;
-  background: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 12.5px;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-dl i { font-size: 12px; }
-.btn-dl:hover {
-  background: #e2e8f0;
-  border-color: #cbd5e1;
-  transform: translateY(-1px);
-}
-
-/* UPI */
-.upi-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 24px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-}
-.upi-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  font-weight: 800;
-  color: #0f172a;
-}
-.upi-title-icon {
-  width: 32px; height: 32px;
-  display: flex; align-items: center; justify-content: center;
-  background: #1e293b;
-  color: #fff;
-  border-radius: 9px;
-  font-size: 14px;
-  font-weight: 800;
-}
-.upi-desc {
-  margin-top: 10px;
-  color: #64748b;
-  font-size: 12.5px;
-  line-height: 1.6;
-}
-.upi-box {
-  margin-top: 18px;
-  padding: 16px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(15,23,42,0.03);
-}
-.upi-label {
-  font-size: 10px;
-  font-weight: 800;
-  color: #94a3b8;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  color: #b91c1c;
 }
-.upi-value {
-  margin-top: 8px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 14.5px;
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 1.45;
-  word-break: break-all;
-  user-select: all;
+.plan-card.is-selected .plan-pick {
+  color: #7f1d1d;
 }
 
-.btn-copy {
+/* summary */
+.plan-summary {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin-top: 14px;
-  padding: 13px 16px;
-  background: linear-gradient(135deg, #b91c1c, #991b1b);
-  color: #fff;
-  border: 0;
-  border-radius: 10px;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 6px;
+}
+.summary-label {
   font-size: 13px;
-  font-weight: 800;
-  font-family: inherit;
-  cursor: pointer;
-  box-shadow: 0 10px 22px -8px rgba(185,28,28,0.5);
-  transition: all 0.2s;
+  color: #7f1d1d;
+  font-weight: 600;
 }
-.btn-copy i { font-size: 13px; }
-.btn-copy:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px -8px rgba(185,28,28,0.6);
+.summary-label strong {
+  color: #450a0a;
 }
-.btn-copy.copied {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  box-shadow: 0 10px 22px -8px rgba(22,163,74,0.5);
+.summary-price {
+  font-size: 20px;
+  font-weight: 900;
+  color: #450a0a;
+  letter-spacing: -0.02em;
 }
 
-.secure-note {
-  display: flex;
-  gap: 11px;
-  margin-top: 14px;
-  padding: 13px 14px;
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
-  border-radius: 10px;
-  font-size: 12px;
-  line-height: 1.55;
-  color: #334155;
+/* CTA */
+.btn-proceed {
+  display: block;
+  text-align: center;
+  margin: 0 24px 24px;
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  color: #fff;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 800;
+  padding: 20px 32px;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px -6px rgba(185,28,28,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.secure-note i {
-  color: #0369a1;
-  font-size: 14px;
-  flex-shrink: 0;
-  margin-top: 2px;
+.btn-proceed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px -6px rgba(185,28,28,0.6);
 }
-.secure-note strong { color: #0f172a; font-weight: 800; }
 
 /* HOW */
 .pay-how {
@@ -711,7 +647,6 @@ const DATA = {
   margin: 0 0 16px;
 }
 .pay-how h3 i { color: #b91c1c; font-size: 14px; }
-
 .how-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -851,61 +786,8 @@ const DATA = {
   transform: translate(-50%, 0);
 }
 
-/* LIGHTBOX */
-.pay-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  display: none;
-  place-items: center;
-  padding: 20px;
-  background: rgba(12,24,38,0.85);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.pay-lightbox.open { display: grid; }
-.lightbox-content {
-  position: relative;
-  width: min(90vw, 440px);
-  padding: 16px;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 24px 60px -16px rgba(0,0,0,0.4);
-  animation: payZoomIn 0.22s cubic-bezier(0.4,0,0.2,1);
-}
-.lightbox-content img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-.lightbox-close {
-  position: absolute;
-  top: -46px;
-  right: 0;
-  width: 36px; height: 36px;
-  display: grid; place-items: center;
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.24);
-  color: #fff;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 15px;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-.lightbox-close:hover {
-  background: rgba(255,255,255,0.25);
-  transform: scale(1.05);
-}
-@keyframes payZoomIn {
-  from { transform: scale(0.94); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
 /* RESPONSIVE */
 @media (max-width: 760px) {
-  .pay-grid { grid-template-columns: 1fr; }
   .how-grid { grid-template-columns: repeat(2, 1fr); }
   .pay-help { text-align: center; justify-content: center; }
   .pay-help-btn { width: 100%; justify-content: center; }
@@ -922,10 +804,10 @@ const DATA = {
   .panel-name { font-size: 15px; }
   .payee { margin: 16px; padding: 16px; }
   .payee-name { font-size: 16px; }
-  .pay-grid { padding: 0 14px 18px; gap: 16px; }
-  .qr-card, .upi-card { padding: 18px; }
-  .qr-frame { width: 190px; height: 190px; }
-  .upi-value { font-size: 13px; }
+  .plan-section { padding: 0 14px 18px; }
+  .plan-grid { grid-template-columns: 1fr; gap: 12px; }
+  .plan-card { padding: 18px 14px; }
+  .btn-proceed { margin: 0 14px 18px; font-size: 15px; padding: 16px 20px; }
   .pay-how { margin: 0 14px 18px; padding: 18px; }
   .how-grid { grid-template-columns: 1fr; }
   .pay-foot { padding: 0 16px 18px; font-size: 10px; }
