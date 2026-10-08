@@ -312,44 +312,96 @@ select:focus-visible, textarea:focus-visible {
 .toast-info { background: linear-gradient(135deg, #2563eb, #1e40af); }
 
 /* ═══════════════════════════════════════════════════════════════
-   UNIVERSAL WHITE TEXT FIX FOR DARK BACKGROUND SECTIONS
-   This catches ANY element with "hero", "banner", "cta", "jumbotron"
-   in the class name and forces white text on headings + paragraphs.
-   Does NOT touch <a> tags, so buttons stay visible.
+   WHITE TEXT ON DARK SECTIONS
+   ───────────────────────────────────────────────────────────────
+   Forces white text on headings + paragraphs inside any section
+   whose class contains "hero", "banner", "jumbotron", or "cta".
+
+   IMPORTANT: This rule is now scoped with :not([class*="light"])
+   and :not([class*="card"]) so it does NOT catch light-background
+   variants like ".about-cta", ".cta-card", ".cta-light", etc.
+
+   If a section still shows invisible text, add the class
+   ".on-dark" to it, or add ".force-dark-text" to opt out.
    ═══════════════════════════════════════════════════════════════ */
-[class*="hero"] h1,
-[class*="hero"] h2,
-[class*="hero"] h3,
-[class*="hero"] h4,
-[class*="hero"] > p,
-[class*="hero"] p,
-[class*="banner"] h1,
-[class*="banner"] h2,
-[class*="banner"] h3,
-[class*="banner"] p,
-[class*="jumbotron"] h1,
-[class*="jumbotron"] h2,
-[class*="jumbotron"] h3,
-[class*="jumbotron"] p,
-[class*="cta"] h1,
-[class*="cta"] h2,
-[class*="cta"] h3,
-[class*="cta"] p {
+[class*="hero"]:not([class*="light"]):not([class*="card"]) h1,
+[class*="hero"]:not([class*="light"]):not([class*="card"]) h2,
+[class*="hero"]:not([class*="light"]):not([class*="card"]) h3,
+[class*="hero"]:not([class*="light"]):not([class*="card"]) h4,
+[class*="hero"]:not([class*="light"]):not([class*="card"]) p,
+[class*="banner"]:not([class*="light"]):not([class*="card"]) h1,
+[class*="banner"]:not([class*="light"]):not([class*="card"]) h2,
+[class*="banner"]:not([class*="light"]):not([class*="card"]) h3,
+[class*="banner"]:not([class*="light"]):not([class*="card"]) p,
+[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) h1,
+[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) h2,
+[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) h3,
+[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) p,
+[class*="cta"]:not([class*="light"]):not([class*="card"]) h1,
+[class*="cta"]:not([class*="light"]):not([class*="card"]) h2,
+[class*="cta"]:not([class*="light"]):not([class*="card"]) h3,
+[class*="cta"]:not([class*="light"]):not([class*="card"]) p {
   color: #fff !important;
 }
 
 /* Breadcrumbs inside dark heroes */
-[class*="hero"] .breadcrumb,
-[class*="hero"] .breadcrumb a,
-[class*="hero"] .breadcrumb span,
-[class*="banner"] .breadcrumb,
-[class*="banner"] .breadcrumb a,
-[class*="banner"] .breadcrumb span {
+[class*="hero"]:not([class*="light"]) .breadcrumb,
+[class*="hero"]:not([class*="light"]) .breadcrumb a,
+[class*="hero"]:not([class*="light"]) .breadcrumb span,
+[class*="banner"]:not([class*="light"]) .breadcrumb,
+[class*="banner"]:not([class*="light"]) .breadcrumb a,
+[class*="banner"]:not([class*="light"]) .breadcrumb span {
   color: rgba(255,255,255,0.9) !important;
 }
-[class*="hero"] .breadcrumb span:last-child,
-[class*="banner"] .breadcrumb span:last-child {
+[class*="hero"]:not([class*="light"]) .breadcrumb span:last-child,
+[class*="banner"]:not([class*="light"]) .breadcrumb span:last-child {
   color: #fde047 !important;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   LIGHT-BACKGROUND SECTION EXCEPTIONS
+   Anything matching these patterns keeps dark text, overriding
+   the white-text rule above.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Explicit known light-background cards */
+.about-cta, .about-cta *,
+.cta-card, .cta-card *,
+.cta-box, .cta-box *,
+.cta-light, .cta-light *,
+.hero-light, .hero-light *,
+.banner-light, .banner-light *,
+.biz-hero, .biz-hero *,
+.prod-hero-card, .prod-hero-card * {
+  color: var(--ink) !important;
+}
+.about-cta p, .cta-card p, .cta-box p,
+.cta-light p, .hero-light p, .banner-light p,
+.biz-hero p, .prod-hero-card p {
+  color: var(--ink-600) !important;
+}
+
+/* Manual opt-in: add class="force-dark-text" to any stubborn element */
+.force-dark-text,
+.force-dark-text h1, .force-dark-text h2, .force-dark-text h3,
+.force-dark-text h4, .force-dark-text p, .force-dark-text span,
+.force-dark-text li, .force-dark-text strong {
+  color: var(--ink) !important;
+}
+.force-dark-text p,
+.force-dark-text li {
+  color: var(--ink-600) !important;
+}
+
+/* Manual opt-in: add class="on-dark" to force white text on any section */
+.on-dark h1, .on-dark h2, .on-dark h3, .on-dark h4,
+.on-dark p, .on-dark span, .on-dark li {
+  color: #fff !important;
+}
+.on-dark .breadcrumb,
+.on-dark .breadcrumb a,
+.on-dark .breadcrumb span {
+  color: rgba(255,255,255,0.9) !important;
 }
 
 /* ═══════════ PRINT ═══════════ */
@@ -392,10 +444,4 @@ select:focus-visible, textarea:focus-visible {
   .footer-brand p { font-size: 13px; margin-bottom: 18px; }
   .footer-bottom { font-size: 12px; flex-direction: column; gap: 8px; }
   .footer-bottom .dot { display: none; }
-}
-
-/* Exception: white-background hero cards keep dark text */
-.biz-hero h1, .biz-hero h2, .biz-hero h3, .biz-hero p,
-.prod-hero-card h1, .prod-hero-card h2, .prod-hero-card h3, .prod-hero-card p {
-  color: var(--ink) !important;
 }
