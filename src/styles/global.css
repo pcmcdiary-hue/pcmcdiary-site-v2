@@ -311,8 +311,8 @@ select:focus-visible, textarea:focus-visible {
 .toast-error { background: linear-gradient(135deg, #dc2626, #991b1b); }
 .toast-info { background: linear-gradient(135deg, #2563eb, #1e40af); }
 
-/* ═══════════ WHITE TEXT IN DARK/RED HERO SECTIONS ═══════════ */
-.hero h1, .hero h2, .hero h3, .hero p, .hero span:not(.hero-accent):not(.pulse) { color: #fff; }
+/* ═══════════ WHITE TEXT IN DARK HERO SECTIONS ═══════════ */
+.hero h1, .hero h2, .hero h3, .hero p { color: #fff; }
 .cat-hero h1, .cat-hero h2, .cat-hero h3, .cat-hero p { color: #fff; }
 .loc-hero h1, .loc-hero h2, .loc-hero h3, .loc-hero p { color: #fff; }
 .cta h2, .cta p { color: #fff; }
@@ -367,15 +367,4 @@ select:focus-visible, textarea:focus-visible {
   .footer-brand p { font-size: 13px; margin-bottom: 18px; }
   .footer-bottom { font-size: 12px; flex-direction: column; gap: 8px; }
   .footer-bottom .dot { display: none; }
-}
-/* Universal hero text fix — catches any hero class */
-[class*="-hero"] h1,
-[class*="-hero"] h2,
-[class*="-hero"] h3,
-[class*="-hero"] p,
-.hero h1, .hero h2, .hero h3, .hero p {
-  color: #fff;
-}
-[class*="-hero"] a:not([class*="btn"]):not([class*="sec-link"]):not([class*="back"]) {
-  color: rgba(255,255,255,0.9);
 }
