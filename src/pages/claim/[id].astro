@@ -1,16 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+
+const DATA_DIR = path.resolve('./src/data');
 
 export async function getStaticPaths() {
-  const catsRes = await fetch('https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/categories.json');
-  const catsData = await catsRes.json();
+  const catsRaw = await readFile(path.join(DATA_DIR, 'categories.json'), 'utf8');
+  const catsData = JSON.parse(catsRaw);
   const categories = catsData.categories || [];
   const allPaths = [];
 
   for (const cat of categories) {
     try {
-      const res = await fetch('https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/' + cat.file);
-      const businesses = await res.json();
+      const bizRaw = await readFile(path.join(DATA_DIR, 'clients', cat.file), 'utf8');
+      const businesses = JSON.parse(bizRaw);
       if (!Array.isArray(businesses)) continue;
       for (const biz of businesses) {
         if (!biz.businessId) continue;
