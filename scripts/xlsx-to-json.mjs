@@ -50,10 +50,37 @@ const servicePincodes = (v) => {
   return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
-// Strip time from date strings: "2026-09-30 00:00:00" → "2026-09-30"
+// Convert Excel date serial OR date string → "YYYY-MM-DD"
 const dateOnly = (v) => {
-  const s = str(v);
-  if (!s) return '-';
+  if (v === undefined || v === null || v === '') return '-';
+
+  // Case 1: xlsx gave us a real Date object
+  if (v instanceof Date) {
+    const y = v.getUTCFullYear();
+    const m = String(v.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(v.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  const s = String(v).trim();
+  if (!s || s === '-') return '-';
+
+  // Case 2: Excel serial number (e.g. 46295)
+  if (/^\d+(\.\d+)?$/.test(s)) {
+    const n = Number(s);
+    if (n > 20000 && n < 80000) {  // sanity range: ~1954 to ~2119
+      const epochMs = Date.UTC(1899, 11, 30);
+      const d = new Date(epochMs + n * 86400 * 1000);
+      if (!isNaN(d.getTime())) {
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+    }
+  }
+
+  // Case 3: already a date string "2026-09-30 00:00:00" or "2026-09-30"
   return s.split(' ')[0] || '-';
 };
 
