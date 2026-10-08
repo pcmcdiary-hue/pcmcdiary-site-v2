@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 
-const CDN = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data';
+const DATA_DIR = path.resolve('./src/data');
 const SITE = 'https://pcmcdiary.com';
 
 export const GET: APIRoute = async () => {
@@ -33,10 +35,11 @@ export const GET: APIRoute = async () => {
     );
   }
 
+  // Read categories from local src/data/
   let categories: any[] = [];
   try {
-    const catRes = await fetch(`${CDN}/categories.json`);
-    const catData = await catRes.json();
+    const catRaw = await readFile(path.join(DATA_DIR, 'categories.json'), 'utf8');
+    const catData = JSON.parse(catRaw);
     categories = catData.categories || [];
   } catch (e) { /* ignore */ }
 
@@ -50,9 +53,10 @@ export const GET: APIRoute = async () => {
     );
   }
 
+  // Read locations from local src/data/
   try {
-    const locRes = await fetch(`${CDN}/locations.json`);
-    const locData = await locRes.json();
+    const locRaw = await readFile(path.join(DATA_DIR, 'locations.json'), 'utf8');
+    const locData = JSON.parse(locRaw);
     const locs = locData.locations || [];
     for (const loc of locs) {
       urls.push(
@@ -65,11 +69,12 @@ export const GET: APIRoute = async () => {
     }
   } catch (e) { /* ignore */ }
 
+  // Read each category's businesses from local src/data/clients/
   const bizResults = await Promise.all(
     categories.map(async (cat) => {
       try {
-        const res = await fetch(`${CDN}/${cat.file}`);
-        const data = await res.json();
+        const bizRaw = await readFile(path.join(DATA_DIR, 'clients', cat.file), 'utf8');
+        const data = JSON.parse(bizRaw);
         return Array.isArray(data) ? data : [];
       } catch (e) { return []; }
     })
