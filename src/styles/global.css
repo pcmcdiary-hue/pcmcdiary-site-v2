@@ -602,3 +602,23 @@ textarea:focus-visible {
   }
   .footer-bottom .dot { display: none; }
 }
+/* ═══════════ WHITE TEXT IN DARK/RED HERO SECTIONS ═══════════ */
+.cat-hero h1, .cat-hero h2, .cat-hero h3, .cat-hero h4,
+.loc-hero h1, .loc-hero h2, .loc-hero h3, .loc-hero h4,
+.hero h1, .hero h2, .hero h3,
+.cta h2 {
+  color: #fff;
+}
+
+.cat-hero .breadcrumb,
+.cat-hero .breadcrumb a,
+.cat-hero .breadcrumb span,
+.loc-hero .breadcrumb,
+.loc-hero .breadcrumb a,
+.loc-hero .breadcrumb span {
+  color: rgba(255,255,255,0.9);
+}
+.cat-hero .breadcrumb span,
+.loc-hero .breadcrumb span {
+  color: #fde047;
+}
