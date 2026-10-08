@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 
-const CDN = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data';
+const DATA_DIR = path.resolve('./src/data');
 
 const iconMap = {
   'Food & Dining': 'fa-utensils','Grocery & Kirana': 'fa-cart-shopping','Health & Medical': 'fa-stethoscope',
@@ -24,24 +26,24 @@ let locations = [];
 let deals = [];
 
 try {
-  const catRes = await fetch(`${CDN}/categories.json`);
-  const catData = await catRes.json();
+  const catRaw = await readFile(path.join(DATA_DIR, 'categories.json'), 'utf8');
+  const catData = JSON.parse(catRaw);
   categories = (catData.categories || []).map(c => ({ ...c, iconClass: iconMap[c.categoryName] || 'fa-folder' }));
 } catch (e) { console.error(e); }
 
 try {
-  const locRes = await fetch(`${CDN}/locations.json`);
-  const locData = await locRes.json();
+  const locRaw = await readFile(path.join(DATA_DIR, 'locations.json'), 'utf8');
+  const locData = JSON.parse(locRaw);
   locations = locData.locations || [];
 } catch (e) { console.error(e); }
 
 const results = await Promise.all(
   categories.map(async (cat) => {
     try {
-      const res = await fetch(`${CDN}/${cat.file}`);
-      const data = await res.json();
+      const bizRaw = await readFile(path.join(DATA_DIR, 'clients', cat.file), 'utf8');
+      const data = JSON.parse(bizRaw);
       return (Array.isArray(data) ? data : [])
-        .filter(b => b.deals && String(b.deals).trim())
+        .filter(b => b.deals && String(b.deals).trim() && String(b.deals).trim() !== '-')
         .map(b => ({
           ...b,
           categoryId: cat.categoryId,
