@@ -3,9 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const DATA_DIR = path.resolve('./src/data');
-
 export async function getStaticPaths() {
+  const DATA_DIR = path.resolve('./src/data');
   const catsRaw = await readFile(path.join(DATA_DIR, 'categories.json'), 'utf8');
   const catsData = JSON.parse(catsRaw);
   const categories = catsData.categories || [];
