@@ -312,43 +312,16 @@ select:focus-visible, textarea:focus-visible {
 .toast-info { background: linear-gradient(135deg, #2563eb, #1e40af); }
 
 /* ═══════════════════════════════════════════════════════════════
-   WHITE TEXT ON DARK SECTIONS (SAFE VERSION)
+   TEXT COLOR FIXES FOR LIGHT & DARK SECTIONS
    ───────────────────────────────────────────────────────────────
-   Instead of a blanket rule that breaks light cards, we now
-   explicitly target dark sections and provide manual overrides.
-
-   HOW TO USE:
-   - If a section needs white text, add class="force-white-text"
-   - If a section has invisible text, add class="force-dark-text"
+   The original code had a broad rule that forced white text on any
+   element with "cta", "hero", or "banner" in its class name. This
+   broke light pink boxes on /about/ and /expert-advice/.
+   
+   The rule is now removed. We use explicit classes instead.
    ═══════════════════════════════════════════════════════════════ */
 
-/* Force white text on genuinely dark sections */
-.force-white-text h1, .force-white-text h2, .force-white-text h3,
-.force-white-text h4, .force-white-text p, .force-white-text span,
-.force-white-text li, .force-white-text strong {
-  color: #fff !important;
-}
-.force-white-text .breadcrumb,
-.force-white-text .breadcrumb a,
-.force-white-text .breadcrumb span {
-  color: rgba(255,255,255,0.9) !important;
-}
-
-/* Force dark text on stubborn light sections (Fixes /about/ and /expert-advice/) */
-.force-dark-text h1, .force-dark-text h2, .force-dark-text h3,
-.force-dark-text h4, .force-dark-text p, .force-dark-text span,
-.force-dark-text li, .force-dark-text strong {
-  color: var(--ink) !important;
-}
-.force-dark-text p, .force-dark-text li {
-  color: var(--ink-600) !important;
-}
-
-/* ───────────────────────────────────────────────────────────────
-   EXPLICIT EXCEPTIONS FOR KNOWN LIGHT-BACKGROUND CARDS
-   We hardcode the likely class names of your light pink boxes
-   so the global white-text rule (if any remains) doesn't touch them.
-   ─────────────────────────────────────────────────────────────── */
+/* 1. Explicitly force DARK text on known light-background sections */
 .about-cta h1, .about-cta h2, .about-cta h3, .about-cta p, .about-cta span,
 .expert-cta h1, .expert-cta h2, .expert-cta h3, .expert-cta p, .expert-cta span,
 .writer-cta h1, .writer-cta h2, .writer-cta h3, .writer-cta p, .writer-cta span,
@@ -362,6 +335,28 @@ select:focus-visible, textarea:focus-visible {
 .about-cta p, .expert-cta p, .writer-cta p, .get-in-touch p,
 .cta-light p, .cta-card p, .cta-box p, .promo-banner p {
   color: var(--ink-600) !important;
+}
+
+/* 2. Utility class: add class="force-dark-text" to ANY element to force dark text */
+.force-dark-text h1, .force-dark-text h2, .force-dark-text h3,
+.force-dark-text h4, .force-dark-text p, .force-dark-text span,
+.force-dark-text li, .force-dark-text strong {
+  color: var(--ink) !important;
+}
+.force-dark-text p, .force-dark-text li {
+  color: var(--ink-600) !important;
+}
+
+/* 3. Utility class: add class="force-white-text" to ANY element to force white text */
+.force-white-text h1, .force-white-text h2, .force-white-text h3,
+.force-white-text h4, .force-white-text p, .force-white-text span,
+.force-white-text li, .force-white-text strong {
+  color: #fff !important;
+}
+.force-white-text .breadcrumb,
+.force-white-text .breadcrumb a,
+.force-white-text .breadcrumb span {
+  color: rgba(255,255,255,0.9) !important;
 }
 
 /* ═══════════ PRINT ═══════════ */
