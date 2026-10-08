@@ -311,21 +311,46 @@ select:focus-visible, textarea:focus-visible {
 .toast-error { background: linear-gradient(135deg, #dc2626, #991b1b); }
 .toast-info { background: linear-gradient(135deg, #2563eb, #1e40af); }
 
-/* ═══════════ WHITE TEXT IN DARK HERO SECTIONS ═══════════ */
-.hero h1, .hero h2, .hero h3, .hero p { color: #fff; }
-.cat-hero h1, .cat-hero h2, .cat-hero h3, .cat-hero p { color: #fff; }
-.loc-hero h1, .loc-hero h2, .loc-hero h3, .loc-hero p { color: #fff; }
-.cta h2, .cta p { color: #fff; }
-.prod-hero h1, .prod-hero h2, .prod-hero p { color: #fff; }
-.cp-hero h1, .cp-hero h2, .cp-hero p { color: #fff; }
+/* ═══════════════════════════════════════════════════════════════
+   UNIVERSAL WHITE TEXT FIX FOR DARK BACKGROUND SECTIONS
+   This catches ANY element with "hero", "banner", "cta", "jumbotron"
+   in the class name and forces white text on headings + paragraphs.
+   Does NOT touch <a> tags, so buttons stay visible.
+   ═══════════════════════════════════════════════════════════════ */
+[class*="hero"] h1,
+[class*="hero"] h2,
+[class*="hero"] h3,
+[class*="hero"] h4,
+[class*="hero"] > p,
+[class*="hero"] p,
+[class*="banner"] h1,
+[class*="banner"] h2,
+[class*="banner"] h3,
+[class*="banner"] p,
+[class*="jumbotron"] h1,
+[class*="jumbotron"] h2,
+[class*="jumbotron"] h3,
+[class*="jumbotron"] p,
+[class*="cta"] h1,
+[class*="cta"] h2,
+[class*="cta"] h3,
+[class*="cta"] p {
+  color: #fff !important;
+}
 
 /* Breadcrumbs inside dark heroes */
-.cat-hero .breadcrumb a, .cat-hero .breadcrumb span,
-.loc-hero .breadcrumb a, .loc-hero .breadcrumb span,
-.cp-hero .breadcrumb a, .cp-hero .breadcrumb span {
-  color: rgba(255,255,255,0.9);
+[class*="hero"] .breadcrumb,
+[class*="hero"] .breadcrumb a,
+[class*="hero"] .breadcrumb span,
+[class*="banner"] .breadcrumb,
+[class*="banner"] .breadcrumb a,
+[class*="banner"] .breadcrumb span {
+  color: rgba(255,255,255,0.9) !important;
 }
-.cat-hero .breadcrumb span, .loc-hero .breadcrumb span, .cp-hero .breadcrumb span { color: #fde047; }
+[class*="hero"] .breadcrumb span:last-child,
+[class*="banner"] .breadcrumb span:last-child {
+  color: #fde047 !important;
+}
 
 /* ═══════════ PRINT ═══════════ */
 @media print {
