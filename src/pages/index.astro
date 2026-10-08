@@ -5,47 +5,46 @@ import path from 'node:path';
 
 const DATA_DIR = path.resolve('./src/data');
 
-// Category styling map (icons + colors)
 const CAT_META = {
-  'Food & Dining':              { icon: 'fa-utensils',           grad: 'from-red-500 to-rose-700' },
-  'Grocery & Kirana':           { icon: 'fa-cart-shopping',      grad: 'from-green-500 to-emerald-700' },
-  'Health & Medical':           { icon: 'fa-stethoscope',        grad: 'from-red-500 to-pink-700' },
-  'Beauty & Personal Care':     { icon: 'fa-spa',                grad: 'from-pink-500 to-fuchsia-700' },
-  'Fitness & Wellness':         { icon: 'fa-dumbbell',           grad: 'from-cyan-500 to-blue-700' },
-  'Education & Learning':       { icon: 'fa-graduation-cap',     grad: 'from-amber-500 to-orange-700' },
-  'Fashion & Apparel':          { icon: 'fa-shirt',              grad: 'from-violet-500 to-purple-700' },
-  'Jewelry & Gold':             { icon: 'fa-gem',                grad: 'from-yellow-500 to-amber-700' },
-  'Electronics & Gadgets':      { icon: 'fa-laptop',             grad: 'from-blue-500 to-indigo-700' },
-  'Home & Interior':            { icon: 'fa-couch',              grad: 'from-orange-500 to-red-700' },
-  'Automotive':                 { icon: 'fa-car',                grad: 'from-slate-600 to-slate-800' },
-  'Domestic Services':          { icon: 'fa-broom',              grad: 'from-indigo-500 to-blue-700' },
-  'IT & Digital Services':      { icon: 'fa-code',               grad: 'from-sky-500 to-blue-700' },
-  'Logistics & Movers':         { icon: 'fa-truck-fast',         grad: 'from-orange-500 to-amber-700' },
-  'Hospitality & Travel':       { icon: 'fa-plane',              grad: 'from-cyan-500 to-teal-700' },
-  'Entertainment & Events':     { icon: 'fa-film',               grad: 'from-purple-500 to-violet-700' },
-  'Kids & Baby':                { icon: 'fa-child',              grad: 'from-pink-400 to-rose-600' },
-  'Books & Stationery':         { icon: 'fa-book',               grad: 'from-amber-500 to-yellow-700' },
-  'Gardening & Outdoor':        { icon: 'fa-seedling',           grad: 'from-lime-500 to-green-700' },
-  'Pet Care':                   { icon: 'fa-paw',                grad: 'from-orange-400 to-amber-600' },
-  'Real Estate & Property':     { icon: 'fa-building',           grad: 'from-purple-500 to-indigo-700' },
-  'Finance & Legal':            { icon: 'fa-coins',              grad: 'from-emerald-500 to-green-700' },
-  'Packaging & Printing':       { icon: 'fa-print',              grad: 'from-blue-500 to-cyan-700' },
-  'Cafes & Quick Bites':        { icon: 'fa-mug-hot',            grad: 'from-amber-600 to-red-700' },
-  'Shopping & Retail':          { icon: 'fa-bag-shopping',       grad: 'from-pink-500 to-red-700' },
-  'Communication & Internet':   { icon: 'fa-wifi',               grad: 'from-sky-500 to-indigo-700' },
-  'Security Services':          { icon: 'fa-shield-halved',      grad: 'from-slate-600 to-blue-900' },
-  'Alternative Medicine':       { icon: 'fa-leaf',               grad: 'from-green-500 to-emerald-700' },
-  'Photography & Video':        { icon: 'fa-camera',             grad: 'from-rose-500 to-pink-700' },
-  'Celebrations & Gifts':       { icon: 'fa-gift',               grad: 'from-red-500 to-pink-700' },
-  'Government Services':        { icon: 'fa-landmark',           grad: 'from-indigo-600 to-blue-900' },
-  'Utilities':                  { icon: 'fa-bolt',               grad: 'from-yellow-500 to-orange-600' },
-  'Daily Use Services':         { icon: 'fa-screwdriver-wrench', grad: 'from-orange-500 to-red-700' },
-  'Fitness Equipment':          { icon: 'fa-person-running',     grad: 'from-cyan-500 to-blue-700' },
-  'Ayurveda & Wellness':        { icon: 'fa-mortar-pestle',      grad: 'from-emerald-500 to-green-700' },
-  'Coaches & Trainers':         { icon: 'fa-chalkboard-user',    grad: 'from-amber-500 to-orange-700' },
-  'Interior & Exterior Design': { icon: 'fa-paint-roller',       grad: 'from-violet-500 to-purple-700' },
-  'Consulting Services':        { icon: 'fa-handshake',          grad: 'from-blue-500 to-indigo-700' },
-  'Specialty Stores':           { icon: 'fa-store',              grad: 'from-pink-500 to-rose-700' },
+  'Food & Dining':              { icon: 'fa-utensils',           c1: '#ef4444', c2: '#be123c' },
+  'Grocery & Kirana':           { icon: 'fa-cart-shopping',      c1: '#22c55e', c2: '#047857' },
+  'Health & Medical':           { icon: 'fa-stethoscope',        c1: '#f43f5e', c2: '#be185d' },
+  'Beauty & Personal Care':     { icon: 'fa-spa',                c1: '#ec4899', c2: '#a21caf' },
+  'Fitness & Wellness':         { icon: 'fa-dumbbell',           c1: '#06b6d4', c2: '#1d4ed8' },
+  'Education & Learning':       { icon: 'fa-graduation-cap',     c1: '#f59e0b', c2: '#c2410c' },
+  'Fashion & Apparel':          { icon: 'fa-shirt',              c1: '#8b5cf6', c2: '#6d28d9' },
+  'Jewelry & Gold':             { icon: 'fa-gem',                c1: '#eab308', c2: '#b45309' },
+  'Electronics & Gadgets':      { icon: 'fa-laptop',             c1: '#3b82f6', c2: '#4338ca' },
+  'Home & Interior':            { icon: 'fa-couch',              c1: '#f97316', c2: '#b91c1c' },
+  'Automotive':                 { icon: 'fa-car',                c1: '#475569', c2: '#0f172a' },
+  'Domestic Services':          { icon: 'fa-broom',              c1: '#6366f1', c2: '#1d4ed8' },
+  'IT & Digital Services':      { icon: 'fa-code',               c1: '#0ea5e9', c2: '#1d4ed8' },
+  'Logistics & Movers':         { icon: 'fa-truck-fast',         c1: '#f97316', c2: '#b45309' },
+  'Hospitality & Travel':       { icon: 'fa-plane',              c1: '#06b6d4', c2: '#0f766e' },
+  'Entertainment & Events':     { icon: 'fa-film',               c1: '#a855f7', c2: '#6d28d9' },
+  'Kids & Baby':                { icon: 'fa-child',              c1: '#f472b6', c2: '#e11d48' },
+  'Books & Stationery':         { icon: 'fa-book',               c1: '#f59e0b', c2: '#a16207' },
+  'Gardening & Outdoor':        { icon: 'fa-seedling',           c1: '#84cc16', c2: '#15803d' },
+  'Pet Care':                   { icon: 'fa-paw',                c1: '#fb923c', c2: '#d97706' },
+  'Real Estate & Property':     { icon: 'fa-building',           c1: '#a855f7', c2: '#4338ca' },
+  'Finance & Legal':            { icon: 'fa-coins',              c1: '#10b981', c2: '#15803d' },
+  'Packaging & Printing':       { icon: 'fa-print',              c1: '#3b82f6', c2: '#0e7490' },
+  'Cafes & Quick Bites':        { icon: 'fa-mug-hot',            c1: '#d97706', c2: '#b91c1c' },
+  'Shopping & Retail':          { icon: 'fa-bag-shopping',       c1: '#ec4899', c2: '#b91c1c' },
+  'Communication & Internet':   { icon: 'fa-wifi',               c1: '#0ea5e9', c2: '#4338ca' },
+  'Security Services':          { icon: 'fa-shield-halved',      c1: '#475569', c2: '#1e3a8a' },
+  'Alternative Medicine':       { icon: 'fa-leaf',               c1: '#22c55e', c2: '#047857' },
+  'Photography & Video':        { icon: 'fa-camera',             c1: '#f43f5e', c2: '#be185d' },
+  'Celebrations & Gifts':       { icon: 'fa-gift',               c1: '#ef4444', c2: '#be185d' },
+  'Government Services':        { icon: 'fa-landmark',           c1: '#4f46e5', c2: '#1e3a8a' },
+  'Utilities':                  { icon: 'fa-bolt',               c1: '#eab308', c2: '#ea580c' },
+  'Daily Use Services':         { icon: 'fa-screwdriver-wrench', c1: '#f97316', c2: '#b91c1c' },
+  'Fitness Equipment':          { icon: 'fa-person-running',     c1: '#06b6d4', c2: '#1d4ed8' },
+  'Ayurveda & Wellness':        { icon: 'fa-mortar-pestle',      c1: '#10b981', c2: '#15803d' },
+  'Coaches & Trainers':         { icon: 'fa-chalkboard-user',    c1: '#f59e0b', c2: '#c2410c' },
+  'Interior & Exterior Design': { icon: 'fa-paint-roller',       c1: '#8b5cf6', c2: '#6d28d9' },
+  'Consulting Services':        { icon: 'fa-handshake',          c1: '#3b82f6', c2: '#4338ca' },
+  'Specialty Stores':           { icon: 'fa-store',              c1: '#ec4899', c2: '#be123c' },
 };
 
 let categories = [];
@@ -74,14 +73,12 @@ try {
   businesses = results.flat();
 } catch (e) { console.error(e); }
 
-// Add counts + meta to each category
 const catsWithMeta = categories.map(c => {
-  const meta = CAT_META[c.categoryName] || { icon: 'fa-folder', grad: 'from-slate-500 to-slate-700' };
+  const meta = CAT_META[c.categoryName] || { icon: 'fa-folder', c1: '#64748b', c2: '#334155' };
   const count = businesses.filter(b => b.categoryId === c.categoryId).length;
   return { ...c, ...meta, count };
 });
 
-// Featured businesses (premium first)
 const premium = businesses.filter(b => ['featured','premium_pro','premium'].includes((b.tier||'').toLowerCase()));
 const featured = premium.length >= 8
   ? premium.slice(0, 8)
@@ -108,7 +105,7 @@ const stats = {
     }
   })} />
 
-  <!-- ═══════════ HERO ═══════════ -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-orb hero-orb-1"></div>
     <div class="hero-orb hero-orb-2"></div>
@@ -156,7 +153,7 @@ const stats = {
     </div>
   </section>
 
-  <!-- ═══════════ ALL CATEGORIES ═══════════ -->
+  <!-- ALL CATEGORIES -->
   <section class="sec">
     <div class="sec-head">
       <div>
@@ -169,7 +166,7 @@ const stats = {
     <div class="cat-grid">
       {catsWithMeta.map(c => (
         <a href={`/category/${c.categoryId}`} class="cat-tile">
-          <div class={`cat-icon bg-gradient-to-br ${c.grad}`}>
+          <div class="cat-icon" style={`background: linear-gradient(135deg, ${c.c1}, ${c.c2});`}>
             <i class={`fa-solid ${c.icon}`}></i>
           </div>
           <div class="cat-name">{c.categoryName}</div>
@@ -179,7 +176,7 @@ const stats = {
     </div>
   </section>
 
-  <!-- ═══════════ FEATURED ═══════════ -->
+  <!-- FEATURED -->
   {featured.length > 0 && (
     <section class="sec sec-alt">
       <div class="sec-head">
@@ -226,7 +223,7 @@ const stats = {
     </section>
   )}
 
-  <!-- ═══════════ LOCATIONS ═══════════ -->
+  <!-- LOCATIONS -->
   <section class="sec">
     <div class="sec-head">
       <div>
@@ -244,7 +241,7 @@ const stats = {
     </div>
   </section>
 
-  <!-- ═══════════ HOW IT WORKS ═══════════ -->
+  <!-- HOW IT WORKS -->
   <section class="sec sec-alt">
     <div class="sec-head sec-head-center">
       <div>
@@ -276,7 +273,7 @@ const stats = {
     </div>
   </section>
 
-  <!-- ═══════════ CTA ═══════════ -->
+  <!-- CTA -->
   <section class="sec">
     <div class="cta">
       <div class="cta-orb"></div>
@@ -306,7 +303,6 @@ const stats = {
 
 body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
 
-/* ═══════════ HERO ═══════════ */
 .hero {
   position: relative; overflow: hidden;
   background: radial-gradient(ellipse at top, #1a1f35 0%, #0a0f1e 55%, #0f0a1a 100%);
@@ -397,7 +393,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 .stat-div { width: 1px; height: 40px; background: rgba(255,255,255,0.12); }
 
-/* ═══════════ SECTIONS ═══════════ */
 .sec { max-width: 1280px; margin: 0 auto; padding: 76px 24px; }
 .sec-alt { background: #f8fafc; border-radius: 32px; margin: 8px auto; max-width: 1280px; }
 .sec-head {
@@ -425,7 +420,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 .sec-link i { font-size: 10px; transition: transform 0.2s; }
 .sec-link:hover i { transform: translateX(3px); }
 
-/* ═══════════ CATEGORY TILES ═══════════ */
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -439,13 +433,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
   position: relative; overflow: hidden;
 }
-.cat-tile::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(220,38,38,0.03));
-  opacity: 0; transition: opacity 0.3s;
-  pointer-events: none;
-}
-.cat-tile:hover::before { opacity: 1; }
 .cat-tile:hover {
   transform: translateY(-6px);
   border-color: #fecaca;
@@ -474,7 +461,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   text-transform: uppercase; letter-spacing: 0.6px;
 }
 
-/* ═══════════ FEATURED BUSINESSES ═══════════ */
 .biz-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -528,10 +514,7 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.biz-meta {
-  display: flex; flex-wrap: wrap; gap: 10px;
-  margin-bottom: 14px;
-}
+.biz-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
 .biz-meta span {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 12px; font-weight: 700; color: #475569;
@@ -561,10 +544,7 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 .biz-btn i { font-size: 10px; transition: transform 0.2s; }
 .biz-btn:hover i { transform: translateX(3px); }
 
-/* ═══════════ LOCATIONS ═══════════ */
-.loc-grid {
-  display: flex; flex-wrap: wrap; gap: 10px;
-}
+.loc-grid { display: flex; flex-wrap: wrap; gap: 10px; }
 .loc-chip {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 11px 18px; border-radius: 50px;
@@ -581,7 +561,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 .loc-chip:hover i { color: #fff; transform: scale(1.15); }
 
-/* ═══════════ HOW IT WORKS ═══════════ */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .step {
   padding: 36px 30px 32px; background: #fff;
@@ -616,7 +595,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 .step-desc { font-size: 14px; color: #64748b; line-height: 1.6; margin: 0; }
 
-/* ═══════════ CTA ═══════════ */
 .cta {
   position: relative; overflow: hidden;
   background: radial-gradient(ellipse at top, #1e293b 0%, #0a0f1e 60%, #2a1530 100%);
@@ -677,7 +655,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 .cta-note i { color: #22c55e; font-size: 12px; }
 
-/* ═══════════ RESPONSIVE ═══════════ */
 @media (max-width: 1024px) {
   .hero-h1 { font-size: 48px; letter-spacing: -1.8px; }
   .sec-title { font-size: 30px; }
