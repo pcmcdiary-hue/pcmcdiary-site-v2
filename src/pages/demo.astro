@@ -1,230 +1,896 @@
----
-// ─── Billing Studio Demo Page ───
-const title = "Billing Studio Demo — PCMC Diary";
-const description = "Try the invoice, quotation, proforma & proposal maker. Fully working demo — no login needed.";
----
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{title}</title>
-  <meta name="description" content={description} />
-  <meta name="robots" content="index, follow" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#c62828">
+<title>PCMC Diary — Live Demo (Messages + Billing Studio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- CDN Libraries (is:inline keeps them as-is) -->
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Billing Studio libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <style is:global>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #eef1f5;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
-    * { box-sizing: border-box; }
-  </style>
+<style>
+:root{
+  --red:#c62828; --red-2:#8e1c1c;
+  --blue:#2c7fb8; --blue-2:#1a5490;
+  --ink:#0f172a; --muted:#64748b; --line:#e5e7eb; --bg:#eef1f5;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans Devanagari','Helvetica Neue',Arial,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:15px; line-height:1.5;
+  padding-bottom:40px; overflow-x:hidden;
+}
+button,input,select,textarea{font-family:inherit}
+.hidden{display:none !important}
+img{max-width:100%}
+
+/* ═══════════ LOGIN ═══════════ */
+.login-wrap{
+  position:fixed; inset:0; z-index:900; display:flex; align-items:center; justify-content:center;
+  padding:20px; background:linear-gradient(135deg,#c62828 0%,#7f1d1d 100%);
+}
+.login-box{
+  width:100%; max-width:380px; background:#fff; border-radius:20px;
+  padding:28px 24px 18px; box-shadow:0 30px 80px -20px rgba(0,0,0,.55);
+}
+.login-header{text-align:center; margin-bottom:22px}
+.login-logo{
+  width:64px; height:64px; margin:0 auto 12px; border-radius:18px;
+  background:linear-gradient(135deg,#c62828,#8e1c1c); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:1.8rem;
+  box-shadow:0 10px 24px -8px rgba(198,40,40,.7);
+}
+.login-header h2{margin:0; font-size:1.35rem; letter-spacing:-.01em}
+.subtitle{margin:6px 0 0; font-size:.82rem; color:var(--muted)}
+.input-group{
+  display:flex; align-items:center; gap:10px; background:#f8fafc; border:1px solid var(--line);
+  border-radius:12px; padding:0 14px; margin-bottom:12px; transition:.15s;
+}
+.input-group:focus-within{border-color:var(--red); background:#fff; box-shadow:0 0 0 3px rgba(198,40,40,.1)}
+.input-icon{font-size:.95rem; opacity:.6}
+.input-group input{
+  flex:1; border:none; background:transparent; outline:none; padding:14px 0;
+  font-size:.92rem; color:var(--ink);
+}
+.error-msg{color:var(--red); font-size:.78rem; min-height:18px; margin-bottom:6px; font-weight:500}
+.btn-primary{
+  width:100%; border:none; border-radius:12px; padding:14px; cursor:pointer;
+  background:linear-gradient(135deg,#c62828,#8e1c1c); color:#fff;
+  font-size:.92rem; font-weight:700; letter-spacing:.02em;
+  box-shadow:0 10px 24px -10px rgba(198,40,40,.8); transition:.15s;
+}
+.btn-primary:active{transform:scale(.985)}
+.login-footer{
+  text-align:center; margin-top:18px; padding-top:14px; border-top:1px solid var(--line);
+  font-size:.72rem; color:#94a3b8;
+}
+.login-footer a{color:var(--red); font-weight:700; text-decoration:none}
+.demo-hint{
+  margin-top:12px; text-align:center; font-size:.72rem; color:#64748b;
+  background:#f1f5f9; border-radius:10px; padding:9px;
+}
+
+/* ═══════════ APP HEADER ═══════════ */
+.app-header{
+  background:linear-gradient(135deg,#c62828 0%,#8e1c1c 100%);
+  color:#fff; padding:14px 16px; display:flex; align-items:center;
+  justify-content:space-between; gap:12px;
+}
+.brand{display:flex; align-items:center; gap:10px; min-width:0}
+.brand-logo{
+  width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,.16);
+  display:flex; align-items:center; justify-content:center; font-size:1.05rem; flex-shrink:0;
+}
+.brand-name{font-weight:700; font-size:1rem; letter-spacing:.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.brand-sub{font-size:.62rem; opacity:.75; letter-spacing:.14em; text-transform:uppercase}
+.icon-btn{
+  width:38px; height:38px; border-radius:11px; border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.1); color:#fff; font-size:1rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:.15s; flex-shrink:0;
+}
+.icon-btn:active{background:rgba(255,255,255,.25)}
+
+/* ═══════════ STICKY ZONE ═══════════ */
+.sticky-zone{
+  position:sticky; top:0; z-index:60; background:var(--bg);
+  padding:10px 12px 8px; box-shadow:0 6px 16px -12px rgba(15,23,42,.4);
+}
+
+/* Tabs */
+.tabs{
+  display:flex; gap:4px; background:#fff; border:1px solid var(--line);
+  padding:4px; border-radius:999px; margin-bottom:10px;
+}
+.tab{
+  flex:1; border:none; background:transparent; cursor:pointer; padding:10px 8px;
+  border-radius:999px; font-size:.82rem; font-weight:600; color:#475569;
+  transition:.18s; white-space:nowrap;
+}
+.tab.active{background:linear-gradient(135deg,#c62828,#8e1c1c); color:#fff; box-shadow:0 6px 16px -8px rgba(198,40,40,.8)}
+.tab.active.billing-tab{background:linear-gradient(135deg,#2c7fb8,#1a5490); box-shadow:0 6px 16px -8px rgba(44,127,184,.8)}
+
+/* Segmented (language / doc type) */
+.segmented{display:flex; gap:3px; background:#fff; border:1px solid var(--line); padding:3px; border-radius:999px}
+.segmented button{
+  flex:1; border:none; background:transparent; padding:8px 10px; border-radius:999px;
+  font-size:.75rem; font-weight:600; color:#475569; cursor:pointer; transition:.15s; white-space:nowrap;
+}
+.segmented button.active{background:#1e3a5f; color:#fff}
+.segmented.red button.active{background:linear-gradient(135deg,#c62828,#8e1c1c)}
+
+/* Search */
+.search-box{
+  display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line);
+  border-radius:12px; padding:0 12px; margin-top:8px; transition:.15s;
+}
+.search-box:focus-within{border-color:var(--red)}
+.search-icon{font-size:.85rem; opacity:.55}
+.search-box input{flex:1; border:none; background:transparent; outline:none; padding:11px 0; font-size:.85rem}
+.clear-search{border:none; background:#f1f5f9; color:#64748b; width:22px; height:22px; border-radius:50%; cursor:pointer; font-size:.7rem; line-height:1}
+
+/* Chips */
+.chips-wrap{display:flex; gap:7px; overflow-x:auto; padding:9px 0 3px; scrollbar-width:none}
+.chips-wrap::-webkit-scrollbar{display:none}
+.chips-wrap button{
+  flex-shrink:0; border:1px solid var(--line); background:#fff; color:#475569;
+  padding:7px 13px; border-radius:999px; font-size:.73rem; font-weight:600; cursor:pointer; transition:.15s;
+}
+.chips-wrap button.active{background:#0f172a; color:#fff; border-color:#0f172a}
+
+/* ═══════════ CONTAINER ═══════════ */
+.container{max-width:1000px; margin:0 auto; padding:14px 12px}
+
+/* Details form */
+.details-form{
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  padding:18px 16px; margin-bottom:14px;
+}
+.details-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px}
+.details-header h3{margin:0; font-size:1rem}
+.close-btn{border:none; background:#f1f5f9; color:#64748b; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:.8rem}
+.hint{font-size:.75rem; color:var(--muted); margin:0 0 12px; line-height:1.6}
+.details-form input{
+  width:100%; border:1px solid var(--line); background:#f8fafc; border-radius:11px;
+  padding:12px 14px; font-size:.85rem; margin-bottom:10px; outline:none; transition:.15s; color:var(--ink);
+}
+.details-form input:focus{border-color:var(--red); background:#fff; box-shadow:0 0 0 3px rgba(198,40,40,.08)}
+.welcome-banner{
+  display:flex; gap:12px; align-items:flex-start; background:#fff7ed; border:1px solid #fed7aa;
+  border-radius:12px; padding:12px 14px; margin-bottom:14px;
+}
+.welcome-icon{font-size:1.1rem}
+.welcome-sub{font-size:.75rem; color:#9a3412; margin-top:3px; line-height:1.5}
+
+/* Message cards */
+.msg-card{
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  padding:16px; margin-bottom:12px; box-shadow:0 1px 2px rgba(15,23,42,.04);
+  transition:.18s;
+}
+.msg-card:hover{box-shadow:0 10px 26px -16px rgba(15,23,42,.4); transform:translateY(-1px)}
+.msg-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; gap:8px}
+.badge{
+  font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em;
+  padding:4px 10px; border-radius:999px; background:#f1f5f9; color:#475569; white-space:nowrap;
+}
+.badge.business{background:#eff6ff; color:#1d4ed8}
+.badge.maharashtra{background:#fff1f2; color:#be123c}
+.badge.festival{background:#fff7ed; color:#c2410c}
+.badge.saint{background:#f5f3ff; color:#6d28d9}
+.badge.maharaj{background:#fefce8; color:#a16207}
+.badge.world{background:#ecfdf5; color:#047857}
+.msg-title{margin:0 0 7px; font-size:.97rem; font-weight:700; letter-spacing:-.005em}
+.msg-text{
+  margin:0 0 14px; font-size:.9rem; line-height:1.75; color:#334155;
+  white-space:pre-line; word-break:break-word;
+}
+.msg-actions{display:flex; gap:8px; flex-wrap:wrap}
+.msg-actions button{
+  border-radius:10px; padding:9px 15px; font-size:.76rem; font-weight:700;
+  cursor:pointer; transition:.15s; border:1px solid transparent;
+}
+.btn-copy{background:#0f172a; color:#fff}
+.btn-copy:active{transform:scale(.97)}
+.btn-ghost{background:#fff; color:#334155; border-color:var(--line) !important}
+.btn-wa{background:#25d366; color:#fff}
+.empty{text-align:center; padding:50px 20px; color:var(--muted); font-size:.85rem}
+
+/* ═══════════ BILLING ═══════════ */
+.billing-toolbar{
+  background:#fff; border:1px solid var(--line); border-radius:14px;
+  padding:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center;
+}
+.billing-toolbar .segmented{flex:0 0 auto}
+.btn-demo{
+  border:1px solid var(--line); background:#fff; color:#0f172a; padding:9px 15px;
+  border-radius:999px; font-size:.73rem; font-weight:700; cursor:pointer; transition:.15s;
+}
+.btn-demo:active{transform:scale(.97)}
+.btn-demo.solid{background:#1e3a5f; color:#fff; border-color:#1e3a5f}
+.demo-note{
+  max-width:1000px; margin:0 auto 12px; background:linear-gradient(135deg,#1a1a2e,#16213e);
+  color:#fff; border-radius:12px; padding:13px 18px; display:flex; justify-content:space-between;
+  align-items:center; gap:12px; flex-wrap:wrap;
+}
+.demo-note .t1{font-size:.88rem; font-weight:700}
+.demo-note .t2{font-size:.7rem; color:#b8b8cc; margin-top:3px}
+.demo-note a{
+  background:#d43b3b; color:#fff; padding:8px 15px; border-radius:50px;
+  font-size:.72rem; font-weight:700; text-decoration:none; white-space:nowrap;
+}
+.doc-wrap{max-width:1000px; margin:0 auto}
+#demo-doc{
+  background:#fff; max-width:794px; margin:0 auto; border:1px solid var(--line);
+  border-radius:12px; overflow:hidden; color:#0f172a; font-size:14px; line-height:1.55;
+  font-variant-numeric:tabular-nums;
+}
+#demo-items input, #demo-items select{font-family:inherit}
+#demo-items input:focus, #demo-items select:focus{background:#f0f9ff !important; border-radius:6px}
+.demo-cta{
+  max-width:1000px; margin:18px auto 0; background:#fff; border:1px solid var(--line);
+  border-radius:14px; padding:26px 22px; text-align:center;
+}
+.demo-cta h3{margin:0 0 8px; font-size:1.05rem}
+.demo-cta p{margin:0 0 18px; font-size:.83rem; color:#475569; line-height:1.6}
+.demo-cta .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+.demo-cta a{
+  padding:13px 26px; border-radius:50px; font-size:.83rem; font-weight:700;
+  text-decoration:none; white-space:nowrap;
+}
+.cta-blue{background:#1e3a5f; color:#fff}
+.cta-green{background:#25d366; color:#fff}
+
+/* ═══════════ TOAST + MODAL ═══════════ */
+#toast{
+  position:fixed; left:50%; bottom:26px; transform:translate(-50%,120%);
+  background:#0f172a; color:#fff; padding:13px 20px; border-radius:12px;
+  font-size:.8rem; font-weight:600; z-index:9999; max-width:88vw; text-align:center;
+  box-shadow:0 16px 40px -12px rgba(15,23,42,.7); transition:transform .28s cubic-bezier(.2,.9,.3,1.3);
+  pointer-events:none; line-height:1.5;
+}
+#toast.show{transform:translate(-50%,0)}
+.modal-back{
+  position:fixed; inset:0; background:rgba(15,23,42,.6); backdrop-filter:blur(5px);
+  z-index:9000; display:flex; align-items:center; justify-content:center; padding:18px;
+}
+.modal-card{
+  background:#fff; border-radius:18px; padding:22px 20px; max-width:420px; width:100%;
+  max-height:86vh; overflow-y:auto; box-shadow:0 30px 80px -20px rgba(15,23,42,.5);
+}
+.modal-card h3{margin:0 0 4px; font-size:1.05rem}
+.modal-sub{font-size:.75rem; color:var(--muted); margin-bottom:14px}
+.modal-body{
+  background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:14px;
+  font-size:.85rem; line-height:1.8; white-space:pre-line; word-break:break-word; color:#1e293b;
+}
+.modal-sig{
+  margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1;
+  font-size:.8rem; line-height:1.8; color:#334155;
+}
+.modal-actions{display:flex; gap:9px; margin-top:16px}
+.modal-actions button{flex:1; padding:12px; border-radius:11px; font-size:.8rem; font-weight:700; cursor:pointer; border:none}
+.m-close{background:#f1f5f9; color:#475569}
+
+/* ═══════════ PRINT ═══════════ */
+@media print{
+  .app-header,.sticky-zone,.demo-cta,.demo-note,#toast,.modal-back,
+  #tab-messages,#detailsForm{display:none !important}
+  body{background:#fff; padding:0}
+  .container{padding:0; max-width:100%}
+  #demo-doc{border:none !important; border-radius:0 !important; max-width:100% !important; box-shadow:none !important}
+  .demo-act-cell,.demo-act-head{display:none !important}
+  .billing-toolbar{display:none !important}
+}
+@media (max-width:600px){
+  .msg-text{font-size:.87rem}
+  .billing-toolbar{gap:6px}
+  .btn-demo{padding:8px 12px; font-size:.7rem}
+}
+</style>
 </head>
 <body>
 
-<div id="pcmd-billing-demo" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; padding:16px 12px; background:#eef1f5; border-radius:16px;">
-
-  <!-- ============ DEMO BANNER ============ -->
-  <div style="max-width:1000px; margin:0 auto 14px; background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%); color:#fff; padding:14px 20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-    <div>
-      <div style="font-size:0.95rem; font-weight:700; letter-spacing:0.3px;">&#127916; Live Demo &#8212; Billing Studio</div>
-      <div style="font-size:0.72rem; color:#b8b8cc; margin-top:2px;">This is a fully working demo. Try creating an invoice and downloading it.</div>
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-box">
+    <div class="login-header">
+      <div class="login-logo">📅</div>
+      <h2>PCMC Diary</h2>
+      <p class="subtitle">Login to your demo account</p>
     </div>
-    <a href="https://billingstudio.pcmcdiary.com" target="_blank" style="background:#d43b3b; color:#fff; padding:8px 16px; border-radius:50px; font-size:0.75rem; font-weight:600; text-decoration:none;">Get Full Version &rarr;</a>
-  </div>
-
-  <!-- ============ TOOLBAR ============ -->
-  <div class="demo-toolbar" style="max-width:1000px; margin:0 auto 14px; background:#fff; border:1px solid #e5e7eb; padding:12px 14px; border-radius:14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center;">
-
-    <div class="demo-seg" style="display:flex; gap:2px; background:#f8fafc; padding:3px; border-radius:999px; border:1px solid #e5e7eb;">
-      <button class="demo-doc-btn active" data-doc="invoice" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Invoice</button>
-      <button class="demo-doc-btn" data-doc="proforma" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Proforma</button>
-      <button class="demo-doc-btn" data-doc="quotation" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Quotation</button>
-      <button class="demo-doc-btn" data-doc="proposal" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Proposal</button>
+    <div class="input-group">
+      <span class="input-icon">👤</span>
+      <input id="usernameInput" type="text" placeholder="Username" autocomplete="username" value="demo">
     </div>
-
-    <div class="demo-seg" style="display:flex; gap:2px; background:#f8fafc; padding:3px; border-radius:999px; border:1px solid #e5e7eb;">
-      <button id="demo-gst-on" class="demo-gst-btn" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">With GST</button>
-      <button id="demo-gst-off" class="demo-gst-btn active" style="padding:7px 14px; font-size:0.72rem; font-weight:500; border-radius:999px; color:#475569; border:none; background:transparent; cursor:pointer; font-family:inherit;">Without GST</button>
+    <div class="input-group">
+      <span class="input-icon">🔒</span>
+      <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" value="demo">
     </div>
-
-    <button id="demo-add-row" style="background:#fff; color:#0f172a; border:1px solid #e5e7eb; padding:9px 16px; border-radius:999px; font-size:0.72rem; font-weight:600; cursor:pointer; font-family:inherit;">+ Add Line</button>
-    <button id="demo-download" style="background:#1e3a5f; color:#fff; border:none; padding:9px 16px; border-radius:999px; font-size:0.72rem; font-weight:600; cursor:pointer; font-family:inherit;">&#11015; Download</button>
-    <button id="demo-print" style="background:#fff; color:#0f172a; border:1px solid #e5e7eb; padding:9px 16px; border-radius:999px; font-size:0.72rem; font-weight:600; cursor:pointer; font-family:inherit;">&#128424; Print</button>
-
-  </div>
-
-  <!-- ============ INVOICE CANVAS ============ -->
-  <div style="max-width:1000px; margin:0 auto;">
-
-    <div id="demo-doc" style="background:#fff; max-width:794px; margin:0 auto; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; color:#0f172a; font-size:14px; line-height:1.55; font-variant-numeric:tabular-nums;">
-
-      <!-- BANNER -->
-      <div style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:34px 40px; display:flex; justify-content:space-between; align-items:center; gap:24px; min-height:124px; position:relative; overflow:hidden;">
-        <div style="position:absolute; right:-60px; top:-60px; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none;"></div>
-        <div style="display:flex; gap:16px; align-items:center; flex:1; min-width:0; position:relative; z-index:1;">
-          <div style="width:60px; height:60px; background:#fff; border-radius:14px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; box-shadow:0 6px 20px -6px rgba(0,0,0,0.25);">
-            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEi2G0UUWPHL9444BBONEoAfhRp3pTKc3gSt0iNdnlZ6nPT6e0EuamQAiA7TIlfqBiuKXsb92v7s9HpUlNY0JTlhWUGorlwXkpdSs1A6dkQ6gM4r6Y58Ymgnm8XNBKzQMvfWrUVqtp5LOYUIoz45nN-HwpeVnIwtBNJgkWMtP2XtvwXacyLjtPYuBwAQxO0=s1600" alt="PCMC Diary" style="width:100%; height:100%; object-fit:contain; padding:6px;">
-          </div>
-          <div style="min-width:0;">
-            <div style="font-size:1.15rem; font-weight:700; letter-spacing:0.005em; line-height:1.3;">PCMC Diary</div>
-            <div style="font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.8; margin-top:5px; font-weight:500;">Business Directory</div>
-          </div>
-        </div>
-        <div id="demo-doc-title" style="font-size:2.2rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; line-height:1; white-space:nowrap; flex-shrink:0; position:relative; z-index:1;">INVOICE</div>
-      </div>
-
-      <!-- INFO ROW -->
-      <div style="display:flex; gap:40px; padding:32px 40px; align-items:flex-start; border-bottom:1px solid #f1f5f9; flex-wrap:wrap;">
-        <div style="flex:1; min-width:220px;">
-          <div style="font-size:0.95rem; font-weight:700; margin-bottom:12px;">Invoice to:</div>
-          <input type="text" id="demo-c-name" value="ABC Industries Pvt. Ltd." placeholder="Customer name" style="display:block; width:100%; border:none; background:transparent; font-size:0.92rem; font-weight:700; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
-          <input type="text" id="demo-c-addr" value="Plot 45, MIDC Bhosari, Pune - 411026" placeholder="Address" style="display:block; width:100%; border:none; background:transparent; font-size:0.9rem; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
-          <input type="tel" id="demo-c-phone" value="+91 98765 43210" placeholder="Phone" style="display:block; width:100%; border:none; background:transparent; font-size:0.9rem; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
-        </div>
-        <div style="flex-shrink:0; min-width:240px; display:flex; flex-direction:column; gap:10px;">
-          <div style="display:flex; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
-            <span style="font-weight:700;">Invoice No:</span>
-            <span style="font-weight:500; text-align:right;">PCMD-20260911-4521</span>
-          </div>
-          <div style="display:flex; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
-            <span style="font-weight:700;">Date:</span>
-            <span id="demo-date" style="font-weight:500;">11-Sep-2026</span>
-          </div>
-          <div id="demo-valid-row" style="display:none; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
-            <span style="font-weight:700;">Valid till:</span>
-            <span id="demo-valid" style="font-weight:500;">11-Oct-2026</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TABLE -->
-      <table id="demo-items" style="width:100%; border-collapse:collapse; table-layout:fixed;">
-        <thead>
-          <tr>
-            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 6px; text-align:center; width:5%; white-space:nowrap;">SL</th>
-            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 14px; text-align:left; width:34%;">Item Description</th>
-            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:center; width:17%;">Schedule</th>
-            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:8%;">Qty</th>
-            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:13%;">Rate</th>
-            <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:16%;">Total</th>
-            <th class="demo-act-head" style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:14px 4px; text-align:center; width:7%;"></th>
-          </tr>
-        </thead>
-        <tbody id="demo-items-body"></tbody>
-      </table>
-
-      <div style="padding:0 40px;">
-        <button id="demo-add-row2" style="width:100%; background:transparent; border:1.5px dashed #cbd5e1; color:#64748b; padding:13px; border-radius:10px; font-size:0.82rem; font-weight:600; margin-top:8px; cursor:pointer; font-family:inherit; transition:all 0.15s;">+ Add another line</button>
-      </div>
-
-      <!-- BOTTOM -->
-      <div style="display:flex; gap:40px; padding:32px 40px 24px; align-items:flex-start; flex-wrap:wrap;">
-
-        <div style="flex:1; min-width:220px;">
-          <div style="font-size:0.95rem; font-weight:700; margin-bottom:10px;">Payment Info:</div>
-          <div style="font-size:0.86rem; color:#475569; line-height:1.9;">
-            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">Name</span><span style="color:#0f172a; font-weight:500;">PCMC Diary Services</span></div>
-            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">Bank</span><span style="color:#0f172a; font-weight:500;">Bank of India (Saving)</span></div>
-            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">A/C</span><span style="color:#0f172a; font-weight:500;">008018210004498</span></div>
-            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">IFSC</span><span style="color:#0f172a; font-weight:500;">BKID0000080</span></div>
-            <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">UPI</span><span style="color:#0f172a; font-weight:500;">pcmcdiary@upi</span></div>
-          </div>
-
-          <div style="margin-top:24px;">
-            <div style="font-size:0.95rem; font-weight:700; margin-bottom:10px;">Notes:</div>
-            <div style="font-size:0.82rem; color:#64748b; line-height:1.85;">
-              &bull; 100% advance or as per agreement<br>
-              &bull; UPI / NEFT / RTGS accepted<br>
-              <span id="demo-gst-note" style="display:none;">&bull; GST @ 18% applicable</span>
-            </div>
-          </div>
-        </div>
-
-        <div style="flex-shrink:0; min-width:280px; display:flex; flex-direction:column; gap:6px; padding-top:4px;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline; padding:9px 0; font-size:0.86rem;">
-            <span style="font-weight:700; text-transform:uppercase; font-size:0.76rem; letter-spacing:0.08em; color:#475569;">Sub Total:</span>
-            <span id="demo-subtotal" style="font-weight:700; color:#0f172a;">&#8377;0.00</span>
-          </div>
-          <div id="demo-tax-row" style="display:none; justify-content:space-between; align-items:baseline; padding:9px 0; font-size:0.86rem;">
-            <span style="font-weight:700; text-transform:uppercase; font-size:0.76rem; letter-spacing:0.08em; color:#475569;">Tax (18%):</span>
-            <span id="demo-tax" style="font-weight:700; color:#0f172a;">&#8377;0.00</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:18px 22px; border-radius:10px; margin-top:12px; box-shadow:0 8px 20px -8px rgba(44,127,184,0.4);">
-            <span style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:800; opacity:0.95;">Total:</span>
-            <span id="demo-total" style="font-size:1.35rem; font-weight:800; letter-spacing:-0.015em;">&#8377;0.00</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- FOOTER -->
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 40px 6px; border-top:1px solid #f1f5f9; background:#fafbfc; gap:20px; flex-wrap:wrap; font-size:0.8rem;">
-        <span style="font-weight:700; color:#0f172a;">Thank you for your business</span>
-        <span style="color:#475569; font-weight:500;">PCMC Diary &middot; 87939 33347 &middot; info@pcmcdiary.com</span>
-      </div>
-
-      <div style="text-align:center; padding:8px 40px 16px; font-size:0.68rem; color:#94a3b8; background:#fafbfc; letter-spacing:0.04em; font-weight:500;">
-        Powered by <a href="https://pcmcdiary.com" target="_blank" style="color:#2c7fb8; text-decoration:none; font-weight:700;">pcmcdiary.com</a>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- ============ BELOW-DEMO CTA ============ -->
-  <div style="max-width:1000px; margin:20px auto 0; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:28px 24px; text-align:center;">
-    <div style="font-size:1.1rem; font-weight:700; color:#0f172a; margin-bottom:8px;">Like what you see?</div>
-    <div style="font-size:0.85rem; color:#475569; margin-bottom:20px; line-height:1.6;">Get your own branded version in 2 minutes. Add your logo, bank details, and start billing today.</div>
-    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-      <a href="https://billingstudio.pcmcdiary.com" target="_blank" style="background:#1e3a5f; color:#fff; padding:13px 28px; border-radius:50px; font-size:0.85rem; font-weight:700; text-decoration:none;">Get Full Version &rarr;</a>
-      <a href="https://wa.me/918793933347?text=Hi%2C%20I%20saw%20the%20Billing%20Studio%20demo.%20I%20want%20to%20subscribe%20(%E2%82%B9499%2Fyear)." target="_blank" style="background:#25d366; color:#fff; padding:13px 28px; border-radius:50px; font-size:0.85rem; font-weight:700; text-decoration:none;">&#128172; WhatsApp to Buy</a>
+    <div id="loginError" class="error-msg"></div>
+    <button onclick="handleLogin()" class="btn-primary">Login →</button>
+    <div class="demo-hint">🔓 Demo mode — any username &amp; password works</div>
+    <div class="login-footer">
+      <span>Powered by </span><a href="https://pcmcdiary.com" target="_blank" rel="noopener">pcmcdiary.com</a>
     </div>
   </div>
-
 </div>
 
-<script is:inline>
+<!-- ══════════════════ APP ══════════════════ -->
+<div id="appScreen" class="hidden">
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo">📅</div>
+      <div>
+        <div class="brand-name">PCMC Diary</div>
+        <div class="brand-sub">Live Demo</div>
+      </div>
+    </div>
+    <button class="icon-btn" onclick="logout()" aria-label="Logout" title="Logout">⎋</button>
+  </header>
+
+  <div class="sticky-zone">
+    <nav class="tabs">
+      <button class="tab active" data-tab="messages" onclick="switchTab('messages')">💬 Daily Messages</button>
+      <button class="tab billing-tab" data-tab="billing" onclick="switchTab('billing')">🧾 Billing Studio</button>
+    </nav>
+
+    <!-- Messages controls -->
+    <div id="controls-messages">
+      <div class="segmented red">
+        <button data-lang="mr" class="active" onclick="setLang('mr')">मराठी</button>
+        <button data-lang="en" onclick="setLang('en')">English</button>
+        <button data-lang="hi" onclick="setLang('hi')">हिन्दी</button>
+      </div>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input id="searchInput" type="text" placeholder="Search messages..." oninput="onSearchInput(this.value)">
+        <button class="clear-search hidden" id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear">✕</button>
+      </div>
+      <div class="chips-wrap">
+        <button data-cat="all" class="active" onclick="setCategory('all')">All</button>
+        <button data-cat="business" onclick="setCategory('business')">💼 Business</button>
+        <button data-cat="maharashtra" onclick="setCategory('maharashtra')">🚩 Maharashtra</button>
+        <button data-cat="festival" onclick="setCategory('festival')">🎉 Festivals</button>
+        <button data-cat="saint" onclick="setCategory('saint')">🙏 Saints</button>
+        <button data-cat="maharaj" onclick="setCategory('maharaj')">👑 Maharaj</button>
+        <button data-cat="world" onclick="setCategory('world')">🌏 World Days</button>
+      </div>
+    </div>
+
+    <!-- Billing controls -->
+    <div id="controls-billing" class="hidden">
+      <div class="billing-toolbar">
+        <div class="segmented">
+          <button class="demo-doc-btn active" data-doc="invoice">Invoice</button>
+          <button class="demo-doc-btn" data-doc="proforma">Proforma</button>
+          <button class="demo-doc-btn" data-doc="quotation">Quotation</button>
+          <button class="demo-doc-btn" data-doc="proposal">Proposal</button>
+        </div>
+        <div class="segmented">
+          <button id="demo-gst-on" class="demo-gst-btn">With GST</button>
+          <button id="demo-gst-off" class="demo-gst-btn active">Without GST</button>
+        </div>
+        <button id="demo-add-row" class="btn-demo">+ Add Line</button>
+        <button id="demo-download" class="btn-demo solid">⬇ Download</button>
+        <button id="demo-print" class="btn-demo">🖨 Print</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ══════ TAB 1 : MESSAGES ══════ -->
+    <section id="tab-messages">
+      <div id="detailsForm" class="details-form hidden">
+        <div class="details-header">
+          <h3>🏢 Business Details</h3>
+          <button class="close-btn" onclick="toggleDetailsForm()">✕</button>
+        </div>
+        <div id="welcomeBanner" class="welcome-banner hidden">
+          <span class="welcome-icon">🎉</span>
+          <div>
+            <strong>Welcome!</strong>
+            <div class="welcome-sub">Fill your business details once — they get auto-added to every message you copy.</div>
+          </div>
+        </div>
+        <p class="hint">These details are saved on your device and auto-added to every message.</p>
+        <input id="bizName" placeholder="Business Name (e.g., Sachin Ambekar Consulting) *">
+        <input id="bizPhone" placeholder="Phone (e.g., +91 88888 01437) *">
+        <input id="bizWebsite" placeholder="Website (e.g., www.sachinambekar.in)">
+        <input id="bizAddress" placeholder="Location (e.g., Nigdi, Pune)">
+        <input id="bizMapLink" placeholder="Google Review / Map Link" inputmode="url">
+        <button id="saveDetailsBtn" onclick="saveDetails()" class="btn-primary">💾 Save Details</button>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap">
+        <button class="btn-demo" onclick="toggleDetailsForm()">🏢 My Business Details</button>
+        <span id="detailsStatus" style="font-size:.72rem; color:#64748b; align-self:center"></span>
+      </div>
+
+      <div id="messageList"></div>
+    </section>
+
+    <!-- ══════ TAB 2 : BILLING ══════ -->
+    <section id="tab-billing" class="hidden">
+
+      <div class="demo-note">
+        <div>
+          <div class="t1">🎬 Live Demo — Billing Studio</div>
+          <div class="t2">Fully working. Edit lines, switch GST, download PNG/PDF or print.</div>
+        </div>
+        <a href="https://billingstudio.pcmcdiary.com" target="_blank" rel="noopener">Get Full Version →</a>
+      </div>
+
+      <div class="doc-wrap">
+        <div id="demo-doc">
+
+          <!-- BANNER -->
+          <div style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:34px 40px; display:flex; justify-content:space-between; align-items:center; gap:24px; min-height:124px; position:relative; overflow:hidden;">
+            <div style="position:absolute; right:-60px; top:-60px; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none;"></div>
+            <div style="display:flex; gap:16px; align-items:center; flex:1; min-width:0; position:relative; z-index:1;">
+              <div style="width:60px; height:60px; background:#fff; border-radius:14px; display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0; box-shadow:0 6px 20px -6px rgba(0,0,0,0.25); font-size:1.6rem;">📅</div>
+              <div style="min-width:0;">
+                <div style="font-size:1.15rem; font-weight:700; letter-spacing:0.005em; line-height:1.3;">PCMC Diary</div>
+                <div style="font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.8; margin-top:5px; font-weight:500;">Business Directory</div>
+              </div>
+            </div>
+            <div id="demo-doc-title" style="font-size:2.2rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; line-height:1; white-space:nowrap; flex-shrink:0; position:relative; z-index:1;">INVOICE</div>
+          </div>
+
+          <!-- INFO ROW -->
+          <div style="display:flex; gap:40px; padding:32px 40px; align-items:flex-start; border-bottom:1px solid #f1f5f9; flex-wrap:wrap;">
+            <div style="flex:1; min-width:220px;">
+              <div style="font-size:0.95rem; font-weight:700; margin-bottom:12px;">Invoice to:</div>
+              <input type="text" id="demo-c-name" value="ABC Industries Pvt. Ltd." placeholder="Customer name" style="display:block; width:100%; border:none; background:transparent; font-size:0.92rem; font-weight:700; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
+              <input type="text" id="demo-c-addr" value="Plot 45, MIDC Bhosari, Pune - 411026" placeholder="Address" style="display:block; width:100%; border:none; background:transparent; font-size:0.9rem; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
+              <input type="tel" id="demo-c-phone" value="+91 98765 43210" placeholder="Phone" style="display:block; width:100%; border:none; background:transparent; font-size:0.9rem; padding:5px 0; line-height:1.7; outline:none; font-family:inherit; color:#0f172a; box-sizing:border-box;">
+            </div>
+            <div style="flex-shrink:0; min-width:240px; display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
+                <span style="font-weight:700;">Invoice No:</span>
+                <span style="font-weight:500; text-align:right;">PCMD-20260911-4521</span>
+              </div>
+              <div style="display:flex; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
+                <span style="font-weight:700;">Date:</span>
+                <span id="demo-date" style="font-weight:500;">11-Sep-2026</span>
+              </div>
+              <div id="demo-valid-row" style="display:none; gap:16px; font-size:0.9rem; line-height:1.7; justify-content:space-between;">
+                <span style="font-weight:700;">Valid till:</span>
+                <span id="demo-valid" style="font-weight:500;">11-Oct-2026</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABLE -->
+          <table id="demo-items" style="width:100%; border-collapse:collapse; table-layout:fixed;">
+            <thead>
+              <tr>
+                <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 6px; text-align:center; width:5%; white-space:nowrap;">SL</th>
+                <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 14px; text-align:left; width:34%;">Item Description</th>
+                <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:center; width:17%;">Schedule</th>
+                <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:8%;">Qty</th>
+                <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:13%;">Rate</th>
+                <th style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:14px 8px; text-align:right; width:16%;">Total</th>
+                <th class="demo-act-head" style="background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:14px 4px; text-align:center; width:7%;"></th>
+              </tr>
+            </thead>
+            <tbody id="demo-items-body"></tbody>
+          </table>
+
+          <div style="padding:0 40px;">
+            <button id="demo-add-row2" style="width:100%; background:transparent; border:1.5px dashed #cbd5e1; color:#64748b; padding:13px; border-radius:10px; font-size:0.82rem; font-weight:600; margin-top:8px; cursor:pointer; font-family:inherit; transition:all 0.15s;">+ Add another line</button>
+          </div>
+
+          <!-- BOTTOM -->
+          <div style="display:flex; gap:40px; padding:32px 40px 24px; align-items:flex-start; flex-wrap:wrap;">
+            <div style="flex:1; min-width:220px;">
+              <div style="font-size:0.95rem; font-weight:700; margin-bottom:10px;">Payment Info:</div>
+              <div style="font-size:0.86rem; color:#475569; line-height:1.9;">
+                <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">Name</span><span style="color:#0f172a; font-weight:500;">PCMC Diary Services</span></div>
+                <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">Bank</span><span style="color:#0f172a; font-weight:500;">Bank of India (Saving)</span></div>
+                <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">A/C</span><span style="color:#0f172a; font-weight:500;">008018210004498</span></div>
+                <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">IFSC</span><span style="color:#0f172a; font-weight:500;">BKID0000080</span></div>
+                <div style="display:flex; gap:8px; margin-bottom:2px;"><span style="color:#94a3b8; min-width:52px; font-weight:600; font-size:0.82rem;">UPI</span><span style="color:#0f172a; font-weight:500;">pcmcdiary@upi</span></div>
+              </div>
+              <div style="margin-top:24px;">
+                <div style="font-size:0.95rem; font-weight:700; margin-bottom:10px;">Notes:</div>
+                <div style="font-size:0.82rem; color:#64748b; line-height:1.85;">
+                  • 100% advance or as per agreement<br>
+                  • UPI / NEFT / RTGS accepted<br>
+                  <span id="demo-gst-note" style="display:none;">• GST @ 18% applicable</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex-shrink:0; min-width:280px; display:flex; flex-direction:column; gap:6px; padding-top:4px;">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; padding:9px 0; font-size:0.86rem;">
+                <span style="font-weight:700; text-transform:uppercase; font-size:0.76rem; letter-spacing:0.08em; color:#475569;">Sub Total:</span>
+                <span id="demo-subtotal" style="font-weight:700; color:#0f172a;">₹0.00</span>
+              </div>
+              <div id="demo-tax-row" style="display:none; justify-content:space-between; align-items:baseline; padding:9px 0; font-size:0.86rem;">
+                <span style="font-weight:700; text-transform:uppercase; font-size:0.76rem; letter-spacing:0.08em; color:#475569;">Tax (18%):</span>
+                <span id="demo-tax" style="font-weight:700; color:#0f172a;">₹0.00</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg,#2c7fb8 0%,#1a5490 100%); color:#fff; padding:18px 22px; border-radius:10px; margin-top:12px; box-shadow:0 8px 20px -8px rgba(44,127,184,0.4);">
+                <span style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:800; opacity:0.95;">Total:</span>
+                <span id="demo-total" style="font-size:1.35rem; font-weight:800; letter-spacing:-0.015em;">₹0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- FOOTER -->
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 40px 6px; border-top:1px solid #f1f5f9; background:#fafbfc; gap:20px; flex-wrap:wrap; font-size:0.8rem;">
+            <span style="font-weight:700; color:#0f172a;">Thank you for your business</span>
+            <span style="color:#475569; font-weight:500;">PCMC Diary · 87939 33347 · info@pcmcdiary.com</span>
+          </div>
+          <div style="text-align:center; padding:8px 40px 16px; font-size:0.68rem; color:#94a3b8; background:#fafbfc; letter-spacing:0.04em; font-weight:500;">
+            Powered by <a href="https://pcmcdiary.com" target="_blank" style="color:#2c7fb8; text-decoration:none; font-weight:700;">pcmcdiary.com</a>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="demo-cta">
+        <h3>Like what you see?</h3>
+        <p>Get your own branded version in 2 minutes. Add your logo, bank details and start billing today.</p>
+        <div class="row">
+          <a class="cta-blue" href="https://billingstudio.pcmcdiary.com" target="_blank" rel="noopener">Get Full Version →</a>
+          <a class="cta-green" href="https://wa.me/918793933347?text=Hi%2C%20I%20saw%20the%20Billing%20Studio%20demo.%20I%20want%20to%20subscribe%20(%E2%82%B9499%2Fyear)." target="_blank" rel="noopener">💬 WhatsApp to Buy</a>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   SHARED HELPERS
+   ══════════════════════════════════════════════════════════ */
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg){
+  var t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+function demoBlocked(){
+  toast('🔒 Copy is disabled in this demo.\nGet the full version to copy & share instantly.');
+}
+
+/* ══════════════════════════════════════════════════════════
+   LOGIN
+   ══════════════════════════════════════════════════════════ */
+function handleLogin(){
+  var u = $('usernameInput').value.trim();
+  var p = $('passwordInput').value.trim();
+  if (!u || !p){
+    $('loginError').textContent = 'Please enter username and password';
+    return;
+  }
+  $('loginError').textContent = '';
+  try { localStorage.setItem('pcmd_logged', '1'); } catch(e){}
+  enterApp();
+}
+function enterApp(){
+  $('loginScreen').classList.add('hidden');
+  $('appScreen').classList.remove('hidden');
+  loadDetails();
+  renderMessages();
+}
+function logout(){
+  try { localStorage.removeItem('pcmd_logged'); } catch(e){}
+  $('appScreen').classList.add('hidden');
+  $('loginScreen').classList.remove('hidden');
+  $('passwordInput').value = '';
+}
+/* auto-login if already logged in */
 (function(){
-  var root = document.getElementById('pcmd-billing-demo');
-  if (!root) return;
-  var $ = function(id){ return document.getElementById(id); };
+  try {
+    if (localStorage.getItem('pcmd_logged') === '1') {
+      $('loginScreen').classList.add('hidden');
+      $('appScreen').classList.remove('hidden');
+      loadDetails();
+      renderMessages();
+    }
+  } catch(e){}
+})();
 
-  var RS = '\u20B9';
-  var EM = '\u2014';
-  var BL = '\u2022';
+/* ══════════════════════════════════════════════════════════
+   TAB SWITCHER
+   ══════════════════════════════════════════════════════════ */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(function(b){
+    b.classList.toggle('active', b.dataset.tab === name);
+  });
+  $('tab-messages').classList.toggle('hidden', name !== 'messages');
+  $('tab-billing').classList.toggle('hidden', name !== 'billing');
+  $('controls-messages').classList.toggle('hidden', name !== 'messages');
+  $('controls-billing').classList.toggle('hidden', name !== 'billing');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-  var items = [];
-  var docType = 'invoice';
-  var gstOn = false;
+/* ══════════════════════════════════════════════════════════
+   MESSAGES DATA
+   ══════════════════════════════════════════════════════════ */
+var CAT_LABEL = {
+  business:    '💼 Business',
+  maharashtra: '🚩 Maharashtra',
+  festival:    '🎉 Festival',
+  saint:       '🙏 Saint',
+  maharaj:     '👑 Maharaj',
+  world:       '🌏 World Day'
+};
+
+var MESSAGES = [
+  {
+    id: 1, cat: 'business',
+    title: { mr: 'व्यवसाय डिजिटल करा', en: 'Go Digital Today', hi: 'व्यवसाय डिजिटल बनाएं' },
+    text: {
+      mr: 'आपल्या व्यवसायाची ओळख आता डिजिटल!\nPCMC Diary सोबत तुमचा व्यवसाय हजारो स्थानिक ग्राहकांपर्यंत पोहोचवा.\nआजच संपर्क करा आणि फरक अनुभवा.',
+      en: 'Take your business digital!\nReach thousands of local customers with PCMC Diary.\nContact us today and see the difference.',
+      hi: 'अपने व्यवसाय को डिजिटल बनाएं!\nPCMC Diary के साथ हज़ारों स्थानीय ग्राहकों तक पहुँचें।\nआज ही संपर्क करें।'
+    }
+  },
+  {
+    id: 2, cat: 'business',
+    title: { mr: 'विशेष ऑफर — २०% सूट', en: 'Special Offer — 20% Off', hi: 'विशेष ऑफर — 20% छूट' },
+    text: {
+      mr: '🎉 विशेष ऑफर!\nया महिन्यात जाहिरात बुक करा आणि २०% सूट मिळवा.\nऑफर मर्यादित काळासाठी — आजच बुक करा!',
+      en: '🎉 Special Offer!\nBook your ad this month and get 20% OFF.\nLimited period offer — book today!',
+      hi: '🎉 विशेष ऑफर!\nइस महीने विज्ञापन बुक करें और 20% छूट पाएं।\nसीमित समय के लिए — आज ही बुक करें!'
+    }
+  },
+  {
+    id: 3, cat: 'maharashtra',
+    title: { mr: 'महाराष्ट्र दिन', en: 'Maharashtra Day', hi: 'महाराष्ट्र दिवस' },
+    text: {
+      mr: '🚩 महाराष्ट्र दिनाच्या हार्दिक शुभेच्छा!\nमहाराष्ट्राची माती, मराठी माणसाची छाती — अभिमानाचा दिवस.\nजय महाराष्ट्र! 🚩',
+      en: '🚩 Happy Maharashtra Day!\nCelebrating the pride, culture and spirit of Maharashtra.\nJai Maharashtra! 🚩',
+      hi: '🚩 महाराष्ट्र दिवस की हार्दिक शुभकामनाएं!\nमहाराष्ट्र की संस्कृति और गौरव को नमन।\nजय महाराष्ट्र! 🚩'
+    }
+  },
+  {
+    id: 4, cat: 'festival',
+    title: { mr: 'गणेश चतुर्थी', en: 'Ganesh Chaturthi', hi: 'गणेश चतुर्थी' },
+    text: {
+      mr: '🙏 गणपती बाप्पा मोरया!\nश्री गणेशाच्या आगमनानिमित्त हार्दिक शुभेच्छा.\nसर्वांना सुख, समृद्धी आणि आरोग्य लाभो. 🎉',
+      en: '🙏 Ganpati Bappa Morya!\nWarm wishes on the arrival of Lord Ganesha.\nMay prosperity and happiness be with you always. 🎉',
+      hi: '🙏 गणपति बाप्पा मोरया!\nभगवान गणेश के आगमन पर हार्दिक शुभकामनाएं।\nसभी को सुख और समृद्धि मिले। 🎉'
+    }
+  },
+  {
+    id: 5, cat: 'festival',
+    title: { mr: 'दीपावली', en: 'Diwali', hi: 'दीपावली' },
+    text: {
+      mr: '🪔 दीपावलीच्या हार्दिक शुभेच्छा!\nप्रकाशाचा सण आपल्या घरात आनंद, समृद्धी घेऊन येवो.\nशुभ दीपावली! 🪔',
+      en: '🪔 Happy Diwali!\nMay the festival of lights fill your home with joy and prosperity.\nWishing you a bright Diwali! 🪔',
+      hi: '🪔 दीपावली की हार्दिक शुभकामनाएं!\nरोशनी का त्योहार आपके जीवन में खुशियाँ लाए।\nशुभ दीपावली! 🪔'
+    }
+  },
+  {
+    id: 6, cat: 'saint',
+    title: { mr: 'संत तुकाराम महाराज', en: 'Sant Tukaram Maharaj', hi: 'संत तुकाराम महाराज' },
+    text: {
+      mr: '🙏 संत तुकाराम महाराजांच्या पुण्यतिथीनिमित्त विनम्र अभिवादन.\n"विठ्ठल विठ्ठल" चा गजर सर्वत्र राहो.\nत्यांचे विचार आपल्याला सदैव मार्गदर्शन करोत.',
+      en: '🙏 Humble tributes to Sant Tukaram Maharaj.\nMay his teachings of devotion guide us always.\n"Vitthal Vitthal" resonates everywhere.',
+      hi: '🙏 संत तुकाराम महाराज की पुण्यतिथि पर विनम्र श्रद्धांजलि।\nउनके विचार हमें सदा मार्गदर्शन दें।'
+    }
+  },
+  {
+    id: 7, cat: 'maharaj',
+    title: { mr: 'शिवाजी महाराज जयंती', en: 'Shivaji Maharaj Jayanti', hi: 'शिवाजी महाराज जयंती' },
+    text: {
+      mr: '🚩 छत्रपती शिवाजी महाराज जयंतीच्या हार्दिक शुभेच्छा!\n"जय भवानी, जय शिवाजी"\nमराठा साम्राज्याचे संस्थापक यांना कोटी कोटी प्रणाम. 🙏',
+      en: '🚩 Happy Chhatrapati Shivaji Maharaj Jayanti!\nSaluting the founder of the Maratha empire.\n"Jai Bhavani, Jai Shivaji" 🙏',
+      hi: '🚩 छत्रपति शिवाजी महाराज जयंती की हार्दिक शुभकामनाएं!\nमराठा साम्राज्य के संस्थापक को कोटि-कोटि प्रणाम। 🙏'
+    }
+  },
+  {
+    id: 8, cat: 'world',
+    title: { mr: 'जागतिक पर्यावरण दिन', en: 'World Environment Day', hi: 'विश्व पर्यावरण दिवस' },
+    text: {
+      mr: '🌱 जागतिक पर्यावरण दिन!\nएक झाड लावा, पृथ्वी वाचवा.\nआजच संकल्प करा — निसर्गाचे रक्षण करूया. 🌍',
+      en: '🌱 World Environment Day!\nPlant a tree, save the planet.\nTake the pledge today — protect nature. 🌍',
+      hi: '🌱 विश्व पर्यावरण दिवस!\nएक पेड़ लगाएं, धरती बचाएं।\nआज ही संकल्प लें — प्रकृति की रक्षा करें। 🌍'
+    }
+  },
+  {
+    id: 9, cat: 'world',
+    title: { mr: 'आंतरराष्ट्रीय योग दिन', en: 'International Yoga Day', hi: 'अंतर्राष्ट्रीय योग दिवस' },
+    text: {
+      mr: '🧘 आंतरराष्ट्रीय योग दिनाच्या हार्दिक शुभेच्छा!\nनिरोगी शरीर, शांत मन — योग हाच मार्ग.\nरोज १५ मिनिटे योग करा. 🙏',
+      en: '🧘 Happy International Yoga Day!\nHealthy body, calm mind — yoga is the way.\nJust 15 minutes a day. 🙏',
+      hi: '🧘 अंतर्राष्ट्रीय योग दिवस की शुभकामनाएं!\nस्वस्थ शरीर, शांत मन — योग ही राह है।\nरोज़ 15 मिनट योग करें। 🙏'
+    }
+  }
+];
+
+/* ══════════════════════════════════════════════════════════
+   MESSAGES STATE + RENDER
+   ══════════════════════════════════════════════════════════ */
+var state = { lang: 'mr', category: 'all', search: '' };
+var bizDetails = { name:'', phone:'', website:'', address:'', map:'' };
+
+function setLang(lang){
+  state.lang = lang;
+  document.querySelectorAll('#controls-messages .segmented button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  renderMessages();
+}
+function setCategory(cat){
+  state.category = cat;
+  document.querySelectorAll('.chips-wrap button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  renderMessages();
+}
+function onSearchInput(v){
+  state.search = v;
+  $('clearSearchBtn').classList.toggle('hidden', !v);
+  renderMessages();
+}
+function clearSearch(){
+  state.search = '';
+  $('searchInput').value = '';
+  $('clearSearchBtn').classList.add('hidden');
+  renderMessages();
+}
+
+function currentList(){
+  var q = state.search.trim().toLowerCase();
+  return MESSAGES.filter(function(m){
+    if (state.category !== 'all' && m.cat !== state.category) return false;
+    if (!q) return true;
+    var hay = (m.title.mr + m.title.en + m.title.hi + m.text.mr + m.text.en + m.text.hi).toLowerCase();
+    return hay.indexOf(q) !== -1;
+  });
+}
+
+function renderMessages(){
+  var list = currentList();
+  var el = $('messageList');
+  if (!list.length){
+    el.innerHTML = '<div class="empty">😕 No messages found<br><span style="font-size:.78rem">Try a different search or category</span></div>';
+    return;
+  }
+  el.innerHTML = list.map(function(m){
+    return '' +
+    '<article class="msg-card">' +
+      '<div class="msg-head">' +
+        '<span class="badge ' + m.cat + '">' + CAT_LABEL[m.cat] + '</span>' +
+      '</div>' +
+      '<h3 class="msg-title">' + esc(m.title[state.lang]) + '</h3>' +
+      '<p class="msg-text">' + esc(m.text[state.lang]) + '</p>' +
+      '<div class="msg-actions">' +
+        '<button class="btn-copy" onclick="demoBlocked()">📋 Copy</button>' +
+        '<button class="btn-ghost" onclick="openPreview(' + m.id + ')">👁 Preview</button>' +
+        '<button class="btn-wa" onclick="demoBlocked()">💬 WhatsApp</button>' +
+      '</div>' +
+    '</article>';
+  }).join('');
+}
+
+/* ── Signature from business details ── */
+function signatureText(){
+  var d = bizDetails;
+  if (!d.name && !d.phone) return '';
+  var lines = ['—'];
+  if (d.name)    lines.push(d.name);
+  if (d.phone)   lines.push('📞 ' + d.phone);
+  if (d.website) lines.push('🌐 ' + d.website);
+  if (d.address) lines.push('📍 ' + d.address);
+  if (d.map)     lines.push('⭐ ' + d.map);
+  return lines.join('\n');
+}
+
+/* ── Preview modal ── */
+function openPreview(id){
+  var m = MESSAGES.filter(function(x){ return x.id === id; })[0];
+  if (!m) return;
+  var sig = signatureText();
+  var back = document.createElement('div');
+  back.className = 'modal-back';
+  back.innerHTML = '' +
+    '<div class="modal-card">' +
+      '<h3>' + esc(m.title[state.lang]) + '</h3>' +
+      '<div class="modal-sub">' + CAT_LABEL[m.cat] + ' · This is exactly what your customer will receive</div>' +
+      '<div class="modal-body">' + esc(m.text[state.lang]) +
+        (sig ? '<div class="modal-sig">' + esc(sig) + '</div>' : '') +
+      '</div>' +
+      '<div class="modal-actions">' +
+        '<button class="m-close" onclick="this.closest(\'.modal-back\').remove()">Close</button>' +
+        '<button class="btn-copy" style="flex:1;border-radius:11px;padding:12px;font-size:.8rem;font-weight:700" onclick="demoBlocked()">📋 Copy</button>' +
+      '</div>' +
+    '</div>';
+  back.addEventListener('click', function(e){ if (e.target === back) back.remove(); });
+  document.body.appendChild(back);
+}
+
+/* ══════════════════════════════════════════════════════════
+   BUSINESS DETAILS (localStorage)
+   ══════════════════════════════════════════════════════════ */
+function toggleDetailsForm(){
+  var f = $('detailsForm');
+  f.classList.toggle('hidden');
+  if (!f.classList.contains('hidden')) {
+    var empty = !bizDetails.name && !bizDetails.phone;
+    $('welcomeBanner').classList.toggle('hidden', !empty);
+  }
+}
+function saveDetails(){
+  bizDetails = {
+    name:    $('bizName').value.trim(),
+    phone:   $('bizPhone').value.trim(),
+    website: $('bizWebsite').value.trim(),
+    address: $('bizAddress').value.trim(),
+    map:     $('bizMapLink').value.trim()
+  };
+  try { localStorage.setItem('pcmd_biz', JSON.stringify(bizDetails)); } catch(e){}
+  updateDetailsStatus();
+  toast('✅ Business details saved on this device');
+  $('detailsForm').classList.add('hidden');
+}
+function loadDetails(){
+  try {
+    var raw = localStorage.getItem('pcmd_biz');
+    if (raw) bizDetails = JSON.parse(raw);
+  } catch(e){}
+  $('bizName').value    = bizDetails.name    || '';
+  $('bizPhone').value   = bizDetails.phone   || '';
+  $('bizWebsite').value = bizDetails.website || '';
+  $('bizAddress').value = bizDetails.address || '';
+  $('bizMapLink').value = bizDetails.map     || '';
+  updateDetailsStatus();
+}
+function updateDetailsStatus(){
+  var s = $('detailsStatus');
+  if (bizDetails.name || bizDetails.phone) {
+    s.textContent = '✓ Saved: ' + (bizDetails.name || bizDetails.phone);
+  } else {
+    s.textContent = 'No details saved yet';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   BILLING STUDIO
+   ══════════════════════════════════════════════════════════ */
+(function(){
+  var RS = '\u20B9', EM = '\u2014';
+  var items = [], docType = 'invoice', gstOn = false;
 
   var SAMPLE_ITEMS = [
-    { service: 'Business Directory Listing ' + EM + ' PCMC', schedule: 'Yearly', qty: 1, rate: 1500 },
-    { service: 'Featured Placement ' + EM + ' Homepage', schedule: 'Monthly', qty: 1, rate: 800 },
-    { service: 'WhatsApp Lead Alerts', schedule: 'Monthly', qty: 3, rate: 200 }
+    { service: 'Business Directory Listing ' + EM + ' PCMC', schedule: 'Yearly',  qty: 1, rate: 1500 },
+    { service: 'Featured Placement ' + EM + ' Homepage',    schedule: 'Monthly', qty: 1, rate: 800  },
+    { service: 'WhatsApp Lead Alerts',                      schedule: 'Monthly', qty: 3, rate: 200  }
   ];
 
   function money(n){
-    return RS + Math.abs(Number(n) || 0).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
-  }
-  function esc(s){
-    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return RS + Math.abs(Number(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   function todayStr(){
-    var d = new Date();
-    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var d = new Date(), m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return String(d.getDate()).padStart(2,'0') + '-' + m[d.getMonth()] + '-' + d.getFullYear();
   }
   function addDaysStr(days){
-    var d = new Date();
-    d.setDate(d.getDate() + days);
+    var d = new Date(); d.setDate(d.getDate() + days);
     var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return String(d.getDate()).padStart(2,'0') + '-' + m[d.getMonth()] + '-' + d.getFullYear();
   }
@@ -238,16 +904,18 @@ const description = "Try the invoice, quotation, proforma & proposal maker. Full
       if (i % 2 === 1) tr.style.background = '#f8fafc';
 
       tr.innerHTML =
-        '<td style="padding:14px 6px; text-align:center; font-weight:700; color:#2c7fb8; font-size:0.9rem;">' + (i+1) + '</td>' +
-        '<td style="padding:14px 14px;"><input type="text" data-i="' + i + '" data-f="service" value="' + esc(it.service) + '" placeholder="Service description" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:500; padding:4px 0; outline:none;"></td>' +
+        '<td style="padding:14px 6px; text-align:center; font-weight:700; color:#2c7fb8; font-size:0.9rem;">' + (i + 1) + '</td>' +
+        '<td style="padding:14px 14px;"><input type="text" data-i="' + i + '" data-f="service" value="' + esc(it.service) + '" placeholder="Service description" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:500; padding:4px 0; outline:none; box-sizing:border-box;"></td>' +
         '<td style="padding:14px 8px; text-align:center;"><select data-i="' + i + '" data-f="schedule" style="border:none; background:transparent; font-size:0.85rem; font-family:inherit; color:#0f172a; font-weight:500; text-align:center; cursor:pointer; outline:none; padding:4px 0; width:100%;">' +
-          ['One-time','Monthly','Quarterly','Half-Yearly','Yearly','AMC'].map(function(s){ return '<option value="'+s+'"'+(s===it.schedule?' selected':'')+'>'+s+'</option>'; }).join('') +
+          ['One-time','Monthly','Quarterly','Half-Yearly','Yearly','AMC'].map(function(s){
+            return '<option value="' + s + '"' + (s === it.schedule ? ' selected' : '') + '>' + s + '</option>';
+          }).join('') +
         '</select></td>' +
-        '<td style="padding:14px 8px; text-align:right;"><input type="number" min="0" data-i="' + i + '" data-f="qty" value="' + it.qty + '" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:600; text-align:right; padding:4px 0; outline:none;"></td>' +
-        '<td style="padding:14px 8px; text-align:right;"><input type="number" min="0" data-i="' + i + '" data-f="rate" value="' + it.rate + '" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:600; text-align:right; padding:4px 0; outline:none;"></td>' +
+        '<td style="padding:14px 8px; text-align:right;"><input type="number" min="0" data-i="' + i + '" data-f="qty" value="' + it.qty + '" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:600; text-align:right; padding:4px 0; outline:none; box-sizing:border-box;"></td>' +
+        '<td style="padding:14px 8px; text-align:right;"><input type="number" min="0" data-i="' + i + '" data-f="rate" value="' + it.rate + '" style="border:none; background:transparent; width:100%; font-size:0.88rem; font-family:inherit; color:#0f172a; font-weight:600; text-align:right; padding:4px 0; outline:none; box-sizing:border-box;"></td>' +
         '<td style="padding:14px 8px; text-align:right; font-weight:700; color:#0f172a; font-size:0.88rem;">' + money(it.qty * it.rate) + '</td>' +
         '<td class="demo-act-cell demo-no-print" style="padding:12px 4px; text-align:center;">' +
-          '<button class="demo-row-del" data-i="' + i + '" title="Remove" style="width:24px; height:24px; border-radius:50%; border:1px solid #e2e8f0; background:#f1f5f9; color:#64748b; font-size:0.7rem; font-weight:700; cursor:pointer; font-family:inherit; vertical-align:middle;">&#10005;</button>' +
+          '<button class="demo-row-del" data-i="' + i + '" title="Remove" style="width:24px; height:24px; border-radius:50%; border:1px solid #e2e8f0; background:#f1f5f9; color:#64748b; font-size:0.7rem; font-weight:700; cursor:pointer; font-family:inherit; vertical-align:middle;">✕</button>' +
         '</td>';
       tb.appendChild(tr);
     });
@@ -269,10 +937,9 @@ const description = "Try the invoice, quotation, proforma & proposal maker. Full
   $('demo-items-body').addEventListener('input', function(e){
     var t = e.target;
     if (!t.dataset || !t.dataset.f) return;
-    var i = +t.dataset.i;
-    var f = t.dataset.f;
+    var i = +t.dataset.i, f = t.dataset.f;
     items[i][f] = t.value;
-    if (f === 'qty' || f === 'rate') {
+    if (f === 'qty' || f === 'rate'){
       var cell = t.closest('tr').querySelector('td:nth-child(6)');
       if (cell) cell.textContent = money(items[i].qty * items[i].rate);
     }
@@ -290,38 +957,28 @@ const description = "Try the invoice, quotation, proforma & proposal maker. Full
     if (!btn) return;
     var i = +btn.dataset.i;
     if (btn.classList.contains('demo-row-del')){
-      if (items.length <= 1) { alert('At least one line required'); return; }
+      if (items.length <= 1){ toast('At least one line is required'); return; }
       items.splice(i, 1);
     }
     renderItems();
   });
 
-  function addRow() {
-    items.push({ service:'', schedule:'One-time', qty:1, rate:0 });
+  function addRow(){
+    items.push({ service: '', schedule: 'One-time', qty: 1, rate: 0 });
     renderItems();
   }
   $('demo-add-row').addEventListener('click', addRow);
   $('demo-add-row2').addEventListener('click', addRow);
 
-  var titles = { invoice:'INVOICE', proforma:'PROFORMA', quotation:'QUOTATION', proposal:'PROPOSAL' };
-  var showValidFor = { quotation:true, proposal:true };
+  var titles = { invoice: 'INVOICE', proforma: 'PROFORMA', quotation: 'QUOTATION', proposal: 'PROPOSAL' };
+  var showValidFor = { quotation: true, proposal: true };
 
   document.querySelectorAll('.demo-doc-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
-      document.querySelectorAll('.demo-doc-btn').forEach(function(b){
-        b.style.background = 'transparent';
-        b.style.color = '#475569';
-        b.style.fontWeight = '500';
-        b.classList.remove('active');
-      });
-      btn.style.background = '#1e3a5f';
-      btn.style.color = '#fff';
-      btn.style.fontWeight = '600';
+      document.querySelectorAll('.demo-doc-btn').forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
-
       docType = btn.dataset.doc;
       $('demo-doc-title').textContent = titles[docType];
-
       if (showValidFor[docType]){
         $('demo-valid-row').style.display = 'flex';
         $('demo-valid').textContent = addDaysStr(30);
@@ -333,63 +990,47 @@ const description = "Try the invoice, quotation, proforma & proposal maker. Full
 
   function setGst(on){
     gstOn = on;
-    $('demo-gst-on').style.background = on ? '#1e3a5f' : 'transparent';
-    $('demo-gst-on').style.color = on ? '#fff' : '#475569';
-    $('demo-gst-on').style.fontWeight = on ? '600' : '500';
-    $('demo-gst-off').style.background = !on ? '#1e3a5f' : 'transparent';
-    $('demo-gst-off').style.color = !on ? '#fff' : '#475569';
-    $('demo-gst-off').style.fontWeight = !on ? '600' : '500';
+    $('demo-gst-on').classList.toggle('active', on);
+    $('demo-gst-off').classList.toggle('active', !on);
     recalc();
   }
   $('demo-gst-on').addEventListener('click', function(){ setGst(true); });
   $('demo-gst-off').addEventListener('click', function(){ setGst(false); });
 
-  $('demo-print').addEventListener('click', function(){
-    var actCells = document.querySelectorAll('.demo-act-cell, .demo-act-head');
-    var toolbar = document.querySelector('.demo-toolbar');
-    actCells.forEach(function(c){ c.dataset.prev = c.style.display; c.style.display = 'none'; });
-    if (toolbar) toolbar.style.display = 'none';
-    window.print();
-    setTimeout(function(){
-      actCells.forEach(function(c){ c.style.display = c.dataset.prev || ''; });
-      if (toolbar) toolbar.style.display = '';
-    }, 500);
-  });
+  $('demo-print').addEventListener('click', function(){ window.print(); });
 
   function openModal(){
     var m = document.createElement('div');
-    m.style.cssText = 'position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:99999; padding:20px;';
+    m.className = 'modal-back';
     m.innerHTML =
-      '<div style="background:#fff; border-radius:20px; padding:34px 30px 22px; max-width:400px; width:100%; text-align:center; box-shadow:0 30px 80px -20px rgba(15,23,42,0.4); font-family:inherit;">' +
-        '<div style="font-size:1.15rem; font-weight:700; color:#0f172a; margin-bottom:4px;">Download Document</div>' +
-        '<div style="font-size:0.82rem; color:#64748b; margin-bottom:20px;">Choose a format</div>' +
+      '<div class="modal-card" style="max-width:400px;text-align:center;">' +
+        '<h3>Download Document</h3>' +
+        '<div class="modal-sub">Choose a format</div>' +
         '<button id="demo-dl-png" style="display:flex; align-items:center; gap:14px; width:100%; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:15px 18px; margin-bottom:10px; text-align:left; cursor:pointer; font-family:inherit;">' +
-          '<div style="width:44px; height:44px; background:#f8fafc; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">&#128247;</div>' +
+          '<div style="width:44px; height:44px; background:#f8fafc; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">📷</div>' +
           '<div><div style="font-size:0.9rem; font-weight:600; color:#0f172a;">PNG Image</div><div style="font-size:0.72rem; color:#94a3b8;">Best for WhatsApp</div></div>' +
         '</button>' +
         '<button id="demo-dl-pdf" style="display:flex; align-items:center; gap:14px; width:100%; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:15px 18px; margin-bottom:10px; text-align:left; cursor:pointer; font-family:inherit;">' +
-          '<div style="width:44px; height:44px; background:#f8fafc; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">&#128196;</div>' +
-          '<div><div style="font-size:0.9rem; font-weight:600; color:#0f172a;">PDF Document</div><div style="font-size:0.72rem; color:#94a3b8;">Best for email & printing</div></div>' +
+          '<div style="width:44px; height:44px; background:#f8fafc; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">📄</div>' +
+          '<div><div style="font-size:0.9rem; font-weight:600; color:#0f172a;">PDF Document</div><div style="font-size:0.72rem; color:#94a3b8;">Best for email &amp; printing</div></div>' +
         '</button>' +
         '<button id="demo-dl-cancel" style="background:transparent; border:none; color:#94a3b8; font-size:0.82rem; font-weight:500; padding:10px; width:100%; cursor:pointer; font-family:inherit;">Cancel</button>' +
       '</div>';
-
     document.body.appendChild(m);
     m.addEventListener('click', function(e){ if (e.target === m) m.remove(); });
-    document.getElementById('demo-dl-cancel').addEventListener('click', function(){ m.remove(); });
-    document.getElementById('demo-dl-png').addEventListener('click', function(){ m.remove(); downloadAs('png'); });
-    document.getElementById('demo-dl-pdf').addEventListener('click', function(){ m.remove(); downloadAs('pdf'); });
+    $('demo-dl-cancel').addEventListener('click', function(){ m.remove(); });
+    $('demo-dl-png').addEventListener('click', function(){ m.remove(); downloadAs('png'); });
+    $('demo-dl-pdf').addEventListener('click', function(){ m.remove(); downloadAs('pdf'); });
   }
-
   $('demo-download').addEventListener('click', openModal);
 
-  async function downloadAs(format) {
+  async function downloadAs(format){
     var doc = $('demo-doc');
     var actCells = document.querySelectorAll('.demo-act-cell, .demo-act-head');
     actCells.forEach(function(c){ c.style.display = 'none'; });
 
     try {
-      if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
+      if (document.fonts && document.fonts.ready){ try { await document.fonts.ready; } catch(e){} }
       await new Promise(function(r){ setTimeout(r, 100); });
 
       var W = Math.round(doc.getBoundingClientRect().width);
@@ -409,9 +1050,9 @@ const description = "Try the invoice, quotation, proforma & proposal maker. Full
       ctx.fillRect(0, 0, padded.width, padded.height);
       ctx.drawImage(canvas, PAD, PAD);
 
-      var filename = 'pcmc-diary-' + docType + '-' + new Date().toISOString().slice(0,10);
+      var filename = 'pcmc-diary-' + docType + '-' + new Date().toISOString().slice(0, 10);
 
-      if (format === 'png') {
+      if (format === 'png'){
         await new Promise(function(resolve){
           padded.toBlob(function(blob){
             var url = URL.createObjectURL(blob);
@@ -423,41 +1064,42 @@ const description = "Try the invoice, quotation, proforma & proposal maker. Full
             resolve();
           }, 'image/png', 1.0);
         });
+        toast('✅ PNG downloaded');
       } else {
         var jsPDF = window.jspdf.jsPDF;
-        var pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4', compress:true });
+        var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
         var pageW = pdf.internal.pageSize.getWidth();
         var pageH = pdf.internal.pageSize.getHeight();
         var imgData = padded.toDataURL('image/jpeg', 0.95);
         var imgRatio = padded.height / padded.width;
         var imgW = pageW;
         var imgH = imgW * imgRatio;
-        if (imgH <= pageH) {
+        if (imgH <= pageH){
           pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
         } else {
           var remaining = imgH, y = 0;
-          while (remaining > 0) {
+          while (remaining > 0){
             pdf.addImage(imgData, 'JPEG', 0, y, imgW, imgH);
             remaining -= pageH;
-            if (remaining > 0) { pdf.addPage(); y = -(imgH - remaining); }
+            if (remaining > 0){ pdf.addPage(); y = -(imgH - remaining); }
           }
         }
         pdf.save(filename + '.pdf');
+        toast('✅ PDF downloaded');
       }
-    } catch(err) {
-      alert('Download failed: ' + err.message);
+    } catch(err){
+      toast('❌ Download failed: ' + err.message);
     } finally {
       actCells.forEach(function(c){ c.style.display = ''; });
     }
   }
 
+  /* init */
   $('demo-date').textContent = todayStr();
   items = SAMPLE_ITEMS.slice();
   renderItems();
   setGst(false);
-
 })();
 </script>
-
 </body>
 </html>
