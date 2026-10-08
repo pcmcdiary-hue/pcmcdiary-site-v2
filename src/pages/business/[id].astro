@@ -1,18 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 
 export async function getStaticPaths() {
-  const categoriesUrl = 'https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/categories.json';
-  const catsRes = await fetch(categoriesUrl);
-  const catsData = await catsRes.json();
-  const categories = catsData.categories || [];
+  // Read categories.json from local src/data/
+  const catFile = path.resolve('./src/data/categories.json');
+  const catsRaw = await readFile(catFile, 'utf8');
+  const categories = (JSON.parse(catsRaw).categories) || [];
 
   const allPaths = [];
 
   for (const cat of categories) {
     try {
-      const res = await fetch('https://raw.githubusercontent.com/pcmcdiary-hue/pcmcdiary-data-v2/main/data/' + cat.file);
-      const businesses = await res.json();
+      // Read each category's business file from local src/data/clients/
+      const bizFile = path.resolve('./src/data/clients/' + cat.file);
+      const bizRaw = await readFile(bizFile, 'utf8');
+      const businesses = JSON.parse(bizRaw);
       if (!Array.isArray(businesses)) continue;
 
       for (const biz of businesses) {
@@ -22,7 +26,7 @@ export async function getStaticPaths() {
           props: { biz, category: cat }
         });
       }
-    } catch (e) {}
+    } catch (e) { /* skip missing files */ }
   }
 
   return allPaths;
