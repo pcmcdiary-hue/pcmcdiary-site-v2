@@ -393,3 +393,9 @@ select:focus-visible, textarea:focus-visible {
   .footer-bottom { font-size: 12px; flex-direction: column; gap: 8px; }
   .footer-bottom .dot { display: none; }
 }
+
+/* Exception: white-background hero cards keep dark text */
+.biz-hero h1, .biz-hero h2, .biz-hero h3, .biz-hero p,
+.prod-hero-card h1, .prod-hero-card h2, .prod-hero-card h3, .prod-hero-card p {
+  color: var(--ink) !important;
+}
