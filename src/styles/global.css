@@ -400,3 +400,13 @@ h1, h2, h3, h4, h5, h6, mark {
   -webkit-text-fill-color: transparent !important;
   display: inline !important;
 }
+/* ═══════════ FIX FOR "STILL DECIDING?" BOX ON /PLANS/ ═══════════ */
+.plans-cta h1, .plans-cta h2, .plans-cta h3, .plans-cta h4, .plans-cta p, .plans-cta span,
+.cta-inner h1, .cta-inner h2, .cta-inner h3, .cta-inner h4, .cta-inner p, .cta-inner span,
+.still-deciding h1, .still-deciding h2, .still-deciding h3, .still-deciding p,
+.force-white-text h1, .force-white-text h2, .force-white-text h3, .force-white-text p {
+  color: #ffffff !important;           /* Forces white text */
+  background-color: transparent !important; /* Removes the red highlight */
+  -webkit-text-fill-color: #ffffff !important; /* Overrides gradient text */
+  display: block !important;          /* Makes sure it takes up the full width */
+}
