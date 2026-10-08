@@ -314,56 +314,42 @@ select:focus-visible, textarea:focus-visible {
 /* ═══════════════════════════════════════════════════════════════
    TEXT COLOR OVERRIDES FOR DARK & LIGHT SECTIONS
    ───────────────────────────────────────────────────────────────
-   This block safely handles text on colored backgrounds.
-   1. Dark sections (hero, banner, cta) get white text.
-   2. Known light boxes get dark text.
-   3. Manual utility classes can force either color.
+   1. DARK SECTIONS: Add class names here to force white text.
+   2. LIGHT SECTIONS: Add class names here to force dark text.
+   3. UTILITY CLASSES: Add .force-white-text or .force-dark-text
+      to any HTML element to manually override colors.
    ═══════════════════════════════════════════════════════════════ */
 
 /* --- 1. DARK SECTIONS: Force White Text --- */
-/* Targets any section with "hero", "banner", "cta", or "jumbotron" */
-/* Excludes known light classes to prevent invisible text on light pink/white boxes */
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero):not(.prod-hero-card) h1,
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero):not(.prod-hero-card) h2,
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero):not(.prod-hero-card) h3,
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero):not(.prod-hero-card) h4,
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero):not(.prod-hero-card) p,
-
-[class*="banner"]:not(.banner-light):not(.promo-banner) h1,
-[class*="banner"]:not(.banner-light):not(.promo-banner) h2,
-[class*="banner"]:not(.banner-light):not(.promo-banner) h3,
-[class*="banner"]:not(.banner-light):not(.promo-banner) p,
-
-[class*="cta"]:not(.cta-light):not(.cta-card):not(.cta-box):not(.about-cta):not(.expert-cta):not(.writer-cta):not(.get-in-touch) h1,
-[class*="cta"]:not(.cta-light):not(.cta-card):not(.cta-box):not(.about-cta):not(.expert-cta):not(.writer-cta):not(.get-in-touch) h2,
-[class*="cta"]:not(.cta-light):not(.cta-card):not(.cta-box):not(.about-cta):not(.expert-cta):not(.writer-cta):not(.get-in-touch) h3,
-[class*="cta"]:not(.cta-light):not(.cta-card):not(.cta-box):not(.about-cta):not(.expert-cta):not(.writer-cta):not(.get-in-touch) p,
-
-.jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron p,
-
-/* Manual force-white utility */
-.force-white-text h1, .force-white-text h2, .force-white-text h3,
-.force-white-text h4, .force-white-text p, .force-white-text span,
-.force-white-text li, .force-white-text strong {
+.hero h1, .hero h2, .hero h3, .hero h4, .hero p, .hero span,
+.banner h1, .banner h2, .banner h3, .banner h4, .banner p, .banner span,
+.cta h1, .cta h2, .cta h3, .cta h4, .cta p, .cta span,
+.jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron h4, .jumbotron p,
+.pricing-hero h1, .pricing-hero h2, .pricing-hero h3, .pricing-hero p,
+.plan-hero h1, .plan-hero h2, .plan-hero h3, .plan-hero p,
+.plans h1, .plans h2, .plans h3, .plans p,
+.expert-hero h1, .expert-hero h2, .expert-hero h3, .expert-hero p,
+.expert-advice h1, .expert-advice h2, .expert-advice h3, .expert-advice p,
+.contact-hero h1, .contact-hero h2, .contact-hero h3, .contact-hero p,
+.home-hero h1, .home-hero h2, .home-hero h3, .home-hero p,
+.force-white-text, .force-white-text h1, .force-white-text h2, .force-white-text h3, .force-white-text h4, .force-white-text p, .force-white-text span {
   color: #fff !important;
 }
 
 /* Breadcrumbs inside dark sections */
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero) .breadcrumb,
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero) .breadcrumb a,
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero) .breadcrumb span,
-.force-white-text .breadcrumb,
-.force-white-text .breadcrumb a,
-.force-white-text .breadcrumb span {
+.hero .breadcrumb, .hero .breadcrumb a, .hero .breadcrumb span,
+.banner .breadcrumb, .banner .breadcrumb a, .banner .breadcrumb span,
+.force-white-text .breadcrumb, .force-white-text .breadcrumb a, .force-white-text .breadcrumb span {
   color: rgba(255,255,255,0.9) !important;
 }
-[class*="hero"]:not(.hero-light):not(.about-cta):not(.expert-cta):not(.biz-hero) .breadcrumb span:last-child,
+.hero .breadcrumb span:last-child,
+.banner .breadcrumb span:last-child,
 .force-white-text .breadcrumb span:last-child {
   color: #fde047 !important;
 }
 
 /* --- 2. LIGHT SECTIONS: Force Dark Text --- */
-/* Explicitly targets the light pink/white boxes on /about/ and /expert-advice/ */
+/* These override the white text rules above. */
 .about-cta h1, .about-cta h2, .about-cta h3, .about-cta p, .about-cta span,
 .expert-cta h1, .expert-cta h2, .expert-cta h3, .expert-cta p, .expert-cta span,
 .writer-cta h1, .writer-cta h2, .writer-cta h3, .writer-cta p, .writer-cta span,
@@ -376,15 +362,11 @@ select:focus-visible, textarea:focus-visible {
 .prod-hero-card h1, .prod-hero-card h2, .prod-hero-card h3, .prod-hero-card p, .prod-hero-card span,
 .hero-light h1, .hero-light h2, .hero-light h3, .hero-light p, .hero-light span,
 .banner-light h1, .banner-light h2, .banner-light h3, .banner-light p, .banner-light span,
-
-/* Manual force-dark utility */
-.force-dark-text h1, .force-dark-text h2, .force-dark-text h3,
-.force-dark-text h4, .force-dark-text p, .force-dark-text span,
-.force-dark-text li, .force-dark-text strong {
+.force-dark-text, .force-dark-text h1, .force-dark-text h2, .force-dark-text h3, .force-dark-text h4, .force-dark-text p, .force-dark-text span {
   color: var(--ink) !important;
 }
 
-/* Ensure paragraph text in light sections is a softer dark grey, not pure black */
+/* Softer paragraph text for light sections */
 .about-cta p, .expert-cta p, .writer-cta p, .get-in-touch p,
 .cta-light p, .cta-card p, .cta-box p, .promo-banner p,
 .biz-hero p, .prod-hero-card p, .hero-light p, .banner-light p,
