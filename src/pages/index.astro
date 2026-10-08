@@ -79,10 +79,8 @@ const catsWithMeta = categories.map(c => {
   return { ...c, ...meta, count };
 });
 
-// ONLY featured / premium tiers for homepage
 const PAID_TIERS = ['featured', 'premium_pro', 'premium', 'vp', 'vb'];
 const paidBusinesses = businesses.filter(b => PAID_TIERS.includes((b.tier || '').toLowerCase()));
-// Take up to 12 for rotation; if less than 4, fall back to all
 const featured = paidBusinesses.length >= 4 ? paidBusinesses.slice(0, 12) : businesses.slice(0, 8);
 
 const stats = {
@@ -91,6 +89,18 @@ const stats = {
   listings: businesses.length,
   featured: paidBusinesses.length
 };
+
+// Split locations into groups by zone for richer display
+const zones = {};
+locations.forEach(l => {
+  const z = l.zone || 'Other';
+  if (!zones[z]) zones[z] = [];
+  zones[z].push(l);
+});
+const zoneOrder = ['Central', 'West', 'East', 'North', 'South', 'Other'];
+const locationGroups = zoneOrder
+  .filter(z => zones[z])
+  .map(z => ({ zone: z, items: zones[z] }));
 ---
 
 <BaseLayout title="PCMC Diary — Discover Pimpri-Chinchwad" description={`Find ${stats.listings}+ trusted businesses across ${stats.locations} PCMC areas.`}>
@@ -155,9 +165,32 @@ const stats = {
     </div>
   </section>
 
-  <!-- FEATURED (rotating) -->
+  <!-- ═══ 1. CATEGORIES ═══ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div>
+        <div class="sec-tag">Browse</div>
+        <h2 class="sec-title">All {stats.categories} Categories</h2>
+      </div>
+      <a href="/directory" class="sec-link">Full Directory <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+    <div class="cat-grid">
+      {catsWithMeta.map(c => (
+        <a href={`/category/${c.categoryId}`} class="cat-tile">
+          <div class="cat-icon" style={`background: linear-gradient(135deg, ${c.c1}, ${c.c2});`}>
+            <i class={`fa-solid ${c.icon}`}></i>
+          </div>
+          <div class="cat-name">{c.categoryName}</div>
+          <div class="cat-count">{c.count}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ 2. FEATURED BUSINESSES ═══ -->
   {featured.length > 0 && (
-    <section class="sec">
+    <section class="sec sec-alt">
       <div class="sec-head">
         <div>
           <div class="sec-tag">Featured</div>
@@ -174,7 +207,6 @@ const stats = {
           const t = (b.tier || '').toLowerCase();
           const isFeatured = t === 'featured';
           const isPro = ['premium_pro','premium'].includes(t);
-          const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(t);
           const badgeText = isFeatured ? 'Featured' : (isPro ? 'Premium' : 'Verified');
           return (
             <article class="biz-card">
@@ -208,48 +240,38 @@ const stats = {
     </section>
   )}
 
-  <!-- ALL CATEGORIES -->
-  <section class="sec sec-alt">
-    <div class="sec-head">
-      <div>
-        <div class="sec-tag">Browse</div>
-        <h2 class="sec-title">All {stats.categories} Categories</h2>
-      </div>
-      <a href="/directory" class="sec-link">Full Directory <i class="fa-solid fa-arrow-right"></i></a>
-    </div>
-
-    <div class="cat-grid">
-      {catsWithMeta.map(c => (
-        <a href={`/category/${c.categoryId}`} class="cat-tile">
-          <div class="cat-icon" style={`background: linear-gradient(135deg, ${c.c1}, ${c.c2});`}>
-            <i class={`fa-solid ${c.icon}`}></i>
-          </div>
-          <div class="cat-name">{c.categoryName}</div>
-          <div class="cat-count">{c.count}</div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- LOCATIONS -->
+  <!-- ═══ 3. LOCATIONS (redesigned) ═══ -->
   <section class="sec">
     <div class="sec-head">
       <div>
         <div class="sec-tag">Areas</div>
         <h2 class="sec-title">Browse {stats.locations} Locations</h2>
+        <p class="sec-sub">Every PCMC area, organized by zone — from Akurdi to Wakad.</p>
       </div>
     </div>
-    <div class="loc-grid">
-      {locations.map(l => (
-        <a href={`/location/${l.locationId}`} class="loc-tile">
-          <i class="fa-solid fa-location-dot"></i>
-          <span>{l.locationName}</span>
-        </a>
+
+    <div class="zone-list">
+      {locationGroups.map(g => (
+        <div class="zone-block">
+          <div class="zone-head">
+            <div class="zone-badge">{g.zone}</div>
+            <div class="zone-line"></div>
+            <div class="zone-count">{g.items.length} areas</div>
+          </div>
+          <div class="zone-chips">
+            {g.items.map(l => (
+              <a href={`/location/${l.locationId}`} class="loc-chip">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>{l.locationName}</span>
+              </a>
+            ))}
+          </div>
+        </div>
       ))}
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
+  <!-- ═══ 4. HOW IT WORKS ═══ -->
   <section class="sec sec-alt">
     <div class="sec-head sec-head-center">
       <div>
@@ -281,7 +303,7 @@ const stats = {
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- ═══ 5. CTA ═══ -->
   <section class="sec">
     <div class="cta">
       <div class="cta-orb"></div>
@@ -353,7 +375,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   70% { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 }
-
 .hero-h1 { font-size: 64px; font-weight: 800; letter-spacing: -2.6px; line-height: 1.02; margin: 0 0 24px; }
 .hero-accent {
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
@@ -374,11 +395,7 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 .hero-search:focus-within { box-shadow: 0 28px 64px -20px rgba(0,0,0,0.65), 0 12px 28px -10px rgba(0,0,0,0.4), 0 0 0 4px rgba(220,38,38,0.18); }
 .hero-icon { color: #94a3b8; font-size: 15px; padding-left: 4px; flex-shrink: 0; }
-.hero-search input {
-  flex: 1; border: 0; padding: 15px 6px;
-  font-size: 15.5px; font-family: inherit; font-weight: 500;
-  color: #0f172a; background: transparent; outline: none; min-width: 0;
-}
+.hero-search input { flex: 1; border: 0; padding: 15px 6px; font-size: 15.5px; font-family: inherit; font-weight: 500; color: #0f172a; background: transparent; outline: none; min-width: 0; }
 .hero-search input::placeholder { color: #94a3b8; font-weight: 400; }
 .hero-search button {
   display: inline-flex; align-items: center; gap: 8px;
@@ -418,6 +435,46 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 .sec-link:hover { background: #dc2626; color: #fff; border-color: #dc2626; text-decoration: none; }
 .sec-link i { font-size: 10px; transition: transform 0.2s; }
 .sec-link:hover i { transform: translateX(3px); }
+
+/* CATEGORY TILES */
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.cat-tile {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 22px 12px 16px;
+  background: #fff; border: 1.5px solid #eef1f6;
+  border-radius: 18px; text-decoration: none;
+  transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
+  position: relative; overflow: hidden;
+}
+.cat-tile:hover {
+  transform: translateY(-6px);
+  border-color: #fecaca;
+  box-shadow: 0 22px 44px -18px rgba(15,23,42,0.15), 0 10px 20px -10px rgba(220,38,38,0.1);
+  text-decoration: none;
+}
+.cat-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 22px;
+  margin-bottom: 12px;
+  box-shadow: 0 12px 24px -10px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.cat-tile:hover .cat-icon { transform: scale(1.08) rotate(-3deg); }
+.cat-name {
+  font-size: 12.5px; font-weight: 800; color: #0f172a;
+  text-align: center; line-height: 1.25;
+  letter-spacing: -0.2px;
+  margin-bottom: 6px;
+  min-height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cat-count {
+  font-size: 10px; font-weight: 800; color: #dc2626;
+  background: #fef2f2;
+  padding: 3px 10px; border-radius: 20px;
+  letter-spacing: 0.4px;
+}
 
 /* FEATURED BUSINESS CARDS */
 .biz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
@@ -505,63 +562,68 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 .biz-btn i { font-size: 10px; transition: transform 0.2s; }
 .biz-btn:hover i { transform: translateX(3px); }
 
-/* CATEGORY TILES */
-.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
-.cat-tile {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 22px 12px 16px;
-  background: #fff; border: 1.5px solid #eef1f6;
-  border-radius: 18px; text-decoration: none;
-  transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
-  position: relative; overflow: hidden;
-}
-.cat-tile:hover {
-  transform: translateY(-6px);
-  border-color: #fecaca;
-  box-shadow: 0 22px 44px -18px rgba(15,23,42,0.15), 0 10px 20px -10px rgba(220,38,38,0.1);
-  text-decoration: none;
-}
-.cat-icon {
-  width: 56px; height: 56px; border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 22px;
-  margin-bottom: 12px;
-  box-shadow: 0 12px 24px -10px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-.cat-tile:hover .cat-icon { transform: scale(1.08) rotate(-3deg); }
-.cat-name {
-  font-size: 12.5px; font-weight: 800; color: #0f172a;
-  text-align: center; line-height: 1.25;
-  letter-spacing: -0.2px;
-  margin-bottom: 6px;
-  min-height: 32px;
-  display: flex; align-items: center; justify-content: center;
-}
-.cat-count {
-  font-size: 10px; font-weight: 800; color: #dc2626;
-  background: #fef2f2;
-  padding: 3px 10px; border-radius: 20px;
-  letter-spacing: 0.4px;
-}
+/* LOCATIONS — redesigned with zone grouping */
+.zone-list { display: flex; flex-direction: column; gap: 32px; }
 
-/* LOCATIONS */
-.loc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
-.loc-tile {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 14px 16px; border-radius: 14px;
+.zone-block {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.zone-head {
+  display: flex; align-items: center; gap: 14px;
+}
+.zone-badge {
+  display: inline-flex; align-items: center;
+  padding: 6px 14px; border-radius: 40px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #fff; font-size: 11px; font-weight: 800;
+  letter-spacing: 1.4px; text-transform: uppercase;
+  box-shadow: 0 6px 14px -6px rgba(15,23,42,0.4);
+}
+.zone-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, #e2e8f0, transparent);
+}
+.zone-count {
+  font-size: 11px; font-weight: 800; color: #94a3b8;
+  letter-spacing: 0.6px; text-transform: uppercase;
+}
+.zone-chips {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px;
+}
+.loc-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px; border-radius: 14px;
   background: #fff; border: 1.5px solid #eef1f6;
   font-size: 13px; font-weight: 700; color: #334155;
   text-decoration: none; transition: all 0.22s;
+  position: relative; overflow: hidden;
 }
-.loc-tile i { color: #dc2626; font-size: 12px; transition: all 0.2s; }
-.loc-tile:hover {
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  border-color: #dc2626; color: #fff;
-  transform: translateY(-3px); text-decoration: none;
-  box-shadow: 0 14px 28px -12px rgba(220,38,38,0.5);
+.loc-chip::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, #dc2626, #f59e0b);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
 }
-.loc-tile:hover i { color: #fff; transform: scale(1.2); }
+.loc-chip:hover::before { transform: scaleY(1); }
+.loc-chip i {
+  color: #dc2626; font-size: 12px;
+  transition: all 0.25s; flex-shrink: 0;
+  width: 20px; text-align: center;
+}
+.loc-chip span {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  flex: 1;
+}
+.loc-chip:hover {
+  background: #fff;
+  border-color: #fecaca;
+  color: #dc2626;
+  transform: translateX(4px);
+  text-decoration: none;
+  box-shadow: 0 12px 24px -12px rgba(220,38,38,0.2);
+}
+.loc-chip:hover i { color: #dc2626; transform: scale(1.2); }
 
 /* HOW IT WORKS */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
@@ -666,22 +728,37 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   .sec-title { font-size: 24px; }
   .sec-head { margin-bottom: 28px; }
 
-  /* Featured biz — 1 col */
-  .biz-grid { grid-template-columns: 1fr; gap: 14px; }
-  .biz-card { padding: 22px; border-radius: 18px; }
-  .biz-avatar { width: 48px; height: 48px; font-size: 20px; }
-
-  /* Categories — 4 per row */
+  /* Categories — 4 per row on mobile */
   .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .cat-tile { padding: 14px 6px 10px; border-radius: 14px; }
   .cat-icon { width: 44px; height: 44px; font-size: 18px; border-radius: 13px; margin-bottom: 8px; }
   .cat-name { font-size: 10px; min-height: 26px; margin-bottom: 4px; line-height: 1.2; }
   .cat-count { font-size: 9px; padding: 2px 7px; }
 
-  /* Locations — 2 per row */
-  .loc-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .loc-tile { padding: 11px 10px; font-size: 12px; border-radius: 12px; }
-  .loc-tile span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Featured biz — 2 per row on mobile */
+  .biz-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .biz-card { padding: 18px 14px 16px; border-radius: 16px; }
+  .biz-ribbon { padding: 5px 10px 5px 9px; font-size: 8.5px; border-bottom-left-radius: 10px; }
+  .biz-ribbon i { font-size: 8px; }
+  .biz-head { padding-right: 60px; gap: 10px; margin-bottom: 12px; }
+  .biz-avatar { width: 40px; height: 40px; font-size: 17px; border-radius: 11px; }
+  .biz-name { font-size: 13.5px; margin-bottom: 3px; }
+  .biz-sub { font-size: 11px; }
+  .biz-meta { gap: 6px; margin-bottom: 10px; }
+  .biz-meta span { font-size: 10px; padding: 4px 8px; gap: 4px; }
+  .biz-meta i { font-size: 9px; }
+  .biz-desc { font-size: 11.5px; line-height: 1.45; margin-bottom: 12px; -webkit-line-clamp: 2; }
+  .biz-btn { padding: 9px 12px; font-size: 11px; border-radius: 10px; gap: 6px; }
+  .biz-btn i { font-size: 9px; }
+
+  /* Locations — zone compact, 2 per row */
+  .zone-list { gap: 24px; }
+  .zone-head { gap: 10px; }
+  .zone-badge { padding: 5px 11px; font-size: 10px; letter-spacing: 1.1px; }
+  .zone-count { font-size: 10px; }
+  .zone-chips { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .loc-chip { padding: 10px 12px; font-size: 12px; border-radius: 12px; gap: 8px; }
+  .loc-chip i { font-size: 11px; width: 16px; }
 
   .steps { grid-template-columns: 1fr; gap: 14px; }
   .step { padding: 28px 24px; border-radius: 18px; }
@@ -696,5 +773,6 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   .hero-h1 { font-size: 30px; }
   .cat-grid { grid-template-columns: repeat(3, 1fr); }
   .cat-icon { width: 40px; height: 40px; font-size: 16px; }
+  .biz-grid { grid-template-columns: 1fr; }
 }
 </style>
