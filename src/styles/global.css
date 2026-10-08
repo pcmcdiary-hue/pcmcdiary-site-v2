@@ -312,96 +312,56 @@ select:focus-visible, textarea:focus-visible {
 .toast-info { background: linear-gradient(135deg, #2563eb, #1e40af); }
 
 /* ═══════════════════════════════════════════════════════════════
-   WHITE TEXT ON DARK SECTIONS
+   WHITE TEXT ON DARK SECTIONS (SAFE VERSION)
    ───────────────────────────────────────────────────────────────
-   Forces white text on headings + paragraphs inside any section
-   whose class contains "hero", "banner", "jumbotron", or "cta".
+   Instead of a blanket rule that breaks light cards, we now
+   explicitly target dark sections and provide manual overrides.
 
-   IMPORTANT: This rule is now scoped with :not([class*="light"])
-   and :not([class*="card"]) so it does NOT catch light-background
-   variants like ".about-cta", ".cta-card", ".cta-light", etc.
-
-   If a section still shows invisible text, add the class
-   ".on-dark" to it, or add ".force-dark-text" to opt out.
+   HOW TO USE:
+   - If a section needs white text, add class="force-white-text"
+   - If a section has invisible text, add class="force-dark-text"
    ═══════════════════════════════════════════════════════════════ */
-[class*="hero"]:not([class*="light"]):not([class*="card"]) h1,
-[class*="hero"]:not([class*="light"]):not([class*="card"]) h2,
-[class*="hero"]:not([class*="light"]):not([class*="card"]) h3,
-[class*="hero"]:not([class*="light"]):not([class*="card"]) h4,
-[class*="hero"]:not([class*="light"]):not([class*="card"]) p,
-[class*="banner"]:not([class*="light"]):not([class*="card"]) h1,
-[class*="banner"]:not([class*="light"]):not([class*="card"]) h2,
-[class*="banner"]:not([class*="light"]):not([class*="card"]) h3,
-[class*="banner"]:not([class*="light"]):not([class*="card"]) p,
-[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) h1,
-[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) h2,
-[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) h3,
-[class*="jumbotron"]:not([class*="light"]):not([class*="card"]) p,
-[class*="cta"]:not([class*="light"]):not([class*="card"]) h1,
-[class*="cta"]:not([class*="light"]):not([class*="card"]) h2,
-[class*="cta"]:not([class*="light"]):not([class*="card"]) h3,
-[class*="cta"]:not([class*="light"]):not([class*="card"]) p {
+
+/* Force white text on genuinely dark sections */
+.force-white-text h1, .force-white-text h2, .force-white-text h3,
+.force-white-text h4, .force-white-text p, .force-white-text span,
+.force-white-text li, .force-white-text strong {
   color: #fff !important;
 }
-
-/* Breadcrumbs inside dark heroes */
-[class*="hero"]:not([class*="light"]) .breadcrumb,
-[class*="hero"]:not([class*="light"]) .breadcrumb a,
-[class*="hero"]:not([class*="light"]) .breadcrumb span,
-[class*="banner"]:not([class*="light"]) .breadcrumb,
-[class*="banner"]:not([class*="light"]) .breadcrumb a,
-[class*="banner"]:not([class*="light"]) .breadcrumb span {
+.force-white-text .breadcrumb,
+.force-white-text .breadcrumb a,
+.force-white-text .breadcrumb span {
   color: rgba(255,255,255,0.9) !important;
 }
-[class*="hero"]:not([class*="light"]) .breadcrumb span:last-child,
-[class*="banner"]:not([class*="light"]) .breadcrumb span:last-child {
-  color: #fde047 !important;
-}
 
-/* ───────────────────────────────────────────────────────────────
-   LIGHT-BACKGROUND SECTION EXCEPTIONS
-   Anything matching these patterns keeps dark text, overriding
-   the white-text rule above.
-   ─────────────────────────────────────────────────────────────── */
-
-/* Explicit known light-background cards */
-.about-cta, .about-cta *,
-.cta-card, .cta-card *,
-.cta-box, .cta-box *,
-.cta-light, .cta-light *,
-.hero-light, .hero-light *,
-.banner-light, .banner-light *,
-.biz-hero, .biz-hero *,
-.prod-hero-card, .prod-hero-card * {
-  color: var(--ink) !important;
-}
-.about-cta p, .cta-card p, .cta-box p,
-.cta-light p, .hero-light p, .banner-light p,
-.biz-hero p, .prod-hero-card p {
-  color: var(--ink-600) !important;
-}
-
-/* Manual opt-in: add class="force-dark-text" to any stubborn element */
-.force-dark-text,
+/* Force dark text on stubborn light sections (Fixes /about/ and /expert-advice/) */
 .force-dark-text h1, .force-dark-text h2, .force-dark-text h3,
 .force-dark-text h4, .force-dark-text p, .force-dark-text span,
 .force-dark-text li, .force-dark-text strong {
   color: var(--ink) !important;
 }
-.force-dark-text p,
-.force-dark-text li {
+.force-dark-text p, .force-dark-text li {
   color: var(--ink-600) !important;
 }
 
-/* Manual opt-in: add class="on-dark" to force white text on any section */
-.on-dark h1, .on-dark h2, .on-dark h3, .on-dark h4,
-.on-dark p, .on-dark span, .on-dark li {
-  color: #fff !important;
+/* ───────────────────────────────────────────────────────────────
+   EXPLICIT EXCEPTIONS FOR KNOWN LIGHT-BACKGROUND CARDS
+   We hardcode the likely class names of your light pink boxes
+   so the global white-text rule (if any remains) doesn't touch them.
+   ─────────────────────────────────────────────────────────────── */
+.about-cta h1, .about-cta h2, .about-cta h3, .about-cta p, .about-cta span,
+.expert-cta h1, .expert-cta h2, .expert-cta h3, .expert-cta p, .expert-cta span,
+.writer-cta h1, .writer-cta h2, .writer-cta h3, .writer-cta p, .writer-cta span,
+.get-in-touch h1, .get-in-touch h2, .get-in-touch h3, .get-in-touch p, .get-in-touch span,
+.cta-light h1, .cta-light h2, .cta-light h3, .cta-light p, .cta-light span,
+.cta-card h1, .cta-card h2, .cta-card h3, .cta-card p, .cta-card span,
+.cta-box h1, .cta-box h2, .cta-box h3, .cta-box p, .cta-box span,
+.promo-banner h1, .promo-banner h2, .promo-banner h3, .promo-banner p, .promo-banner span {
+  color: var(--ink) !important;
 }
-.on-dark .breadcrumb,
-.on-dark .breadcrumb a,
-.on-dark .breadcrumb span {
-  color: rgba(255,255,255,0.9) !important;
+.about-cta p, .expert-cta p, .writer-cta p, .get-in-touch p,
+.cta-light p, .cta-card p, .cta-box p, .promo-banner p {
+  color: var(--ink-600) !important;
 }
 
 /* ═══════════ PRINT ═══════════ */
