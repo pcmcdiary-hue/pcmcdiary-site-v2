@@ -5,73 +5,87 @@ import path from 'node:path';
 
 const DATA_DIR = path.resolve('./src/data');
 
-// Category groups — organizes 39 categories into 9 visible groups
-const GROUPS = [
-  { id: 'food-daily',    name: 'Food & Daily Needs',    icon: 'fa-utensils',         desc: 'Restaurants, cafés, kirana, grocery & more',
-    categories: ['food-dining','cafes-quick-bites','grocery-kirana','specialty-stores','books-stationery'] },
-  { id: 'health-well',   name: 'Health & Wellness',     icon: 'fa-heart-pulse',      desc: 'Doctors, fitness, Ayurveda, beauty & spa',
-    categories: ['health-medical','fitness-wellness','ayurveda-wellness','alternative-medicine','beauty-personal-care'] },
-  { id: 'home-living',   name: 'Home & Living',         icon: 'fa-house-chimney',    desc: 'Interiors, domestic help, garden, repairs',
-    categories: ['home-interior','interior-exterior-design','domestic-services','gardening-outdoor','utilities','daily-use-services'] },
-  { id: 'shop-fashion',  name: 'Shopping & Fashion',    icon: 'fa-bag-shopping',     desc: 'Apparel, jewellery, gifts, kids, pets',
-    categories: ['fashion-apparel','jewelry-gold','shopping-retail','celebrations-gifts','kids-baby','pet-care'] },
-  { id: 'tech-digital',  name: 'Tech & Digital',        icon: 'fa-laptop',           desc: 'Electronics, IT, internet, photography',
-    categories: ['electronics-gadgets','it-digital-services','communication-internet','photography-video'] },
-  { id: 'auto-travel',   name: 'Auto & Travel',         icon: 'fa-car',              desc: 'Vehicles, movers, hotels, travel agents',
-    categories: ['automotive','logistics-movers','hospitality-travel'] },
-  { id: 'property-fin',  name: 'Property & Finance',    icon: 'fa-building',         desc: 'Real estate, CA, legal, government services',
-    categories: ['real-estate-property','finance-legal','government-services','consulting-services'] },
-  { id: 'learn-lifestyle', name: 'Learning & Lifestyle', icon: 'fa-graduation-cap',  desc: 'Schools, coaches, events, fitness gear',
-    categories: ['education-learning','coaches-trainers','entertainment-events','fitness-equipment'] },
-  { id: 'biz-services',  name: 'Business Services',     icon: 'fa-briefcase',        desc: 'Printing, packaging, security',
-    categories: ['packaging-printing','security-services'] },
-];
+// Category styling map (icons + colors)
+const CAT_META = {
+  'Food & Dining':              { icon: 'fa-utensils',           grad: 'from-red-500 to-rose-700' },
+  'Grocery & Kirana':           { icon: 'fa-cart-shopping',      grad: 'from-green-500 to-emerald-700' },
+  'Health & Medical':           { icon: 'fa-stethoscope',        grad: 'from-red-500 to-pink-700' },
+  'Beauty & Personal Care':     { icon: 'fa-spa',                grad: 'from-pink-500 to-fuchsia-700' },
+  'Fitness & Wellness':         { icon: 'fa-dumbbell',           grad: 'from-cyan-500 to-blue-700' },
+  'Education & Learning':       { icon: 'fa-graduation-cap',     grad: 'from-amber-500 to-orange-700' },
+  'Fashion & Apparel':          { icon: 'fa-shirt',              grad: 'from-violet-500 to-purple-700' },
+  'Jewelry & Gold':             { icon: 'fa-gem',                grad: 'from-yellow-500 to-amber-700' },
+  'Electronics & Gadgets':      { icon: 'fa-laptop',             grad: 'from-blue-500 to-indigo-700' },
+  'Home & Interior':            { icon: 'fa-couch',              grad: 'from-orange-500 to-red-700' },
+  'Automotive':                 { icon: 'fa-car',                grad: 'from-slate-600 to-slate-800' },
+  'Domestic Services':          { icon: 'fa-broom',              grad: 'from-indigo-500 to-blue-700' },
+  'IT & Digital Services':      { icon: 'fa-code',               grad: 'from-sky-500 to-blue-700' },
+  'Logistics & Movers':         { icon: 'fa-truck-fast',         grad: 'from-orange-500 to-amber-700' },
+  'Hospitality & Travel':       { icon: 'fa-plane',              grad: 'from-cyan-500 to-teal-700' },
+  'Entertainment & Events':     { icon: 'fa-film',               grad: 'from-purple-500 to-violet-700' },
+  'Kids & Baby':                { icon: 'fa-child',              grad: 'from-pink-400 to-rose-600' },
+  'Books & Stationery':         { icon: 'fa-book',               grad: 'from-amber-500 to-yellow-700' },
+  'Gardening & Outdoor':        { icon: 'fa-seedling',           grad: 'from-lime-500 to-green-700' },
+  'Pet Care':                   { icon: 'fa-paw',                grad: 'from-orange-400 to-amber-600' },
+  'Real Estate & Property':     { icon: 'fa-building',           grad: 'from-purple-500 to-indigo-700' },
+  'Finance & Legal':            { icon: 'fa-coins',              grad: 'from-emerald-500 to-green-700' },
+  'Packaging & Printing':       { icon: 'fa-print',              grad: 'from-blue-500 to-cyan-700' },
+  'Cafes & Quick Bites':        { icon: 'fa-mug-hot',            grad: 'from-amber-600 to-red-700' },
+  'Shopping & Retail':          { icon: 'fa-bag-shopping',       grad: 'from-pink-500 to-red-700' },
+  'Communication & Internet':   { icon: 'fa-wifi',               grad: 'from-sky-500 to-indigo-700' },
+  'Security Services':          { icon: 'fa-shield-halved',      grad: 'from-slate-600 to-blue-900' },
+  'Alternative Medicine':       { icon: 'fa-leaf',               grad: 'from-green-500 to-emerald-700' },
+  'Photography & Video':        { icon: 'fa-camera',             grad: 'from-rose-500 to-pink-700' },
+  'Celebrations & Gifts':       { icon: 'fa-gift',               grad: 'from-red-500 to-pink-700' },
+  'Government Services':        { icon: 'fa-landmark',           grad: 'from-indigo-600 to-blue-900' },
+  'Utilities':                  { icon: 'fa-bolt',               grad: 'from-yellow-500 to-orange-600' },
+  'Daily Use Services':         { icon: 'fa-screwdriver-wrench', grad: 'from-orange-500 to-red-700' },
+  'Fitness Equipment':          { icon: 'fa-person-running',     grad: 'from-cyan-500 to-blue-700' },
+  'Ayurveda & Wellness':        { icon: 'fa-mortar-pestle',      grad: 'from-emerald-500 to-green-700' },
+  'Coaches & Trainers':         { icon: 'fa-chalkboard-user',    grad: 'from-amber-500 to-orange-700' },
+  'Interior & Exterior Design': { icon: 'fa-paint-roller',       grad: 'from-violet-500 to-purple-700' },
+  'Consulting Services':        { icon: 'fa-handshake',          grad: 'from-blue-500 to-indigo-700' },
+  'Specialty Stores':           { icon: 'fa-store',              grad: 'from-pink-500 to-rose-700' },
+};
 
-// Read data
 let categories = [];
 let locations = [];
 let businesses = [];
 
 try {
-  const catRaw = await readFile(path.join(DATA_DIR, 'categories.json'), 'utf8');
-  categories = JSON.parse(catRaw).categories || [];
+  categories = JSON.parse(await readFile(path.join(DATA_DIR, 'categories.json'), 'utf8')).categories || [];
 } catch (e) { console.error(e); }
 
 try {
-  const locRaw = await readFile(path.join(DATA_DIR, 'locations.json'), 'utf8');
-  locations = JSON.parse(locRaw).locations || [];
+  locations = JSON.parse(await readFile(path.join(DATA_DIR, 'locations.json'), 'utf8')).locations || [];
 } catch (e) { console.error(e); }
 
 try {
-  const results = await Promise.all(
-    categories.map(async (cat) => {
-      try {
-        const bizRaw = await readFile(path.join(DATA_DIR, 'clients', cat.file), 'utf8');
-        const data = JSON.parse(bizRaw);
-        return (Array.isArray(data) ? data : []).map(b => ({
-          ...b,
-          categoryId: cat.categoryId,
-          categoryName: cat.categoryName
-        }));
-      } catch (e) { return []; }
-    })
-  );
+  const results = await Promise.all(categories.map(async (cat) => {
+    try {
+      const data = JSON.parse(await readFile(path.join(DATA_DIR, 'clients', cat.file), 'utf8'));
+      return (Array.isArray(data) ? data : []).map(b => ({
+        ...b,
+        categoryId: cat.categoryId,
+        categoryName: cat.categoryName
+      }));
+    } catch (e) { return []; }
+  }));
   businesses = results.flat();
 } catch (e) { console.error(e); }
 
-// Build groups with their categories
-const groups = GROUPS.map(g => ({
-  ...g,
-  cats: g.categories
-    .map(slug => categories.find(c => c.file === slug + '.json'))
-    .filter(Boolean)
-}));
+// Add counts + meta to each category
+const catsWithMeta = categories.map(c => {
+  const meta = CAT_META[c.categoryName] || { icon: 'fa-folder', grad: 'from-slate-500 to-slate-700' };
+  const count = businesses.filter(b => b.categoryId === c.categoryId).length;
+  return { ...c, ...meta, count };
+});
 
-// Featured listings — pick premium/featured tier first, then any
+// Featured businesses (premium first)
 const premium = businesses.filter(b => ['featured','premium_pro','premium'].includes((b.tier||'').toLowerCase()));
-const featured = premium.length >= 6
-  ? premium.slice(0, 6)
-  : [...premium, ...businesses.filter(b => !premium.includes(b))].slice(0, 6);
+const featured = premium.length >= 8
+  ? premium.slice(0, 8)
+  : [...premium, ...businesses.filter(b => !premium.includes(b))].slice(0, 8);
 
 const stats = {
   categories: categories.length,
@@ -80,14 +94,13 @@ const stats = {
 };
 ---
 
-<BaseLayout title="PCMC Diary — Local Business Directory" description="Discover trusted local businesses across Pimpri-Chinchwad. Restaurants, doctors, services, shops and more.">
+<BaseLayout title="PCMC Diary — Discover Pimpri-Chinchwad" description={`Find ${stats.listings}+ trusted businesses across ${stats.locations} PCMC areas.`}>
 
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "PCMC Diary",
     "url": "https://pcmcdiary.com",
-    "description": "Trusted local business directory for Pimpri-Chinchwad.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://pcmcdiary.com/directory?q={search_term_string}",
@@ -97,109 +110,112 @@ const stats = {
 
   <!-- ═══════════ HERO ═══════════ -->
   <section class="hero">
-    <div class="hero-glow hero-glow-1"></div>
-    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
 
     <div class="hero-inner">
       <div class="hero-eyebrow">
-        <i class="fa-solid fa-location-dot"></i>
+        <span class="pulse"></span>
         Trusted by locals across Pimpri-Chinchwad
       </div>
 
       <h1 class="hero-h1">
-        Find Trusted<br>
-        <span class="hero-accent">Local Businesses</span>
+        Your Local Guide to<br>
+        <span class="hero-accent">Pimpri-Chinchwad</span>
       </h1>
 
       <p class="hero-p">
-        Search {stats.listings}+ verified businesses across {stats.locations} PCMC areas — restaurants, doctors, salons, services and more.
+        Discover {stats.listings}+ businesses across {stats.locations} areas. Restaurants, doctors, salons, services — all in one place.
       </p>
 
       <form class="hero-search" action="/directory" method="get">
-        <i class="fa-solid fa-magnifying-glass hero-search-icon"></i>
-        <input type="text" name="q" placeholder="Search restaurants, doctors, gyms, CA…" />
+        <i class="fa-solid fa-magnifying-glass hero-icon"></i>
+        <input type="text" name="q" placeholder="Search restaurants, doctors, gyms…" />
         <button type="submit">
           Search <i class="fa-solid fa-arrow-right"></i>
         </button>
       </form>
 
-      <div class="hero-trust">
-        <span><i class="fa-solid fa-circle-check"></i> Verified Listings</span>
-        <span><i class="fa-solid fa-circle-check"></i> Direct Contact</span>
-        <span><i class="fa-solid fa-circle-check"></i> Free to Browse</span>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">{stats.categories}</div>
+          <div class="stat-lbl">Categories</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-num">{stats.locations}</div>
+          <div class="stat-lbl">Areas</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-num">{stats.listings}<span>+</span></div>
+          <div class="stat-lbl">Listings</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ CATEGORY GROUPS ═══════════ -->
+  <!-- ═══════════ ALL CATEGORIES ═══════════ -->
   <section class="sec">
     <div class="sec-head">
       <div>
-        <div class="sec-tag">Directory</div>
-        <h2 class="sec-title">Explore by Category</h2>
+        <div class="sec-tag">Browse</div>
+        <h2 class="sec-title">All {stats.categories} Categories</h2>
       </div>
-      <a href="/directory" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="/directory" class="sec-link">Full Directory <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
-    <div class="group-grid">
-      {groups.map(g => (
-        <button type="button" class="group-card" data-group={g.id}>
-          <div class="group-icon"><i class={`fa-solid ${g.icon}`}></i></div>
-          <h3 class="group-name">{g.name}</h3>
-          <p class="group-desc">{g.desc}</p>
-          <div class="group-foot">
-            <span>{g.cats.length} categories</span>
-            <i class="fa-solid fa-arrow-right"></i>
+    <div class="cat-grid">
+      {catsWithMeta.map(c => (
+        <a href={`/category/${c.categoryId}`} class="cat-tile">
+          <div class={`cat-icon bg-gradient-to-br ${c.grad}`}>
+            <i class={`fa-solid ${c.icon}`}></i>
           </div>
-        </button>
+          <div class="cat-name">{c.categoryName}</div>
+          <div class="cat-count">{c.count} listing{c.count === 1 ? '' : 's'}</div>
+        </a>
       ))}
-    </div>
-
-    <!-- Expand panel -->
-    <div class="group-panel" id="groupPanel" style="display:none">
-      <div class="panel-head">
-        <div class="panel-title" id="panelTitle">Select a category</div>
-        <button type="button" class="panel-close" id="panelClose">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="panel-body" id="panelBody"></div>
     </div>
   </section>
 
-  <!-- ═══════════ FEATURED LISTINGS ═══════════ -->
+  <!-- ═══════════ FEATURED ═══════════ -->
   {featured.length > 0 && (
-    <section class="sec">
+    <section class="sec sec-alt">
       <div class="sec-head">
         <div>
           <div class="sec-tag">Featured</div>
-          <h2 class="sec-title">Featured Businesses</h2>
+          <h2 class="sec-title">Handpicked Businesses</h2>
         </div>
-        <a href="/directory" class="sec-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/directory" class="sec-link">View All <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
       <div class="biz-grid">
         {featured.map(b => {
-          const t = (b.tier || '').toLowerCase();
           const name = b.businessName || 'Business';
           const initial = name.trim().charAt(0).toUpperCase();
           const rating = parseFloat(b.rating) || 0;
+          const t = (b.tier || '').toLowerCase();
+          const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(t);
           return (
             <article class="biz-card">
               <div class="biz-head">
                 <div class="biz-avatar">{initial}</div>
                 <div class="biz-info">
                   <h3 class="biz-name"><a href={`/business/${b.businessId}`}>{name}</a></h3>
-                  <div class="biz-sub">{b.subCategory || b.categoryName} · {b.location || 'PCMC'}</div>
+                  <div class="biz-sub">{b.subCategory || b.categoryName}</div>
                 </div>
+                {isVerified && <div class="biz-badge"><i class="fa-solid fa-circle-check"></i></div>}
               </div>
-              {rating > 0 && (
-                <div class="biz-rating">
-                  <i class="fa-solid fa-star"></i> {rating.toFixed(1)}
-                  {parseInt(b.reviews) > 0 && <span>({b.reviews})</span>}
-                </div>
-              )}
-              <p class="biz-desc">{b.description || `Local ${b.subCategory || 'business'} in ${b.location || 'PCMC'}`}</p>
+              <div class="biz-meta">
+                {b.location && (
+                  <span><i class="fa-solid fa-location-dot"></i> {b.location}</span>
+                )}
+                {rating > 0 && (
+                  <span><i class="fa-solid fa-star"></i> {rating.toFixed(1)}{parseInt(b.reviews) > 0 ? ` · ${b.reviews}` : ''}</span>
+                )}
+              </div>
+              <p class="biz-desc">{b.description || `Local business serving ${b.location || 'PCMC'}`}</p>
               <a href={`/business/${b.businessId}`} class="biz-btn">
                 View Profile <i class="fa-solid fa-arrow-right"></i>
               </a>
@@ -210,31 +226,52 @@ const stats = {
     </section>
   )}
 
-  <!-- ═══════════ HOW IT WORKS ═══════════ -->
+  <!-- ═══════════ LOCATIONS ═══════════ -->
   <section class="sec">
+    <div class="sec-head">
+      <div>
+        <div class="sec-tag">Areas</div>
+        <h2 class="sec-title">Browse by Location</h2>
+      </div>
+    </div>
+    <div class="loc-grid">
+      {locations.map(l => (
+        <a href={`/location/${l.locationId}`} class="loc-chip">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>{l.locationName}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══════════ HOW IT WORKS ═══════════ -->
+  <section class="sec sec-alt">
     <div class="sec-head sec-head-center">
       <div>
         <div class="sec-tag">Simple</div>
-        <h2 class="sec-title">How PCMC Diary Works</h2>
-        <p class="sec-sub">A local directory built for PCMC businesses and the people who need them.</p>
+        <h2 class="sec-title">How It Works</h2>
+        <p class="sec-sub">A directory built for PCMC — by people who live here.</p>
       </div>
     </div>
 
     <div class="steps">
       <div class="step">
+        <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
         <div class="step-num">01</div>
-        <h3 class="step-title">Search</h3>
-        <p class="step-desc">Find businesses by name, category, or area across all 33 PCMC locations.</p>
+        <h3 class="step-title">Search & Discover</h3>
+        <p class="step-desc">Find any business by name, category, or area — across all 33 PCMC locations.</p>
       </div>
       <div class="step">
+        <div class="step-icon"><i class="fa-solid fa-phone"></i></div>
         <div class="step-num">02</div>
-        <h3 class="step-title">Connect</h3>
-        <p class="step-desc">Call, WhatsApp, or visit — every listing has direct contact details. No middlemen.</p>
+        <h3 class="step-title">Connect Directly</h3>
+        <p class="step-desc">Call, WhatsApp, or visit. Every listing shows real contact details — no middlemen.</p>
       </div>
       <div class="step">
+        <div class="step-icon"><i class="fa-solid fa-ticket"></i></div>
         <div class="step-num">03</div>
-        <h3 class="step-title">Get Deals</h3>
-        <p class="step-desc">Exclusive coupons and offers from verified local businesses across PCMC.</p>
+        <h3 class="step-title">Grab Local Deals</h3>
+        <p class="step-desc">Exclusive coupons from verified businesses. Save money on things you already need.</p>
       </div>
     </div>
   </section>
@@ -242,55 +279,25 @@ const stats = {
   <!-- ═══════════ CTA ═══════════ -->
   <section class="sec">
     <div class="cta">
-      <div class="cta-glow"></div>
+      <div class="cta-orb"></div>
       <div class="cta-inner">
-        <h2 class="cta-h2">Own a business in PCMC?</h2>
-        <p class="cta-p">Get discovered by thousands of local customers. Free listing, upgrade anytime for premium visibility.</p>
+        <div class="cta-badge"><i class="fa-solid fa-store"></i> For Business Owners</div>
+        <h2 class="cta-h2">Get Your Business Listed</h2>
+        <p class="cta-p">Join {stats.listings}+ businesses already on PCMC Diary. Free forever plan, upgrade anytime for premium placement.</p>
         <div class="cta-btns">
           <a href="/register" class="cta-btn-primary">
-            <i class="fa-solid fa-plus"></i> List Your Business
+            <i class="fa-solid fa-plus"></i> List Business — Free
           </a>
           <a href="/plans" class="cta-btn-outline">
             <i class="fa-solid fa-crown"></i> View Plans
           </a>
         </div>
+        <div class="cta-note">
+          <i class="fa-solid fa-shield-halved"></i> No credit card · Cancel anytime
+        </div>
       </div>
     </div>
   </section>
-
-  <script is:inline define:vars={{ groups }}>
-    const GROUPS_DATA = groups;
-
-    const panel = document.getElementById('groupPanel');
-    const panelTitle = document.getElementById('panelTitle');
-    const panelBody = document.getElementById('panelBody');
-    const panelClose = document.getElementById('panelClose');
-
-    document.querySelectorAll('.group-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const id = card.getAttribute('data-group');
-        const group = GROUPS_DATA.find(g => g.id === id);
-        if (!group) return;
-
-        panelTitle.textContent = group.name;
-        panelBody.innerHTML = '';
-        group.cats.forEach(c => {
-          const a = document.createElement('a');
-          a.href = `/category/${c.categoryId}`;
-          a.className = 'panel-item';
-          a.innerHTML = `<span>${c.categoryName}</span><i class="fa-solid fa-arrow-right"></i>`;
-          panelBody.appendChild(a);
-        });
-
-        panel.style.display = 'block';
-        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      });
-    });
-
-    panelClose.addEventListener('click', () => {
-      panel.style.display = 'none';
-    });
-  </script>
 
 </BaseLayout>
 
@@ -301,59 +308,63 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 
 /* ═══════════ HERO ═══════════ */
 .hero {
-  position: relative;
-  background: linear-gradient(135deg, #0a0f1e 0%, #1a1f35 55%, #2a1530 100%);
-  color: #fff;
-  padding: 84px 24px 72px;
-  overflow: hidden;
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse at top, #1a1f35 0%, #0a0f1e 55%, #0f0a1a 100%);
+  color: #fff; padding: 96px 24px 80px;
 }
-.hero-glow { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; }
-.hero-glow-1 { top: -140px; right: -80px; width: 480px; height: 480px; background: radial-gradient(circle, rgba(220,38,38,0.55), transparent 70%); }
-.hero-glow-2 { bottom: -180px; left: -100px; width: 520px; height: 520px; background: radial-gradient(circle, rgba(217,119,6,0.35), transparent 70%); }
+.hero-orb { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
+.hero-orb-1 { top: -180px; right: -120px; width: 520px; height: 520px; background: radial-gradient(circle, rgba(220,38,38,0.55), transparent 70%); }
+.hero-orb-2 { bottom: -200px; left: -120px; width: 560px; height: 560px; background: radial-gradient(circle, rgba(217,119,6,0.35), transparent 70%); }
+.hero-orb-3 { top: 40%; left: 40%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(168,85,247,0.18), transparent 70%); }
 .hero-inner { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; text-align: center; }
 
 .hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 9px;
-  padding: 8px 18px; border-radius: 50px;
-  background: rgba(255,255,255,0.06);
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 9px 20px; border-radius: 50px;
+  background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(12px);
   font-size: 12.5px; font-weight: 700;
-  color: rgba(255,255,255,0.9);
-  margin-bottom: 26px;
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 28px;
 }
-.hero-eyebrow i { color: #fbbf24; font-size: 12px; }
+.pulse { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 0 rgba(34,197,94,0.7); animation: pulse 2s infinite; }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
 
 .hero-h1 {
-  font-size: 62px; font-weight: 800;
-  letter-spacing: -2.4px; line-height: 1.02;
-  margin: 0 0 22px; color: #fff;
+  font-size: 64px; font-weight: 800;
+  letter-spacing: -2.6px; line-height: 1.02;
+  margin: 0 0 24px;
 }
 .hero-accent {
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-style: italic; padding-right: 6px;
+  font-style: italic; padding-right: 8px;
 }
 .hero-p {
-  font-size: 17px; color: rgba(255,255,255,0.7);
-  line-height: 1.6; margin: 0 auto 40px;
-  max-width: 560px;
+  font-size: 17.5px; color: rgba(255,255,255,0.72);
+  line-height: 1.6; margin: 0 auto 44px;
+  max-width: 580px;
 }
 
 .hero-search {
   display: flex; align-items: center; gap: 6px;
-  max-width: 700px; margin: 0 auto 26px;
+  max-width: 700px; margin: 0 auto 40px;
   padding: 8px 8px 8px 20px;
   background: rgba(255,255,255,0.98);
   border-radius: 20px;
-  box-shadow: 0 28px 60px -20px rgba(0,0,0,0.6), 0 10px 24px -8px rgba(0,0,0,0.4);
+  box-shadow: 0 28px 64px -20px rgba(0,0,0,0.65), 0 12px 28px -10px rgba(0,0,0,0.4);
   transition: all 0.3s;
 }
 .hero-search:focus-within {
-  box-shadow: 0 28px 60px -20px rgba(0,0,0,0.6), 0 10px 24px -8px rgba(0,0,0,0.4), 0 0 0 4px rgba(220,38,38,0.15);
+  box-shadow: 0 28px 64px -20px rgba(0,0,0,0.65), 0 12px 28px -10px rgba(0,0,0,0.4), 0 0 0 4px rgba(220,38,38,0.18);
 }
-.hero-search-icon { color: #94a3b8; font-size: 15px; padding-left: 4px; flex-shrink: 0; }
+.hero-icon { color: #94a3b8; font-size: 15px; padding-left: 4px; flex-shrink: 0; }
 .hero-search input {
   flex: 1; border: 0; padding: 15px 6px;
   font-size: 15.5px; font-family: inherit; font-weight: 500;
@@ -366,42 +377,47 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   color: #fff; font-family: inherit; font-size: 14.5px; font-weight: 800;
   cursor: pointer; transition: all 0.2s;
-  box-shadow: 0 10px 24px -8px rgba(220,38,38,0.6);
+  box-shadow: 0 10px 24px -8px rgba(220,38,38,0.65);
   white-space: nowrap;
 }
-.hero-search button:hover { transform: translateY(-1px); box-shadow: 0 14px 30px -8px rgba(220,38,38,0.7); }
+.hero-search button:hover { transform: translateY(-1px); box-shadow: 0 14px 30px -8px rgba(220,38,38,0.75); }
 .hero-search button i { font-size: 12px; transition: transform 0.2s; }
 .hero-search button:hover i { transform: translateX(3px); }
 
-.hero-trust {
-  display: flex; flex-wrap: wrap; justify-content: center;
-  gap: 22px; font-size: 12.5px; font-weight: 600;
-  color: rgba(255,255,255,0.55);
+.hero-stats { display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; }
+.stat { text-align: center; min-width: 80px; }
+.stat-num {
+  font-size: 32px; font-weight: 800; color: #fff;
+  letter-spacing: -1.2px; line-height: 1;
 }
-.hero-trust span { display: inline-flex; align-items: center; gap: 7px; }
-.hero-trust i { color: #22c55e; font-size: 11px; }
+.stat-num span { color: #fbbf24; }
+.stat-lbl {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.6px;
+  color: rgba(255,255,255,0.45); font-weight: 700; margin-top: 10px;
+}
+.stat-div { width: 1px; height: 40px; background: rgba(255,255,255,0.12); }
 
 /* ═══════════ SECTIONS ═══════════ */
-.sec { max-width: 1200px; margin: 0 auto; padding: 72px 24px; }
+.sec { max-width: 1280px; margin: 0 auto; padding: 76px 24px; }
+.sec-alt { background: #f8fafc; border-radius: 32px; margin: 8px auto; max-width: 1280px; }
 .sec-head {
   display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 16px; margin-bottom: 36px; flex-wrap: wrap;
+  gap: 16px; margin-bottom: 40px; flex-wrap: wrap;
 }
-.sec-head-center { justify-content: center; text-align: center; }
+.sec-head-center { justify-content: center; text-align: center; flex-direction: column; align-items: center; }
 .sec-tag {
   font-size: 11px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 1.6px; color: #dc2626; margin-bottom: 8px;
+  letter-spacing: 1.8px; color: #dc2626; margin-bottom: 8px;
 }
 .sec-title {
-  font-size: 34px; font-weight: 800; color: #0f172a;
-  letter-spacing: -0.9px; line-height: 1.15; margin: 0;
+  font-size: 36px; font-weight: 800; color: #0f172a;
+  letter-spacing: -1px; line-height: 1.15; margin: 0;
 }
-.sec-sub { font-size: 14.5px; color: #64748b; margin: 10px 0 0; line-height: 1.55; }
+.sec-sub { font-size: 14.5px; color: #64748b; margin: 10px 0 0; line-height: 1.55; max-width: 500px; }
 .sec-link {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 13.5px; font-weight: 700; color: #dc2626;
-  text-decoration: none;
-  padding: 9px 18px; border-radius: 40px;
+  text-decoration: none; padding: 10px 20px; border-radius: 40px;
   background: #fef2f2; border: 1px solid #fecaca;
   transition: all 0.2s;
 }
@@ -409,152 +425,128 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 .sec-link i { font-size: 10px; transition: transform 0.2s; }
 .sec-link:hover i { transform: translateX(3px); }
 
-/* ═══════════ GROUP CARDS ═══════════ */
-.group-grid {
+/* ═══════════ CATEGORY TILES ═══════════ */
+.cat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
 }
-.group-card {
-  display: flex; flex-direction: column;
-  align-items: flex-start; text-align: left;
-  padding: 26px 24px 20px;
+.cat-tile {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 24px 14px 18px;
   background: #fff; border: 1.5px solid #eef1f6;
-  border-radius: 20px; cursor: pointer;
-  font-family: inherit; transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  border-radius: 18px; text-decoration: none;
+  transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
+  position: relative; overflow: hidden;
 }
-.group-card:hover {
-  transform: translateY(-4px);
+.cat-tile::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(220,38,38,0.03));
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.cat-tile:hover::before { opacity: 1; }
+.cat-tile:hover {
+  transform: translateY(-6px);
   border-color: #fecaca;
-  box-shadow: 0 20px 40px -16px rgba(15,23,42,0.12), 0 8px 16px -8px rgba(220,38,38,0.08);
-}
-.group-icon {
-  width: 52px; height: 52px; border-radius: 15px;
-  background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  color: #dc2626; font-size: 22px;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 18px;
-  transition: all 0.25s;
-}
-.group-card:hover .group-icon {
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  color: #fff;
-}
-.group-name {
-  font-size: 17px; font-weight: 800; color: #0f172a;
-  letter-spacing: -0.4px; margin: 0 0 8px;
-}
-.group-desc {
-  font-size: 13px; color: #64748b; line-height: 1.5;
-  margin: 0 0 18px; flex: 1;
-}
-.group-foot {
-  display: flex; align-items: center; justify-content: space-between;
-  width: 100%; padding-top: 14px;
-  border-top: 1px solid #f1f5f9;
-  font-size: 12px; font-weight: 700; color: #94a3b8;
-}
-.group-foot i {
-  color: #dc2626; font-size: 11px;
-  transition: transform 0.25s;
-}
-.group-card:hover .group-foot i { transform: translateX(4px); }
-
-/* ═══════════ PANEL ═══════════ */
-.group-panel {
-  margin-top: 24px;
-  background: #fff; border: 1.5px solid #eef1f6;
-  border-radius: 20px; overflow: hidden;
-  box-shadow: 0 20px 40px -20px rgba(15,23,42,0.12);
-}
-.panel-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 24px; border-bottom: 1px solid #f1f5f9;
-}
-.panel-title {
-  font-size: 15px; font-weight: 800; color: #0f172a;
-  letter-spacing: -0.3px;
-}
-.panel-close {
-  width: 34px; height: 34px; border-radius: 9px;
-  background: transparent; border: 0; cursor: pointer;
-  color: #94a3b8; font-size: 16px;
-  display: inline-flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-}
-.panel-close:hover { background: #f1f5f9; color: #0f172a; }
-.panel-body {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-}
-.panel-item {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding: 15px 24px;
-  font-size: 13.5px; font-weight: 700; color: #334155;
+  box-shadow: 0 22px 44px -18px rgba(15,23,42,0.15), 0 10px 20px -10px rgba(220,38,38,0.1);
   text-decoration: none;
-  border-bottom: 1px solid #f8fafc;
-  transition: all 0.2s;
 }
-.panel-item:hover {
-  background: #fef2f2; color: #dc2626; text-decoration: none;
+.cat-icon {
+  width: 60px; height: 60px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 24px;
+  margin-bottom: 14px;
+  box-shadow: 0 12px 24px -10px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
 }
-.panel-item i { color: #cbd5e1; font-size: 11px; transition: all 0.2s; }
-.panel-item:hover i { color: #dc2626; transform: translateX(3px); }
+.cat-tile:hover .cat-icon { transform: scale(1.08) rotate(-3deg); }
+.cat-name {
+  font-size: 13px; font-weight: 800; color: #0f172a;
+  text-align: center; line-height: 1.3;
+  letter-spacing: -0.2px;
+  margin-bottom: 6px;
+  min-height: 34px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cat-count {
+  font-size: 10.5px; font-weight: 700; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
 
-/* ═══════════ FEATURED BIZ ═══════════ */
+/* ═══════════ FEATURED BUSINESSES ═══════════ */
 .biz-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 .biz-card {
   display: flex; flex-direction: column;
-  padding: 24px;
-  background: #fff; border: 1.5px solid #eef1f6;
-  border-radius: 18px;
-  transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+  padding: 26px; background: #fff;
+  border: 1.5px solid #eef1f6; border-radius: 20px;
+  transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
+  position: relative; overflow: hidden;
 }
+.biz-card::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #dc2626, #f59e0b);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.biz-card:hover::after { transform: scaleX(1); }
 .biz-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   border-color: #fecaca;
-  box-shadow: 0 20px 40px -16px rgba(15,23,42,0.12), 0 8px 16px -8px rgba(220,38,38,0.08);
+  box-shadow: 0 24px 48px -20px rgba(15,23,42,0.15), 0 10px 20px -10px rgba(220,38,38,0.1);
 }
 .biz-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
 .biz-avatar {
-  width: 52px; height: 52px; border-radius: 14px;
+  width: 54px; height: 54px; border-radius: 15px;
   background: linear-gradient(135deg, #dc2626, #991b1b);
   color: #fff; font-weight: 800; font-size: 22px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 8px 16px -6px rgba(220,38,38,0.4);
+  box-shadow: 0 10px 20px -8px rgba(220,38,38,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 .biz-info { flex: 1; min-width: 0; }
 .biz-name {
-  font-size: 16px; font-weight: 800; color: #0f172a;
-  margin: 0 0 4px; letter-spacing: -0.3px; line-height: 1.25;
+  font-size: 16.5px; font-weight: 800; color: #0f172a;
+  margin: 0 0 5px; letter-spacing: -0.35px; line-height: 1.25;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.biz-name a { color: inherit; text-decoration: none; }
+.biz-name a { color: inherit; text-decoration: none; transition: color 0.2s; }
 .biz-name a:hover { color: #dc2626; }
 .biz-sub {
   font-size: 12.5px; color: #64748b; font-weight: 600;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.biz-rating {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12.5px; font-weight: 800; color: #92400e;
-  background: #fef3c7; padding: 5px 10px; border-radius: 8px;
-  margin-bottom: 12px; align-self: flex-start;
+.biz-badge {
+  width: 26px; height: 26px; border-radius: 8px;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #059669; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
-.biz-rating i { color: #f59e0b; font-size: 11px; }
-.biz-rating span { color: #a16207; font-weight: 600; font-size: 11px; }
+.biz-meta {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 14px;
+}
+.biz-meta span {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; color: #475569;
+  padding: 5px 11px; border-radius: 8px;
+  background: #f8fafc; border: 1px solid #eef1f6;
+}
+.biz-meta i { color: #dc2626; font-size: 11px; }
 .biz-desc {
-  font-size: 13px; color: #475569; line-height: 1.55;
-  margin: 0 0 18px; flex: 1;
+  font-size: 13.5px; color: #475569; line-height: 1.55;
+  margin: 0 0 20px; flex: 1;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .biz-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 11px 18px; border-radius: 11px;
+  padding: 12px 20px; border-radius: 12px;
   background: #fef2f2; color: #dc2626;
   font-size: 13px; font-weight: 800; text-decoration: none;
   border: 1.5px solid #fecaca;
@@ -564,121 +556,174 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   background: linear-gradient(135deg, #dc2626, #991b1b);
   color: #fff; border-color: #dc2626; text-decoration: none;
   transform: translateY(-1px);
+  box-shadow: 0 10px 20px -8px rgba(220,38,38,0.5);
 }
 .biz-btn i { font-size: 10px; transition: transform 0.2s; }
 .biz-btn:hover i { transform: translateX(3px); }
 
+/* ═══════════ LOCATIONS ═══════════ */
+.loc-grid {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.loc-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 18px; border-radius: 50px;
+  background: #fff; border: 1.5px solid #eef1f6;
+  font-size: 13px; font-weight: 700; color: #334155;
+  text-decoration: none; transition: all 0.22s;
+}
+.loc-chip i { color: #dc2626; font-size: 12px; transition: transform 0.2s; }
+.loc-chip:hover {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-color: #dc2626; color: #fff;
+  transform: translateY(-2px); text-decoration: none;
+  box-shadow: 0 12px 24px -10px rgba(220,38,38,0.5);
+}
+.loc-chip:hover i { color: #fff; transform: scale(1.15); }
+
 /* ═══════════ HOW IT WORKS ═══════════ */
-.steps {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-}
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .step {
-  padding: 30px 26px; background: #fff;
-  border: 1.5px solid #eef1f6; border-radius: 18px;
-  transition: all 0.25s;
+  padding: 36px 30px 32px; background: #fff;
+  border: 1.5px solid #eef1f6; border-radius: 22px;
+  position: relative; transition: all 0.25s;
+  overflow: hidden;
 }
-.step:hover { border-color: #fecaca; transform: translateY(-2px); }
-.step-num {
-  width: 46px; height: 46px; border-radius: 12px;
+.step::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #dc2626, #f59e0b);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.step:hover::before { transform: scaleX(1); }
+.step:hover { border-color: #fecaca; transform: translateY(-3px); box-shadow: 0 20px 40px -16px rgba(15,23,42,0.1); }
+.step-icon {
+  width: 56px; height: 56px; border-radius: 16px;
   background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  color: #dc2626; font-weight: 800; font-size: 15px;
+  color: #dc2626; font-size: 22px;
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; letter-spacing: -0.5px;
+  margin-bottom: 20px;
+}
+.step-num {
+  position: absolute; top: 28px; right: 30px;
+  font-size: 40px; font-weight: 800; color: #f1f5f9;
+  letter-spacing: -2px; line-height: 1;
 }
 .step-title {
-  font-size: 18px; font-weight: 800; color: #0f172a;
-  margin: 0 0 8px; letter-spacing: -0.3px;
+  font-size: 19px; font-weight: 800; color: #0f172a;
+  margin: 0 0 10px; letter-spacing: -0.4px;
 }
-.step-desc {
-  font-size: 13.5px; color: #64748b; line-height: 1.6; margin: 0;
-}
+.step-desc { font-size: 14px; color: #64748b; line-height: 1.6; margin: 0; }
 
 /* ═══════════ CTA ═══════════ */
 .cta {
   position: relative; overflow: hidden;
-  background: linear-gradient(135deg, #0a0f1e 0%, #1e293b 60%, #7c2d12 100%);
-  border-radius: 26px; padding: 64px 40px;
+  background: radial-gradient(ellipse at top, #1e293b 0%, #0a0f1e 60%, #2a1530 100%);
+  border-radius: 32px; padding: 80px 40px;
   text-align: center; color: #fff;
-  box-shadow: 0 32px 64px -24px rgba(15,23,42,0.4);
+  box-shadow: 0 40px 80px -32px rgba(15,23,42,0.5);
 }
-.cta-glow {
+.cta-orb {
   position: absolute; top: -60%; left: 30%;
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(217,119,6,0.35), transparent 60%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(220,38,38,0.4), transparent 60%);
   border-radius: 50%; pointer-events: none;
 }
-.cta-inner { position: relative; z-index: 2; max-width: 620px; margin: 0 auto; }
+.cta-inner { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; }
+.cta-badge {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 8px 18px; border-radius: 50px;
+  background: rgba(251,191,36,0.15);
+  border: 1px solid rgba(251,191,36,0.35);
+  color: #fbbf24; font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  margin-bottom: 24px;
+}
+.cta-badge i { font-size: 11px; }
 .cta-h2 {
-  font-size: 38px; font-weight: 800; letter-spacing: -1.1px;
-  line-height: 1.15; margin: 0 0 16px;
+  font-size: 44px; font-weight: 800; letter-spacing: -1.4px;
+  line-height: 1.1; margin: 0 0 18px;
 }
 .cta-p {
-  font-size: 15.5px; color: rgba(255,255,255,0.72);
-  line-height: 1.65; margin: 0 0 32px;
+  font-size: 16px; color: rgba(255,255,255,0.75);
+  line-height: 1.65; margin: 0 0 36px;
 }
-.cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
 .cta-btn-primary {
   display: inline-flex; align-items: center; gap: 10px;
-  padding: 16px 30px; border-radius: 13px;
+  padding: 17px 32px; border-radius: 14px;
   background: linear-gradient(135deg, #dc2626, #991b1b);
-  color: #fff; font-size: 14.5px; font-weight: 800;
+  color: #fff; font-size: 15px; font-weight: 800;
   text-decoration: none;
-  box-shadow: 0 16px 32px -10px rgba(220,38,38,0.6);
+  box-shadow: 0 18px 36px -12px rgba(220,38,38,0.65);
   transition: all 0.2s;
 }
-.cta-btn-primary:hover { transform: translateY(-2px); text-decoration: none; }
+.cta-btn-primary:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 22px 44px -12px rgba(220,38,38,0.75); }
 .cta-btn-primary i { font-size: 12px; }
 .cta-btn-outline {
   display: inline-flex; align-items: center; gap: 10px;
-  padding: 16px 30px; border-radius: 13px;
+  padding: 17px 32px; border-radius: 14px;
   background: rgba(255,255,255,0.06);
   border: 1.5px solid rgba(255,255,255,0.2);
-  color: #fff; font-size: 14.5px; font-weight: 800;
+  color: #fff; font-size: 15px; font-weight: 800;
   text-decoration: none; transition: all 0.2s;
 }
-.cta-btn-outline:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.35); text-decoration: none; }
+.cta-btn-outline:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.35); text-decoration: none; transform: translateY(-2px); }
 .cta-btn-outline i { font-size: 12px; color: #fbbf24; }
+.cta-note {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: rgba(255,255,255,0.5); font-weight: 600;
+}
+.cta-note i { color: #22c55e; font-size: 12px; }
 
 /* ═══════════ RESPONSIVE ═══════════ */
-@media (max-width: 900px) {
-  .hero-h1 { font-size: 46px; letter-spacing: -1.6px; }
-  .sec-title { font-size: 28px; }
-  .cta-h2 { font-size: 30px; }
+@media (max-width: 1024px) {
+  .hero-h1 { font-size: 48px; letter-spacing: -1.8px; }
+  .sec-title { font-size: 30px; }
+  .cta-h2 { font-size: 34px; }
 }
-@media (max-width: 640px) {
-  .hero { padding: 60px 18px 52px; }
-  .hero-h1 { font-size: 34px; letter-spacing: -1.2px; }
-  .hero-p { font-size: 14.5px; }
-  .hero-search { flex-direction: column; padding: 10px; gap: 8px; border-radius: 16px; }
-  .hero-search-icon { display: none; }
-  .hero-search input {
-    background: #f8fafc; border-radius: 12px;
-    padding: 13px 16px; width: 100%; font-size: 14.5px;
-  }
+@media (max-width: 768px) {
+  .hero { padding: 64px 18px 56px; }
+  .hero-h1 { font-size: 36px; letter-spacing: -1.4px; }
+  .hero-p { font-size: 15px; margin-bottom: 32px; }
+  .hero-search { flex-direction: column; padding: 10px; gap: 8px; border-radius: 18px; }
+  .hero-icon { display: none; }
+  .hero-search input { background: #f8fafc; border-radius: 12px; padding: 14px 16px; width: 100%; font-size: 15px; }
   .hero-search button { width: 100%; justify-content: center; padding: 14px; border-radius: 12px; }
-  .hero-trust { gap: 12px; font-size: 11.5px; }
+  .hero-stats { gap: 20px; }
+  .stat-num { font-size: 24px; }
+  .stat-div { height: 30px; }
 
-  .sec { padding: 48px 18px; }
+  .sec { padding: 52px 18px; }
+  .sec-alt { border-radius: 24px; }
   .sec-title { font-size: 24px; }
-  .group-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .group-card { padding: 18px 16px 14px; border-radius: 16px; }
-  .group-icon { width: 42px; height: 42px; font-size: 18px; margin-bottom: 12px; border-radius: 12px; }
-  .group-name { font-size: 14px; margin-bottom: 4px; }
-  .group-desc { font-size: 11.5px; margin-bottom: 12px; line-height: 1.4; }
-  .group-foot { padding-top: 10px; font-size: 10.5px; }
+  .sec-head { margin-bottom: 28px; }
 
-  .panel-body { grid-template-columns: 1fr; }
+  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cat-tile { padding: 18px 8px 14px; border-radius: 14px; }
+  .cat-icon { width: 48px; height: 48px; font-size: 20px; border-radius: 14px; margin-bottom: 10px; }
+  .cat-name { font-size: 11.5px; min-height: 30px; margin-bottom: 4px; }
+  .cat-count { font-size: 9.5px; }
 
-  .biz-grid { grid-template-columns: 1fr; gap: 14px; }
-  .biz-card { padding: 20px; }
+  .biz-grid { grid-template-columns: 1fr; gap: 16px; }
+  .biz-card { padding: 22px; border-radius: 18px; }
+  .biz-avatar { width: 48px; height: 48px; font-size: 20px; }
+
+  .loc-grid { gap: 8px; }
+  .loc-chip { padding: 9px 14px; font-size: 12px; }
 
   .steps { grid-template-columns: 1fr; gap: 14px; }
-  .step { padding: 24px 22px; }
+  .step { padding: 28px 24px; border-radius: 18px; }
+  .step-num { font-size: 32px; top: 22px; right: 24px; }
 
-  .cta { padding: 44px 22px; border-radius: 20px; }
-  .cta-h2 { font-size: 24px; letter-spacing: -0.6px; }
-  .cta-p { font-size: 13.5px; margin-bottom: 24px; }
-  .cta-btn-primary, .cta-btn-outline { padding: 13px 22px; font-size: 13px; width: 100%; justify-content: center; }
+  .cta { padding: 56px 24px; border-radius: 24px; }
+  .cta-h2 { font-size: 28px; letter-spacing: -0.8px; }
+  .cta-p { font-size: 14px; }
+  .cta-btn-primary, .cta-btn-outline { padding: 14px 24px; font-size: 14px; width: 100%; justify-content: center; }
+}
+@media (max-width: 400px) {
+  .hero-h1 { font-size: 30px; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
