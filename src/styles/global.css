@@ -368,3 +368,14 @@ select:focus-visible, textarea:focus-visible {
   .footer-bottom { font-size: 12px; flex-direction: column; gap: 8px; }
   .footer-bottom .dot { display: none; }
 }
+/* Universal hero text fix — catches any hero class */
+[class*="-hero"] h1,
+[class*="-hero"] h2,
+[class*="-hero"] h3,
+[class*="-hero"] p,
+.hero h1, .hero h2, .hero h3, .hero p {
+  color: #fff;
+}
+[class*="-hero"] a:not([class*="btn"]):not([class*="sec-link"]):not([class*="back"]) {
+  color: rgba(255,255,255,0.9);
+}
