@@ -79,15 +79,17 @@ const catsWithMeta = categories.map(c => {
   return { ...c, ...meta, count };
 });
 
-const premium = businesses.filter(b => ['featured','premium_pro','premium'].includes((b.tier||'').toLowerCase()));
-const featured = premium.length >= 8
-  ? premium.slice(0, 8)
-  : [...premium, ...businesses.filter(b => !premium.includes(b))].slice(0, 8);
+// ONLY featured / premium tiers for homepage
+const PAID_TIERS = ['featured', 'premium_pro', 'premium', 'vp', 'vb'];
+const paidBusinesses = businesses.filter(b => PAID_TIERS.includes((b.tier || '').toLowerCase()));
+// Take up to 12 for rotation; if less than 4, fall back to all
+const featured = paidBusinesses.length >= 4 ? paidBusinesses.slice(0, 12) : businesses.slice(0, 8);
 
 const stats = {
   categories: categories.length,
   locations: locations.length,
-  listings: businesses.length
+  listings: businesses.length,
+  featured: paidBusinesses.length
 };
 ---
 
@@ -153,8 +155,61 @@ const stats = {
     </div>
   </section>
 
+  <!-- FEATURED (rotating) -->
+  {featured.length > 0 && (
+    <section class="sec">
+      <div class="sec-head">
+        <div>
+          <div class="sec-tag">Featured</div>
+          <h2 class="sec-title">Top Businesses</h2>
+        </div>
+        <a href="/directory" class="sec-link">View All <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <div class="biz-grid" data-shuffle="true">
+        {featured.map(b => {
+          const name = b.businessName || 'Business';
+          const initial = name.trim().charAt(0).toUpperCase();
+          const rating = parseFloat(b.rating) || 0;
+          const t = (b.tier || '').toLowerCase();
+          const isFeatured = t === 'featured';
+          const isPro = ['premium_pro','premium'].includes(t);
+          const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(t);
+          const badgeText = isFeatured ? 'Featured' : (isPro ? 'Premium' : 'Verified');
+          return (
+            <article class="biz-card">
+              <div class={`biz-ribbon ${isFeatured ? 'ribbon-gold' : (isPro ? 'ribbon-purple' : 'ribbon-green')}`}>
+                <i class={`fa-solid ${isFeatured ? 'fa-star' : (isPro ? 'fa-crown' : 'fa-circle-check')}`}></i>
+                {badgeText}
+              </div>
+              <div class="biz-head">
+                <div class="biz-avatar">{initial}</div>
+                <div class="biz-info">
+                  <h3 class="biz-name"><a href={`/business/${b.businessId}`}>{name}</a></h3>
+                  <div class="biz-sub">{b.subCategory || b.categoryName}</div>
+                </div>
+              </div>
+              <div class="biz-meta">
+                {b.location && (
+                  <span class="meta-loc"><i class="fa-solid fa-location-dot"></i> {b.location}</span>
+                )}
+                {rating > 0 && (
+                  <span class="meta-rating"><i class="fa-solid fa-star"></i> {rating.toFixed(1)}{parseInt(b.reviews) > 0 ? ` · ${b.reviews}` : ''}</span>
+                )}
+              </div>
+              <p class="biz-desc">{b.description || `Local business serving ${b.location || 'PCMC'}`}</p>
+              <a href={`/business/${b.businessId}`} class="biz-btn">
+                View Profile <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
   <!-- ALL CATEGORIES -->
-  <section class="sec">
+  <section class="sec sec-alt">
     <div class="sec-head">
       <div>
         <div class="sec-tag">Browse</div>
@@ -170,70 +225,23 @@ const stats = {
             <i class={`fa-solid ${c.icon}`}></i>
           </div>
           <div class="cat-name">{c.categoryName}</div>
-          <div class="cat-count">{c.count} listing{c.count === 1 ? '' : 's'}</div>
+          <div class="cat-count">{c.count}</div>
         </a>
       ))}
     </div>
   </section>
-
-  <!-- FEATURED -->
-  {featured.length > 0 && (
-    <section class="sec sec-alt">
-      <div class="sec-head">
-        <div>
-          <div class="sec-tag">Featured</div>
-          <h2 class="sec-title">Handpicked Businesses</h2>
-        </div>
-        <a href="/directory" class="sec-link">View All <i class="fa-solid fa-arrow-right"></i></a>
-      </div>
-
-      <div class="biz-grid">
-        {featured.map(b => {
-          const name = b.businessName || 'Business';
-          const initial = name.trim().charAt(0).toUpperCase();
-          const rating = parseFloat(b.rating) || 0;
-          const t = (b.tier || '').toLowerCase();
-          const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(t);
-          return (
-            <article class="biz-card">
-              <div class="biz-head">
-                <div class="biz-avatar">{initial}</div>
-                <div class="biz-info">
-                  <h3 class="biz-name"><a href={`/business/${b.businessId}`}>{name}</a></h3>
-                  <div class="biz-sub">{b.subCategory || b.categoryName}</div>
-                </div>
-                {isVerified && <div class="biz-badge"><i class="fa-solid fa-circle-check"></i></div>}
-              </div>
-              <div class="biz-meta">
-                {b.location && (
-                  <span><i class="fa-solid fa-location-dot"></i> {b.location}</span>
-                )}
-                {rating > 0 && (
-                  <span><i class="fa-solid fa-star"></i> {rating.toFixed(1)}{parseInt(b.reviews) > 0 ? ` · ${b.reviews}` : ''}</span>
-                )}
-              </div>
-              <p class="biz-desc">{b.description || `Local business serving ${b.location || 'PCMC'}`}</p>
-              <a href={`/business/${b.businessId}`} class="biz-btn">
-                View Profile <i class="fa-solid fa-arrow-right"></i>
-              </a>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  )}
 
   <!-- LOCATIONS -->
   <section class="sec">
     <div class="sec-head">
       <div>
         <div class="sec-tag">Areas</div>
-        <h2 class="sec-title">Browse by Location</h2>
+        <h2 class="sec-title">Browse {stats.locations} Locations</h2>
       </div>
     </div>
     <div class="loc-grid">
       {locations.map(l => (
-        <a href={`/location/${l.locationId}`} class="loc-chip">
+        <a href={`/location/${l.locationId}`} class="loc-tile">
           <i class="fa-solid fa-location-dot"></i>
           <span>{l.locationName}</span>
         </a>
@@ -256,7 +264,7 @@ const stats = {
         <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
         <div class="step-num">01</div>
         <h3 class="step-title">Search & Discover</h3>
-        <p class="step-desc">Find any business by name, category, or area — across all 33 PCMC locations.</p>
+        <p class="step-desc">Find any business by name, category, or area — across all {stats.locations} PCMC locations.</p>
       </div>
       <div class="step">
         <div class="step-icon"><i class="fa-solid fa-phone"></i></div>
@@ -296,6 +304,20 @@ const stats = {
     </div>
   </section>
 
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      var grid = document.querySelector('.biz-grid[data-shuffle="true"]');
+      if (!grid) return;
+      var cards = Array.prototype.slice.call(grid.children);
+      if (cards.length < 2) return;
+      for (var i = cards.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = cards[i]; cards[i] = cards[j]; cards[j] = t;
+      }
+      cards.forEach(function (c) { grid.appendChild(c); });
+    });
+  </script>
+
 </BaseLayout>
 
 <style is:global>
@@ -303,6 +325,7 @@ const stats = {
 
 body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
 
+/* HERO */
 .hero {
   position: relative; overflow: hidden;
   background: radial-gradient(ellipse at top, #1a1f35 0%, #0a0f1e 55%, #0f0a1a 100%);
@@ -331,22 +354,14 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 }
 
-.hero-h1 {
-  font-size: 64px; font-weight: 800;
-  letter-spacing: -2.6px; line-height: 1.02;
-  margin: 0 0 24px;
-}
+.hero-h1 { font-size: 64px; font-weight: 800; letter-spacing: -2.6px; line-height: 1.02; margin: 0 0 24px; }
 .hero-accent {
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
   font-style: italic; padding-right: 8px;
 }
-.hero-p {
-  font-size: 17.5px; color: rgba(255,255,255,0.72);
-  line-height: 1.6; margin: 0 auto 44px;
-  max-width: 580px;
-}
+.hero-p { font-size: 17.5px; color: rgba(255,255,255,0.72); line-height: 1.6; margin: 0 auto 44px; max-width: 580px; }
 
 .hero-search {
   display: flex; align-items: center; gap: 6px;
@@ -357,9 +372,7 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   box-shadow: 0 28px 64px -20px rgba(0,0,0,0.65), 0 12px 28px -10px rgba(0,0,0,0.4);
   transition: all 0.3s;
 }
-.hero-search:focus-within {
-  box-shadow: 0 28px 64px -20px rgba(0,0,0,0.65), 0 12px 28px -10px rgba(0,0,0,0.4), 0 0 0 4px rgba(220,38,38,0.18);
-}
+.hero-search:focus-within { box-shadow: 0 28px 64px -20px rgba(0,0,0,0.65), 0 12px 28px -10px rgba(0,0,0,0.4), 0 0 0 4px rgba(220,38,38,0.18); }
 .hero-icon { color: #94a3b8; font-size: 15px; padding-left: 4px; flex-shrink: 0; }
 .hero-search input {
   flex: 1; border: 0; padding: 15px 6px;
@@ -382,32 +395,18 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 
 .hero-stats { display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; }
 .stat { text-align: center; min-width: 80px; }
-.stat-num {
-  font-size: 32px; font-weight: 800; color: #fff;
-  letter-spacing: -1.2px; line-height: 1;
-}
+.stat-num { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -1.2px; line-height: 1; }
 .stat-num span { color: #fbbf24; }
-.stat-lbl {
-  font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.6px;
-  color: rgba(255,255,255,0.45); font-weight: 700; margin-top: 10px;
-}
+.stat-lbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.6px; color: rgba(255,255,255,0.45); font-weight: 700; margin-top: 10px; }
 .stat-div { width: 1px; height: 40px; background: rgba(255,255,255,0.12); }
 
+/* SECTIONS */
 .sec { max-width: 1280px; margin: 0 auto; padding: 76px 24px; }
 .sec-alt { background: #f8fafc; border-radius: 32px; margin: 8px auto; max-width: 1280px; }
-.sec-head {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 16px; margin-bottom: 40px; flex-wrap: wrap;
-}
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; }
 .sec-head-center { justify-content: center; text-align: center; flex-direction: column; align-items: center; }
-.sec-tag {
-  font-size: 11px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 1.8px; color: #dc2626; margin-bottom: 8px;
-}
-.sec-title {
-  font-size: 36px; font-weight: 800; color: #0f172a;
-  letter-spacing: -1px; line-height: 1.15; margin: 0;
-}
+.sec-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.8px; color: #dc2626; margin-bottom: 8px; }
+.sec-title { font-size: 36px; font-weight: 800; color: #0f172a; letter-spacing: -1px; line-height: 1.15; margin: 0; }
 .sec-sub { font-size: 14.5px; color: #64748b; margin: 10px 0 0; line-height: 1.55; max-width: 500px; }
 .sec-link {
   display: inline-flex; align-items: center; gap: 8px;
@@ -420,52 +419,8 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 .sec-link i { font-size: 10px; transition: transform 0.2s; }
 .sec-link:hover i { transform: translateX(3px); }
 
-.cat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 14px;
-}
-.cat-tile {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 24px 14px 18px;
-  background: #fff; border: 1.5px solid #eef1f6;
-  border-radius: 18px; text-decoration: none;
-  transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
-  position: relative; overflow: hidden;
-}
-.cat-tile:hover {
-  transform: translateY(-6px);
-  border-color: #fecaca;
-  box-shadow: 0 22px 44px -18px rgba(15,23,42,0.15), 0 10px 20px -10px rgba(220,38,38,0.1);
-  text-decoration: none;
-}
-.cat-icon {
-  width: 60px; height: 60px; border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 24px;
-  margin-bottom: 14px;
-  box-shadow: 0 12px 24px -10px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-.cat-tile:hover .cat-icon { transform: scale(1.08) rotate(-3deg); }
-.cat-name {
-  font-size: 13px; font-weight: 800; color: #0f172a;
-  text-align: center; line-height: 1.3;
-  letter-spacing: -0.2px;
-  margin-bottom: 6px;
-  min-height: 34px;
-  display: flex; align-items: center; justify-content: center;
-}
-.cat-count {
-  font-size: 10.5px; font-weight: 700; color: #94a3b8;
-  text-transform: uppercase; letter-spacing: 0.6px;
-}
-
-.biz-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
+/* FEATURED BUSINESS CARDS */
+.biz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 .biz-card {
   display: flex; flex-direction: column;
   padding: 26px; background: #fff;
@@ -486,7 +441,20 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   border-color: #fecaca;
   box-shadow: 0 24px 48px -20px rgba(15,23,42,0.15), 0 10px 20px -10px rgba(220,38,38,0.1);
 }
-.biz-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.biz-ribbon {
+  position: absolute; top: 0; right: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px 7px 12px;
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.7px;
+  border-bottom-left-radius: 14px;
+}
+.biz-ribbon i { font-size: 10px; }
+.ribbon-gold { background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #78350f; }
+.ribbon-purple { background: linear-gradient(135deg, #f3e8ff, #c084fc); color: #581c87; }
+.ribbon-green { background: linear-gradient(135deg, #d1fae5, #6ee7b7); color: #065f46; }
+
+.biz-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding-right: 90px; }
 .biz-avatar {
   width: 54px; height: 54px; border-radius: 15px;
   background: linear-gradient(135deg, #dc2626, #991b1b);
@@ -503,17 +471,8 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 .biz-name a { color: inherit; text-decoration: none; transition: color 0.2s; }
 .biz-name a:hover { color: #dc2626; }
-.biz-sub {
-  font-size: 12.5px; color: #64748b; font-weight: 600;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.biz-badge {
-  width: 26px; height: 26px; border-radius: 8px;
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  color: #059669; font-size: 12px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
+.biz-sub { font-size: 12.5px; color: #64748b; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .biz-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
 .biz-meta span {
   display: inline-flex; align-items: center; gap: 6px;
@@ -521,7 +480,9 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   padding: 5px 11px; border-radius: 8px;
   background: #f8fafc; border: 1px solid #eef1f6;
 }
-.biz-meta i { color: #dc2626; font-size: 11px; }
+.biz-meta i { font-size: 11px; }
+.meta-loc i { color: #dc2626; }
+.meta-rating i { color: #f59e0b; }
 .biz-desc {
   font-size: 13.5px; color: #475569; line-height: 1.55;
   margin: 0 0 20px; flex: 1;
@@ -544,23 +505,65 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 .biz-btn i { font-size: 10px; transition: transform 0.2s; }
 .biz-btn:hover i { transform: translateX(3px); }
 
-.loc-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-.loc-chip {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 11px 18px; border-radius: 50px;
+/* CATEGORY TILES */
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.cat-tile {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 22px 12px 16px;
+  background: #fff; border: 1.5px solid #eef1f6;
+  border-radius: 18px; text-decoration: none;
+  transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
+  position: relative; overflow: hidden;
+}
+.cat-tile:hover {
+  transform: translateY(-6px);
+  border-color: #fecaca;
+  box-shadow: 0 22px 44px -18px rgba(15,23,42,0.15), 0 10px 20px -10px rgba(220,38,38,0.1);
+  text-decoration: none;
+}
+.cat-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 22px;
+  margin-bottom: 12px;
+  box-shadow: 0 12px 24px -10px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.cat-tile:hover .cat-icon { transform: scale(1.08) rotate(-3deg); }
+.cat-name {
+  font-size: 12.5px; font-weight: 800; color: #0f172a;
+  text-align: center; line-height: 1.25;
+  letter-spacing: -0.2px;
+  margin-bottom: 6px;
+  min-height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cat-count {
+  font-size: 10px; font-weight: 800; color: #dc2626;
+  background: #fef2f2;
+  padding: 3px 10px; border-radius: 20px;
+  letter-spacing: 0.4px;
+}
+
+/* LOCATIONS */
+.loc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.loc-tile {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 16px; border-radius: 14px;
   background: #fff; border: 1.5px solid #eef1f6;
   font-size: 13px; font-weight: 700; color: #334155;
   text-decoration: none; transition: all 0.22s;
 }
-.loc-chip i { color: #dc2626; font-size: 12px; transition: transform 0.2s; }
-.loc-chip:hover {
+.loc-tile i { color: #dc2626; font-size: 12px; transition: all 0.2s; }
+.loc-tile:hover {
   background: linear-gradient(135deg, #dc2626, #991b1b);
   border-color: #dc2626; color: #fff;
-  transform: translateY(-2px); text-decoration: none;
-  box-shadow: 0 12px 24px -10px rgba(220,38,38,0.5);
+  transform: translateY(-3px); text-decoration: none;
+  box-shadow: 0 14px 28px -12px rgba(220,38,38,0.5);
 }
-.loc-chip:hover i { color: #fff; transform: scale(1.15); }
+.loc-tile:hover i { color: #fff; transform: scale(1.2); }
 
+/* HOW IT WORKS */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .step {
   padding: 36px 30px 32px; background: #fff;
@@ -584,17 +587,11 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 20px;
 }
-.step-num {
-  position: absolute; top: 28px; right: 30px;
-  font-size: 40px; font-weight: 800; color: #f1f5f9;
-  letter-spacing: -2px; line-height: 1;
-}
-.step-title {
-  font-size: 19px; font-weight: 800; color: #0f172a;
-  margin: 0 0 10px; letter-spacing: -0.4px;
-}
+.step-num { position: absolute; top: 28px; right: 30px; font-size: 40px; font-weight: 800; color: #f1f5f9; letter-spacing: -2px; line-height: 1; }
+.step-title { font-size: 19px; font-weight: 800; color: #0f172a; margin: 0 0 10px; letter-spacing: -0.4px; }
 .step-desc { font-size: 14px; color: #64748b; line-height: 1.6; margin: 0; }
 
+/* CTA */
 .cta {
   position: relative; overflow: hidden;
   background: radial-gradient(ellipse at top, #1e293b 0%, #0a0f1e 60%, #2a1530 100%);
@@ -619,14 +616,8 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   margin-bottom: 24px;
 }
 .cta-badge i { font-size: 11px; }
-.cta-h2 {
-  font-size: 44px; font-weight: 800; letter-spacing: -1.4px;
-  line-height: 1.1; margin: 0 0 18px;
-}
-.cta-p {
-  font-size: 16px; color: rgba(255,255,255,0.75);
-  line-height: 1.65; margin: 0 0 36px;
-}
+.cta-h2 { font-size: 44px; font-weight: 800; letter-spacing: -1.4px; line-height: 1.1; margin: 0 0 18px; }
+.cta-p { font-size: 16px; color: rgba(255,255,255,0.75); line-height: 1.65; margin: 0 0 36px; }
 .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
 .cta-btn-primary {
   display: inline-flex; align-items: center; gap: 10px;
@@ -649,12 +640,10 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 .cta-btn-outline:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.35); text-decoration: none; transform: translateY(-2px); }
 .cta-btn-outline i { font-size: 12px; color: #fbbf24; }
-.cta-note {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 12.5px; color: rgba(255,255,255,0.5); font-weight: 600;
-}
+.cta-note { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: rgba(255,255,255,0.5); font-weight: 600; }
 .cta-note i { color: #22c55e; font-size: 12px; }
 
+/* RESPONSIVE */
 @media (max-width: 1024px) {
   .hero-h1 { font-size: 48px; letter-spacing: -1.8px; }
   .sec-title { font-size: 30px; }
@@ -672,23 +661,27 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
   .stat-num { font-size: 24px; }
   .stat-div { height: 30px; }
 
-  .sec { padding: 52px 18px; }
+  .sec { padding: 52px 16px; }
   .sec-alt { border-radius: 24px; }
   .sec-title { font-size: 24px; }
   .sec-head { margin-bottom: 28px; }
 
-  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .cat-tile { padding: 18px 8px 14px; border-radius: 14px; }
-  .cat-icon { width: 48px; height: 48px; font-size: 20px; border-radius: 14px; margin-bottom: 10px; }
-  .cat-name { font-size: 11.5px; min-height: 30px; margin-bottom: 4px; }
-  .cat-count { font-size: 9.5px; }
-
-  .biz-grid { grid-template-columns: 1fr; gap: 16px; }
+  /* Featured biz — 1 col */
+  .biz-grid { grid-template-columns: 1fr; gap: 14px; }
   .biz-card { padding: 22px; border-radius: 18px; }
   .biz-avatar { width: 48px; height: 48px; font-size: 20px; }
 
-  .loc-grid { gap: 8px; }
-  .loc-chip { padding: 9px 14px; font-size: 12px; }
+  /* Categories — 4 per row */
+  .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .cat-tile { padding: 14px 6px 10px; border-radius: 14px; }
+  .cat-icon { width: 44px; height: 44px; font-size: 18px; border-radius: 13px; margin-bottom: 8px; }
+  .cat-name { font-size: 10px; min-height: 26px; margin-bottom: 4px; line-height: 1.2; }
+  .cat-count { font-size: 9px; padding: 2px 7px; }
+
+  /* Locations — 2 per row */
+  .loc-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .loc-tile { padding: 11px 10px; font-size: 12px; border-radius: 12px; }
+  .loc-tile span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   .steps { grid-template-columns: 1fr; gap: 14px; }
   .step { padding: 28px 24px; border-radius: 18px; }
@@ -701,6 +694,7 @@ body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -
 }
 @media (max-width: 400px) {
   .hero-h1 { font-size: 30px; }
-  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .cat-icon { width: 40px; height: 40px; font-size: 16px; }
 }
 </style>
