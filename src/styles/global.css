@@ -384,3 +384,19 @@ select:focus-visible, textarea:focus-visible {
   .footer-bottom { font-size: 12px; flex-direction: column; gap: 8px; }
   .footer-bottom .dot { display: none; }
 }
+/* ═══════════ FIX FOR UNWANTED RED HIGHLIGHT BACKGROUNDS ═══════════ */
+/* Removes the red background behind text on all headings and mark tags */
+h1, h2, h3, h4, h5, h6, mark {
+  background-color: transparent !important;
+  display: block !important; /* Ensures headings take full width and center properly */
+  color: inherit !important; /* Resets any forced text color so your normal text colors apply */
+}
+
+/* Special fix for the Expert Advice page highlight span */
+.experts-hero h1 .hl {
+  background: linear-gradient(135deg, #fbbf24, #d97706) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  display: inline !important;
+}
