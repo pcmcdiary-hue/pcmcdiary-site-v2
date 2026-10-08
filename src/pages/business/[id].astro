@@ -38,6 +38,13 @@ const waPhone = phone.replace(/^91/, '');
 const rating = parseFloat(biz.rating) || 0;
 const reviews = parseInt(biz.reviews) || 0;
 
+const websiteUrl = biz.website && biz.website !== '-' && biz.website !== ''
+  ? (biz.website.startsWith('http') ? biz.website : 'https://' + biz.website)
+  : '';
+const mapUrl = biz.googleMap && biz.googleMap !== '-' && biz.googleMap !== ''
+  ? (biz.googleMap.startsWith('http') ? biz.googleMap : 'https://' + biz.googleMap)
+  : '';
+
 const tier = (biz.tier || '').toLowerCase();
 const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(tier);
 const isFeatured = tier === 'featured';
@@ -86,7 +93,6 @@ const schema = {
         <span>{name}</span>
       </nav>
 
-      <!-- ═══ HERO CARD ═══ -->
       <header class="biz-hero">
         <div class="hero-top">
           <div class="hero-avatar">{(name.charAt(0) || 'B').toUpperCase()}</div>
@@ -128,14 +134,14 @@ const schema = {
               <span>WhatsApp</span>
             </a>
           )}
-          {biz.googleMap && biz.googleMap !== '-' && (
-            <a href={biz.googleMap} target="_blank" rel="noopener" class="act act-neutral">
+          {mapUrl && (
+            <a href={mapUrl} target="_blank" rel="noopener" class="act act-neutral">
               <i class="fa-solid fa-map-location-dot"></i>
               <span>Directions</span>
             </a>
           )}
-          {biz.website && biz.website !== '-' && (
-            <a href={biz.website} target="_blank" rel="noopener" class="act act-neutral">
+          {websiteUrl && (
+            <a href={websiteUrl} target="_blank" rel="noopener" class="act act-neutral">
               <i class="fa-solid fa-globe"></i>
               <span>Website</span>
             </a>
@@ -143,7 +149,6 @@ const schema = {
         </div>
       </header>
 
-      <!-- ═══ ABOUT ═══ -->
       {biz.description && (
         <section class="card">
           <h2 class="card-title">About</h2>
@@ -151,7 +156,6 @@ const schema = {
         </section>
       )}
 
-      <!-- ═══ CONTACT & INFO ═══ -->
       <section class="card">
         <h2 class="card-title">Contact & Info</h2>
         <div class="info-list">
@@ -191,19 +195,18 @@ const schema = {
               </div>
             </div>
           )}
-          {biz.website && biz.website !== '-' && (
+          {websiteUrl && (
             <div class="info-item">
               <div class="info-icon"><i class="fa-solid fa-globe"></i></div>
               <div class="info-body">
                 <div class="info-label">Website</div>
-                <a class="info-value link" href={biz.website} target="_blank" rel="noopener">{biz.website}</a>
+                <a class="info-value link" href={websiteUrl} target="_blank" rel="noopener">{biz.website}</a>
               </div>
             </div>
           )}
         </div>
       </section>
 
-      <!-- ═══ DEAL ═══ -->
       {biz.deals && biz.deals !== '-' && (
         <section class="deal-card">
           <div class="deal-icon"><i class="fa-solid fa-gift"></i></div>
@@ -220,7 +223,6 @@ const schema = {
         </section>
       )}
 
-      <!-- ═══ CLAIM / VERIFIED ═══ -->
       {!isVerified && (
         <section class="claim-card">
           <div class="claim-icon"><i class="fa-solid fa-circle-check"></i></div>
@@ -253,7 +255,6 @@ const schema = {
 .biz-page { background: #f8fafc; min-height: 100vh; padding: 24px 16px 80px; }
 .biz-container { max-width: 900px; margin: 0 auto; }
 
-/* Breadcrumb */
 .breadcrumb {
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
   font-size: 13px; color: #64748b; margin-bottom: 24px;
@@ -263,7 +264,6 @@ const schema = {
 .breadcrumb .sep { font-size: 9px; color: #cbd5e1; }
 .breadcrumb span { color: #0f172a; font-weight: 700; }
 
-/* HERO CARD */
 .biz-hero {
   background: #fff;
   border: 1px solid #e8ecf1;
@@ -341,7 +341,6 @@ const schema = {
 .act-neutral { background: #fff; color: #334155; border-color: #e2e8f0; }
 .act-neutral:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); text-decoration: none; }
 
-/* CARDS */
 .card {
   background: #fff; border: 1px solid #e8ecf1;
   border-radius: 20px; padding: 28px;
@@ -363,7 +362,6 @@ const schema = {
   font-size: 15px; color: #334155; line-height: 1.7; margin: 0;
 }
 
-/* INFO LIST */
 .info-list { display: flex; flex-direction: column; }
 .info-item {
   display: flex; align-items: flex-start; gap: 16px;
@@ -392,7 +390,6 @@ const schema = {
 .info-value.link { color: #2563eb; text-decoration: none; }
 .info-value.link:hover { text-decoration: underline; }
 
-/* DEAL CARD */
 .deal-card {
   display: flex; gap: 18px; align-items: flex-start;
   background: linear-gradient(135deg, #fffbeb, #fef3c7);
@@ -432,7 +429,6 @@ const schema = {
 .code-label { font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; }
 .code-value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; }
 
-/* CLAIM / VERIFIED */
 .claim-card {
   display: flex; align-items: center; gap: 20px;
   background: #fff; border: 1px solid #e8ecf1;
@@ -481,7 +477,6 @@ const schema = {
 .verified-body p { font-size: 13.5px; color: #065f46; margin: 0; line-height: 1.5; }
 .verified-body a { color: #047857; font-weight: 800; text-decoration: underline; }
 
-/* RESPONSIVE */
 @media (max-width: 640px) {
   .biz-page { padding: 16px 12px 60px; }
   .breadcrumb { font-size: 12px; margin-bottom: 16px; }
