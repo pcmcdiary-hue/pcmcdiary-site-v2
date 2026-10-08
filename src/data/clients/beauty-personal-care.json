@@ -28,7 +28,7 @@
     "reviews": "190",
     "deals": "Free eyebrow threading with facial",
     "dealCode": "SHRINGARFREE",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "BPC2",
@@ -59,7 +59,7 @@
     "reviews": "240",
     "deals": "20% OFF on first hair spa",
     "dealCode": "LOOKWELL20",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "BPC3",
@@ -90,7 +90,7 @@
     "reviews": "320",
     "deals": "15% OFF on bridal packages",
     "dealCode": "GLAM15",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "BPC4",
@@ -121,7 +121,7 @@
     "reviews": "180",
     "deals": "25% OFF on first consultation",
     "dealCode": "SKINGLOW25",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "BPC5",
@@ -152,6 +152,6 @@
     "reviews": "150",
     "deals": "₹100 OFF on nail extensions",
     "dealCode": "NAIL100",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

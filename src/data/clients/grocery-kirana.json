@@ -28,7 +28,7 @@
     "reviews": "210",
     "deals": "5% OFF on monthly grocery pack",
     "dealCode": "GKIRANA5",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "GK2",
@@ -59,7 +59,7 @@
     "reviews": "320",
     "deals": "10% OFF on fruits & vegetables",
     "dealCode": "MALHARFRESH10",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "GK3",
@@ -90,7 +90,7 @@
     "reviews": "280",
     "deals": "₹100 OFF on ₹1000+",
     "dealCode": "ANNAPURNA100",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "GK4",
@@ -121,7 +121,7 @@
     "reviews": "150",
     "deals": "15% OFF on first purchase",
     "dealCode": "DESIORGANIC15",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "GK5",
@@ -152,7 +152,7 @@
     "reviews": "190",
     "deals": "Free coriander & chilli with ₹500+",
     "dealCode": "SABZIFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   },
   {
     "businessId": "GK6",
@@ -183,7 +183,7 @@
     "reviews": "410",
     "deals": "10% OFF on bakery items",
     "dealCode": "DORABAK10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "GK8",
@@ -214,7 +214,7 @@
     "reviews": "95",
     "deals": "Free home delivery on ₹300+",
     "dealCode": "CHIKHALIDEL",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "GK9",
@@ -245,7 +245,7 @@
     "reviews": "180",
     "deals": "20% OFF on organic range",
     "dealCode": "NATURE20",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "GK10",
@@ -276,6 +276,6 @@
     "reviews": "130",
     "deals": "₹50 OFF on ₹500+",
     "dealCode": "MOSHIFRESH50",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

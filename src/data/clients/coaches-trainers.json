@@ -28,7 +28,7 @@
     "reviews": "150",
     "deals": "Free discovery call",
     "dealCode": "LIFEFREE",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "CT2",
@@ -59,7 +59,7 @@
     "reviews": "180",
     "deals": "15% OFF on first workshop",
     "dealCode": "VYAKTITVA15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "CT3",
@@ -90,7 +90,7 @@
     "reviews": "220",
     "deals": "20% OFF on first course",
     "dealCode": "BHASHAN20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "CT4",
@@ -121,7 +121,7 @@
     "reviews": "190",
     "deals": "Free training needs analysis",
     "dealCode": "KAUSHALYA",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "CT5",
@@ -152,6 +152,6 @@
     "reviews": "170",
     "deals": "Free resume review",
     "dealCode": "MARGDARSHAK",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

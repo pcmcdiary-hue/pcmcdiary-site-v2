@@ -28,7 +28,7 @@
     "reviews": "160",
     "deals": "10% OFF on first purchase",
     "dealCode": "BALKHEL10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "KB2",
@@ -59,7 +59,7 @@
     "reviews": "200",
     "deals": "15% OFF on baby care combo",
     "dealCode": "SHISHU15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "KB3",
@@ -90,7 +90,7 @@
     "reviews": "240",
     "deals": "20% OFF on kids clothing",
     "dealCode": "CHOTU20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "KB4",
@@ -121,7 +121,7 @@
     "reviews": "170",
     "deals": "10% OFF on school bags",
     "dealCode": "VIDYA10",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "KB5",
@@ -152,6 +152,6 @@
     "reviews": "180",
     "deals": "Free 30 min on first visit",
     "dealCode": "KHELFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

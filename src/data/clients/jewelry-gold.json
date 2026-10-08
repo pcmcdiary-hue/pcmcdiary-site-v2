@@ -28,7 +28,7 @@
     "reviews": "210",
     "deals": "5% OFF on making charges",
     "dealCode": "GOLD5",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "JG3",
@@ -59,7 +59,7 @@
     "reviews": "340",
     "deals": "15% OFF on diamond rings",
     "dealCode": "TANMANI15",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "JG4",
@@ -90,7 +90,7 @@
     "reviews": "170",
     "deals": "20% OFF on silver anklets",
     "dealCode": "RAJWADA20",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "JG5",
@@ -121,6 +121,6 @@
     "reviews": "190",
     "deals": "Free bridal consultation",
     "dealCode": "BRIDALFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

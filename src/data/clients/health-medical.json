@@ -28,7 +28,7 @@
     "reviews": "180",
     "deals": "Free first consultation",
     "dealCode": "SAICLINICFREE",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "HM2",
@@ -59,7 +59,7 @@
     "reviews": "220",
     "deals": "20% OFF on teeth cleaning",
     "dealCode": "DENTAL20",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "HM3",
@@ -90,7 +90,7 @@
     "reviews": "310",
     "deals": "₹200 OFF on full body checkup",
     "dealCode": "LAB200",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "HM4",
@@ -121,7 +121,7 @@
     "reviews": "160",
     "deals": "15% OFF on Panchakarma package",
     "dealCode": "AYUSH15",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "HM5",
@@ -152,6 +152,6 @@
     "reviews": "270",
     "deals": "10% OFF on monthly medicines",
     "dealCode": "MED10",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

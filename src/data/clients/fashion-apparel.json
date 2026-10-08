@@ -28,7 +28,7 @@
     "reviews": "180",
     "deals": "10% OFF on first purchase",
     "dealCode": "RANGOLI10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "FA2",
@@ -59,7 +59,7 @@
     "reviews": "220",
     "deals": "Buy 1 Get 1 on selected tops",
     "dealCode": "STYLEBOGO",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "FA4",
@@ -90,7 +90,7 @@
     "reviews": "190",
     "deals": "15% OFF on second pair",
     "dealCode": "PAYAL15",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "FA5",
@@ -121,6 +121,6 @@
     "reviews": "160",
     "deals": "Free alteration on first order",
     "dealCode": "SILAIFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

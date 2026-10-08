@@ -28,7 +28,7 @@
     "reviews": "190",
     "deals": "5% OFF on mobile covers",
     "dealCode": "MOBILE5",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "EG2",
@@ -59,7 +59,7 @@
     "reviews": "230",
     "deals": "10% OFF on laptop bags",
     "dealCode": "LAPTOP10",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "EG3",
@@ -90,7 +90,7 @@
     "reviews": "280",
     "deals": "₹500 OFF on washing machine",
     "dealCode": "SMARTHOME500",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "EG4",
@@ -121,7 +121,7 @@
     "reviews": "170",
     "deals": "15% OFF on soundbars",
     "dealCode": "VISION15",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "EG5",
@@ -152,7 +152,7 @@
     "reviews": "160",
     "deals": "Free installation on AC purchase",
     "dealCode": "COOLFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   },
   {
     "businessId": "EG7",

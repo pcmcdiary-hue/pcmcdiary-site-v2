@@ -28,7 +28,7 @@
     "reviews": "170",
     "deals": "10% OFF on first order",
     "dealCode": "CHHAPAI10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "P2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "15% OFF on bulk boxes",
     "dealCode": "PACKWELL15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "P3",
@@ -90,7 +90,7 @@
     "reviews": "230",
     "deals": "20% OFF on first banner",
     "dealCode": "FLEX20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "P4",
@@ -121,7 +121,7 @@
     "reviews": "180",
     "deals": "₹100 OFF on first order",
     "dealCode": "CARD100",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "P5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free sample card",
     "dealCode": "SHUBHFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

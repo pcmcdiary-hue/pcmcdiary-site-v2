@@ -28,7 +28,7 @@
     "reviews": "170",
     "deals": "Free first consultation",
     "dealCode": "SHREEINT",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "IED2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "15% OFF on first project",
     "dealCode": "BAHAR15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "IED3",
@@ -90,7 +90,7 @@
     "reviews": "230",
     "deals": "Free 3D design concept",
     "dealCode": "HARIYALI",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "IED4",
@@ -121,7 +121,7 @@
     "reviews": "200",
     "deals": "Free site visit",
     "dealCode": "NIRMAAN",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "IED5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free design consultation",
     "dealCode": "RANGOLI",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

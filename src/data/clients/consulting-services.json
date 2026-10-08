@@ -28,7 +28,7 @@
     "reviews": "170",
     "deals": "Free first consultation",
     "dealCode": "SHREECONSULT",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "CS2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "15% OFF on first consultation",
     "dealCode": "NYAY15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "CS3",
@@ -90,7 +90,7 @@
     "reviews": "220",
     "deals": "20% OFF on first project",
     "dealCode": "MANAV20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "CS4",
@@ -121,7 +121,7 @@
     "reviews": "190",
     "deals": "Free marketing audit",
     "dealCode": "BAZAAR",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "CS5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free business health check",
     "dealCode": "MARGDARSHAK",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

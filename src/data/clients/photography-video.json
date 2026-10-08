@@ -28,7 +28,7 @@
     "reviews": "190",
     "deals": "10% OFF on pre-wedding shoot",
     "dealCode": "CHHAYA10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "PV2",
@@ -59,7 +59,7 @@
     "reviews": "180",
     "deals": "15% OFF on event package",
     "dealCode": "KSHAN15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "PV3",
@@ -90,7 +90,7 @@
     "reviews": "240",
     "deals": "20% OFF on first shoot",
     "dealCode": "CHITRA20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "PV4",
@@ -121,7 +121,7 @@
     "reviews": "190",
     "deals": "15% OFF on first project",
     "dealCode": "VIDEO15",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "PV5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free 5 min aerial shot",
     "dealCode": "DRONEFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

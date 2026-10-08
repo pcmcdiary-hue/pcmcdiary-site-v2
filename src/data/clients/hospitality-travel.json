@@ -28,7 +28,7 @@
     "reviews": "140",
     "deals": "10% OFF on weekly stay",
     "dealCode": "KRUPA10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "HT2",
@@ -59,7 +59,7 @@
     "reviews": "210",
     "deals": "15% OFF on weekday stay",
     "dealCode": "SAHYADRI15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "HT3",
@@ -90,7 +90,7 @@
     "reviews": "260",
     "deals": "20% OFF on long stay",
     "dealCode": "GHAR20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "HT4",
@@ -121,7 +121,7 @@
     "reviews": "190",
     "deals": "₹500 OFF on first month",
     "dealCode": "SAIPG500",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "HT5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free itinerary planning",
     "dealCode": "YATRAFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

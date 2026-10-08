@@ -28,7 +28,7 @@
     "reviews": "160",
     "deals": "Free property valuation",
     "dealCode": "SHREEPROP",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "RE2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "10% OFF on brokerage",
     "dealCode": "GHARSHREE10",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "RE3",
@@ -90,7 +90,7 @@
     "reviews": "220",
     "deals": "Free site visit",
     "dealCode": "NIRMAAN",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "RE4",
@@ -121,7 +121,7 @@
     "reviews": "170",
     "deals": "Free rental agreement",
     "dealCode": "KIRAI",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "RE5",
@@ -152,6 +152,6 @@
     "reviews": "150",
     "deals": "15% OFF on first valuation",
     "dealCode": "MULYA15",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

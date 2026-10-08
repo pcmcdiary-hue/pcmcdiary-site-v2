@@ -28,7 +28,7 @@
     "reviews": "170",
     "deals": "10% OFF on first purchase",
     "dealCode": "VYAYAM10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "FE2",
@@ -59,7 +59,7 @@
     "reviews": "200",
     "deals": "15% OFF on sports shoes",
     "dealCode": "KHEL15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "FE3",
@@ -90,7 +90,7 @@
     "reviews": "230",
     "deals": "20% OFF on home gym sets",
     "dealCode": "VYAYAM20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "FE4",
@@ -121,7 +121,7 @@
     "reviews": "190",
     "deals": "Free sports bottle on ₹1000+",
     "dealCode": "BALSHAKTI",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "FE5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "10% OFF on dumbbell sets",
     "dealCode": "DUMBBELL10",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

@@ -28,7 +28,7 @@
     "reviews": "170",
     "deals": "10% OFF on local shifting",
     "dealCode": "SHREEPACK10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "LM2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "Free loading on first order",
     "dealCode": "FASTFREE",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "LM3",
@@ -90,7 +90,7 @@
     "reviews": "220",
     "deals": "15% OFF on full day booking",
     "dealCode": "TEMPO15",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "LM4",
@@ -121,7 +121,7 @@
     "reviews": "170",
     "deals": "₹50 OFF on first courier",
     "dealCode": "SEEMA50",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "LM5",
@@ -152,6 +152,6 @@
     "reviews": "140",
     "deals": "Free first month storage",
     "dealCode": "SURAKSHA",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

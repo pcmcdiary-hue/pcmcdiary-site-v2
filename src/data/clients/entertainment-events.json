@@ -28,7 +28,7 @@
     "reviews": "180",
     "deals": "₹30 OFF on morning shows",
     "dealCode": "CHITRA30",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "EE2",
@@ -59,7 +59,7 @@
     "reviews": "210",
     "deals": "Buy 1 Get 1 on game credits",
     "dealCode": "GAMEBOGO",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "EE3",
@@ -90,7 +90,7 @@
     "reviews": "290",
     "deals": "15% OFF on event package",
     "dealCode": "UTSAV15",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "EE4",
@@ -121,7 +121,7 @@
     "reviews": "220",
     "deals": "Free wedding consultation",
     "dealCode": "SHUBHVIVAH",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "EE5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "10% OFF on flower decor",
     "dealCode": "RANGOLI10",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

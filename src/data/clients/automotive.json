@@ -28,7 +28,7 @@
     "reviews": "180",
     "deals": "Free car valuation",
     "dealCode": "SHREEAUTO",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "A2",
@@ -59,7 +59,7 @@
     "reviews": "220",
     "deals": "10% OFF on general service",
     "dealCode": "BIKE10",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "A3",
@@ -90,7 +90,7 @@
     "reviews": "310",
     "deals": "₹500 OFF on full service",
     "dealCode": "SPEED500",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "A4",
@@ -121,7 +121,7 @@
     "reviews": "190",
     "deals": "20% OFF on ceramic coating",
     "dealCode": "CHAMAK20",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "A5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "5% OFF on bulk order",
     "dealCode": "SPARE5",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

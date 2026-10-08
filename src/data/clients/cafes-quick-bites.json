@@ -28,7 +28,7 @@
     "reviews": "190",
     "deals": "Free biscuits with chai",
     "dealCode": "CHAIFREE",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "CQB2",
@@ -59,7 +59,7 @@
     "reviews": "210",
     "deals": "10% OFF on first coffee",
     "dealCode": "COFFEEGHAR10",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "CQB3",
@@ -90,7 +90,7 @@
     "reviews": "240",
     "deals": "Buy 1 Get 1 on sandwiches",
     "dealCode": "SANDWICHBOGO",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "CQB4",
@@ -121,7 +121,7 @@
     "reviews": "180",
     "deals": "Extra puri free on 5 plates",
     "dealCode": "PANIFREE",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "CQB5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free extra chutney",
     "dealCode": "VADAFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

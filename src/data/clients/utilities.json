@@ -28,7 +28,7 @@
     "reviews": "160",
     "deals": "10% OFF on first service",
     "dealCode": "BIJLI10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "U2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "Free first delivery",
     "dealCode": "GASFREE",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "U3",
@@ -90,7 +90,7 @@
     "reviews": "220",
     "deals": "15% OFF on first tanker",
     "dealCode": "JAL15",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "U4",
@@ -121,7 +121,7 @@
     "reviews": "180",
     "deals": "Free solar consultation",
     "dealCode": "SURYAFREE",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "U5",
@@ -152,6 +152,6 @@
     "reviews": "150",
     "deals": "10% OFF on first rental",
     "dealCode": "GENERATOR10",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

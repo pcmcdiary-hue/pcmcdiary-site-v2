@@ -28,7 +28,7 @@
     "reviews": "170",
     "deals": "10% OFF on first key",
     "dealCode": "CHABI10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "DUS2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "Free shoe polishing",
     "dealCode": "MOCHIFREE",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "DUS3",
@@ -90,7 +90,7 @@
     "reviews": "210",
     "deals": "Free battery with repair",
     "dealCode": "GHADI",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "DUS4",
@@ -121,7 +121,7 @@
     "reviews": "150",
     "deals": "10% OFF on first repair",
     "dealCode": "CHHATA10",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "DUS5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free zip replacement",
     "dealCode": "BAGFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

@@ -28,7 +28,7 @@
     "reviews": "160",
     "deals": "Free first session",
     "dealCode": "YOGAFREE",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "AM2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "15% OFF on first consultation",
     "dealCode": "PRAKRITI15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "AM3",
@@ -90,7 +90,7 @@
     "reviews": "230",
     "deals": "20% OFF on first session",
     "dealCode": "SOOT20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "AM4",
@@ -121,7 +121,7 @@
     "reviews": "180",
     "deals": "Free first healing session",
     "dealCode": "REIKIFREE",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "AM5",
@@ -152,6 +152,6 @@
     "reviews": "170",
     "deals": "Free first week trial",
     "dealCode": "DHYANFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

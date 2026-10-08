@@ -28,7 +28,7 @@
     "reviews": "200",
     "deals": "Free 3-day trial",
     "dealCode": "HANUMANTRIAL",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "FW2",
@@ -59,7 +59,7 @@
     "reviews": "180",
     "deals": "20% OFF on monthly membership",
     "dealCode": "YOGA20",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "FW3",
@@ -90,7 +90,7 @@
     "reviews": "350",
     "deals": "₹500 OFF on annual membership",
     "dealCode": "FITZONE500",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "FW4",
@@ -121,7 +121,7 @@
     "reviews": "140",
     "deals": "First class free",
     "dealCode": "ZUMBAFREE",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "FW5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "10% OFF on quarterly batch",
     "dealCode": "SWIM10",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

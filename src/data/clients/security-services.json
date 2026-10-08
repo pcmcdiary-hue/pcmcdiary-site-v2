@@ -28,7 +28,7 @@
     "reviews": "160",
     "deals": "Free first week trial",
     "dealCode": "SURAKSHATRIAL",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "SS2",
@@ -59,7 +59,7 @@
     "reviews": "200",
     "deals": "Free installation on 4+ cameras",
     "dealCode": "NETRA",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "SS3",
@@ -90,7 +90,7 @@
     "reviews": "220",
     "deals": "15% OFF on first installation",
     "dealCode": "GHARSURAKSHA15",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "SS4",
@@ -121,7 +121,7 @@
     "reviews": "180",
     "deals": "20% OFF on annual plan",
     "dealCode": "CARTRACK20",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "SS5",
@@ -152,6 +152,6 @@
     "reviews": "150",
     "deals": "Free security audit",
     "dealCode": "RAKSHAK",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

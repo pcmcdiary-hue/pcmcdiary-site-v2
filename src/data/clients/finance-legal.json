@@ -28,7 +28,7 @@
     "reviews": "180",
     "deals": "Free account opening",
     "dealCode": "NAGRIK",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "FL2",
@@ -59,7 +59,7 @@
     "reviews": "190",
     "deals": "Free loan eligibility check",
     "dealCode": "GHARLOAN",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "FL3",
@@ -90,7 +90,7 @@
     "reviews": "210",
     "deals": "10% OFF on first premium",
     "dealCode": "SURAKSHA10",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "FL4",
@@ -121,7 +121,7 @@
     "reviews": "170",
     "deals": "20% OFF on first filing",
     "dealCode": "KARSALAH20",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "FL5",
@@ -152,6 +152,6 @@
     "reviews": "150",
     "deals": "Free first consultation",
     "dealCode": "NYAYFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

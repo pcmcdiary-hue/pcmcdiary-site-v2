@@ -28,7 +28,7 @@
     "reviews": "150",
     "deals": "Free form filling",
     "dealCode": "PASSPORTFREE",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "GS2",
@@ -59,7 +59,7 @@
     "reviews": "180",
     "deals": "Free biometric update",
     "dealCode": "AADHAARFREE",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "GS3",
@@ -90,7 +90,7 @@
     "reviews": "220",
     "deals": "15% OFF on new PAN",
     "dealCode": "PAN15",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "GS4",
@@ -121,6 +121,6 @@
     "reviews": "190",
     "deals": "Free licence renewal reminder",
     "dealCode": "RTOFREE",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   }
 ]

@@ -28,7 +28,7 @@
     "reviews": "190",
     "deals": "10% OFF on first purchase",
     "dealCode": "DESIORGANIC",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "SP2",
@@ -59,7 +59,7 @@
     "reviews": "200",
     "deals": "15% OFF on first purchase",
     "dealCode": "HASTKALA15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "SP3",
@@ -90,7 +90,7 @@
     "reviews": "240",
     "deals": "20% OFF on first purchase",
     "dealCode": "DESI20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "SP4",
@@ -121,7 +121,7 @@
     "reviews": "210",
     "deals": "Free bridal consultation",
     "dealCode": "BRIDAL",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "SP5",
@@ -152,6 +152,6 @@
     "reviews": "170",
     "deals": "10% OFF on first purchase",
     "dealCode": "PURATAN10",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]

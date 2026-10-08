@@ -28,7 +28,7 @@
     "reviews": "190",
     "deals": "10% OFF on first purchase",
     "dealCode": "GRANTH10",
-    "dealExpiry": "46387"
+    "dealExpiry": "2026-12-31"
   },
   {
     "businessId": "BS2",
@@ -59,7 +59,7 @@
     "reviews": "220",
     "deals": "15% OFF on exam books",
     "dealCode": "VIDYAPUSTAK15",
-    "dealExpiry": "46356"
+    "dealExpiry": "2026-11-30"
   },
   {
     "businessId": "BS3",
@@ -90,7 +90,7 @@
     "reviews": "280",
     "deals": "20% OFF on bulk order",
     "dealCode": "LEKH20",
-    "dealExpiry": "46326"
+    "dealExpiry": "2026-10-31"
   },
   {
     "businessId": "BS4",
@@ -121,7 +121,7 @@
     "reviews": "170",
     "deals": "₹1 per page on bulk xerox",
     "dealCode": "XEROXBULK",
-    "dealExpiry": "46371"
+    "dealExpiry": "2026-12-15"
   },
   {
     "businessId": "BS5",
@@ -152,6 +152,6 @@
     "reviews": "160",
     "deals": "Free first month membership",
     "dealCode": "PUSTAKFREE",
-    "dealExpiry": "46295"
+    "dealExpiry": "2026-09-30"
   }
 ]
