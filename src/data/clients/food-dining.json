@@ -153,5 +153,41 @@
     "deals": "-",
     "dealCode": "-",
     "dealExpiry": "-"
+  
+
+  },
+  {
+    "businessId": "TEST1",
+    "businessName": "Test Pizza Corner",
+    "subCategory": "Restaurants",
+    "location": "Wakad",
+    "pincode": "411057",
+    "address": "Test Address, Wakad, Pune",
+    "phone": "91 9999999999",
+    "email": "test@test.com",
+    "website": "-",
+    "googleMap": "https://maps.google.com/?q=Wakad+Pune",
+    "latitude": "18.5905",
+    "longitude": "73.7626",
+    "serviceArea": "Wakad,Hinjawadi",
+    "servicePincodes": "411,057",
+    "locationCount": "1",
+    "description": "This is a test business added to verify the pipeline works.",
+    "tier": "free",
+    "socialLinks": "",
+    "timing": "Mon-Sun 10AM-10PM",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "FALSE",
+    "unclaimed": "FALSE",
+    "tags": "Pizza,Test,Italian",
+    "rating": "4.5",
+    "reviews": "10",
+    "deals": "-",
+    "dealCode": "-",
+    "dealExpiry": "-"
   }
+]
+
+  
 ]
