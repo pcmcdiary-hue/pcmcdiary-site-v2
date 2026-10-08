@@ -4,8 +4,8 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export async function getStaticPaths() {
-  // Read categories.json from local src/data/
-  const catFile = path.resolve('./src/data/categories.json');
+  const DATA_DIR = path.resolve('./src/data');
+  const catFile = path.join(DATA_DIR, 'categories.json');
   const catsRaw = await readFile(catFile, 'utf8');
   const categories = (JSON.parse(catsRaw).categories) || [];
 
@@ -13,8 +13,7 @@ export async function getStaticPaths() {
 
   for (const cat of categories) {
     try {
-      // Read each category's business file from local src/data/clients/
-      const bizFile = path.resolve('./src/data/clients/' + cat.file);
+      const bizFile = path.join(DATA_DIR, 'clients', cat.file);
       const bizRaw = await readFile(bizFile, 'utf8');
       const businesses = JSON.parse(bizRaw);
       if (!Array.isArray(businesses)) continue;
@@ -26,7 +25,7 @@ export async function getStaticPaths() {
           props: { biz, category: cat }
         });
       }
-    } catch (e) { /* skip missing files */ }
+    } catch (e) {}
   }
 
   return allPaths;
@@ -41,7 +40,11 @@ const reviews = parseInt(biz.reviews) || 0;
 
 const tier = (biz.tier || '').toLowerCase();
 const isVerified = ['featured','premium','premium_pro','vp','vb'].includes(tier);
-const isClaimed = biz.unclaimed === false || biz.claimed === true;
+const isFeatured = tier === 'featured';
+const isPro = ['premium_pro','premium'].includes(tier);
+const tierLabel = isFeatured ? 'Featured' : (isPro ? 'Premium' : (isVerified ? 'Verified' : ''));
+const tierClass = isFeatured ? 'tier-featured' : (isPro ? 'tier-premium' : 'tier-verified');
+const tierIcon = isFeatured ? 'fa-star' : (isPro ? 'fa-crown' : 'fa-circle-check');
 
 const schema = {
   "@context": "https://schema.org",
@@ -64,178 +67,453 @@ const schema = {
 ---
 
 <BaseLayout
-  title={name + ' - ' + (biz.subCategory || category.categoryName) + ' in ' + (biz.location || 'PCMC')}
+  title={name + ' — ' + (biz.subCategory || category.categoryName) + ' in ' + (biz.location || 'PCMC')}
   description={(biz.description || name + ' in ' + (biz.location || 'PCMC') + '. Call ' + phone)}
 >
 
-<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-<div class="biz-page">
-  <div class="biz-container">
+  <div class="biz-page">
+    <div class="biz-container">
 
-    <nav class="breadcrumb">
-      <a href="/">Home</a>
-      <i class="fa-solid fa-chevron-right sep"></i>
-      <a href="/directory">Directory</a>
-      <i class="fa-solid fa-chevron-right sep"></i>
-      <a href={'/category/' + category.categoryId}>{category.categoryName}</a>
-      <i class="fa-solid fa-chevron-right sep"></i>
-      <span>{name}</span>
-    </nav>
+      <nav class="breadcrumb">
+        <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right sep"></i>
+        <a href="/directory">Directory</a>
+        <i class="fa-solid fa-chevron-right sep"></i>
+        <a href={'/category/' + category.categoryId}>{category.categoryName}</a>
+        <i class="fa-solid fa-chevron-right sep"></i>
+        <span>{name}</span>
+      </nav>
 
-    <header class="biz-header">
-      <div class="biz-avatar">{(name.charAt(0) || 'B').toUpperCase()}</div>
-      <div class="biz-head-text">
-        <h1>{name}</h1>
-        <p class="biz-sub">{biz.subCategory} · {biz.location}</p>
-        <div class="biz-badges">
-          {isVerified && (
-            <span class="badge badge-verified"><i class="fa-solid fa-circle-check"></i> Verified</span>
+      <!-- ═══ HERO CARD ═══ -->
+      <header class="biz-hero">
+        <div class="hero-top">
+          <div class="hero-avatar">{(name.charAt(0) || 'B').toUpperCase()}</div>
+          <div class="hero-info">
+            <h1>{name}</h1>
+            <div class="hero-sub">
+              {biz.subCategory && <span>{biz.subCategory}</span>}
+              {biz.subCategory && biz.location && <span class="dot">·</span>}
+              {biz.location && <span>{biz.location}</span>}
+            </div>
+            <div class="hero-badges">
+              {tierLabel && (
+                <span class={`badge ${tierClass}`}>
+                  <i class={`fa-solid ${tierIcon}`}></i>
+                  {tierLabel}
+                </span>
+              )}
+              {rating > 0 && (
+                <span class="badge badge-rating">
+                  <i class="fa-solid fa-star"></i>
+                  {rating.toFixed(1)}
+                  {reviews > 0 && <span class="rating-count">({reviews})</span>}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          {phone && (
+            <a href={'tel:' + phone} class="act act-primary">
+              <i class="fa-solid fa-phone"></i>
+              <span>Call Now</span>
+            </a>
           )}
-          {tier === 'featured' && (
-            <span class="badge badge-featured"><i class="fa-solid fa-star"></i> Featured</span>
+          {waPhone && (
+            <a href={'https://wa.me/91' + waPhone} target="_blank" rel="noopener" class="act act-wa">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>WhatsApp</span>
+            </a>
           )}
-          {(tier === 'premium' || tier === 'premium_pro') && (
-            <span class="badge badge-premium"><i class="fa-solid fa-crown"></i> {tier === 'premium_pro' ? 'Premium Pro' : 'Premium'}</span>
+          {biz.googleMap && biz.googleMap !== '-' && (
+            <a href={biz.googleMap} target="_blank" rel="noopener" class="act act-neutral">
+              <i class="fa-solid fa-map-location-dot"></i>
+              <span>Directions</span>
+            </a>
+          )}
+          {biz.website && biz.website !== '-' && (
+            <a href={biz.website} target="_blank" rel="noopener" class="act act-neutral">
+              <i class="fa-solid fa-globe"></i>
+              <span>Website</span>
+            </a>
           )}
         </div>
-        {rating > 0 && (
-          <div class="biz-rating">
-            <i class="fa-solid fa-star"></i>
-            <strong>{rating.toFixed(1)}</strong>
-            {reviews > 0 && <span>({reviews} reviews)</span>}
-          </div>
-        )}
-      </div>
-    </header>
+      </header>
 
-    <div class="biz-actions">
-      {phone && <a href={'tel:' + phone} class="btn btn-call"><i class="fa-solid fa-phone"></i> Call {phone}</a>}
-      {waPhone && <a href={'https://wa.me/91' + waPhone} target="_blank" rel="noopener" class="btn btn-wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>}
-      {biz.googleMap && <a href={biz.googleMap} target="_blank" rel="noopener" class="btn btn-map"><i class="fa-solid fa-map-location-dot"></i> Directions</a>}
-      {biz.website && <a href={biz.website} target="_blank" rel="noopener" class="btn btn-web"><i class="fa-solid fa-globe"></i> Website</a>}
+      <!-- ═══ ABOUT ═══ -->
+      {biz.description && (
+        <section class="card">
+          <h2 class="card-title">About</h2>
+          <p class="about-text">{biz.description}</p>
+        </section>
+      )}
+
+      <!-- ═══ CONTACT & INFO ═══ -->
+      <section class="card">
+        <h2 class="card-title">Contact & Info</h2>
+        <div class="info-list">
+          {biz.address && biz.address !== '-' && (
+            <div class="info-item">
+              <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+              <div class="info-body">
+                <div class="info-label">Address</div>
+                <div class="info-value">{biz.address}</div>
+              </div>
+            </div>
+          )}
+          {biz.timing && (
+            <div class="info-item">
+              <div class="info-icon"><i class="fa-regular fa-clock"></i></div>
+              <div class="info-body">
+                <div class="info-label">Hours</div>
+                <div class="info-value">{biz.timing}</div>
+              </div>
+            </div>
+          )}
+          {phone && (
+            <div class="info-item">
+              <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+              <div class="info-body">
+                <div class="info-label">Phone</div>
+                <a class="info-value link" href={'tel:' + phone}>{biz.phone}</a>
+              </div>
+            </div>
+          )}
+          {biz.email && biz.email !== '-' && (
+            <div class="info-item">
+              <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+              <div class="info-body">
+                <div class="info-label">Email</div>
+                <a class="info-value link" href={'mailto:' + biz.email}>{biz.email}</a>
+              </div>
+            </div>
+          )}
+          {biz.website && biz.website !== '-' && (
+            <div class="info-item">
+              <div class="info-icon"><i class="fa-solid fa-globe"></i></div>
+              <div class="info-body">
+                <div class="info-label">Website</div>
+                <a class="info-value link" href={biz.website} target="_blank" rel="noopener">{biz.website}</a>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <!-- ═══ DEAL ═══ -->
+      {biz.deals && biz.deals !== '-' && (
+        <section class="deal-card">
+          <div class="deal-icon"><i class="fa-solid fa-gift"></i></div>
+          <div class="deal-content">
+            <div class="deal-tag">Special Offer</div>
+            <div class="deal-text">{biz.deals}</div>
+            {biz.dealCode && biz.dealCode !== '-' && (
+              <div class="deal-code">
+                <span class="code-label">CODE</span>
+                <span class="code-value">{biz.dealCode}</span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <!-- ═══ CLAIM / VERIFIED ═══ -->
+      {!isVerified && (
+        <section class="claim-card">
+          <div class="claim-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="claim-body">
+            <h3>Is this your business?</h3>
+            <p>Claim this listing for free to add photos, update timings, and get a verified badge.</p>
+          </div>
+          <a href={'/claim/' + biz.businessId + '/'} class="claim-btn">
+            Claim Free <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </section>
+      )}
+
+      {isVerified && (
+        <section class="verified-card">
+          <div class="verified-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="verified-body">
+            <h3>Verified Business</h3>
+            <p>This listing has been verified by PCMC Diary. <a href={'/claim/' + biz.businessId + '/'}>Manage this listing</a></p>
+          </div>
+        </section>
+      )}
+
     </div>
-
-    <section class="biz-info">
-      <h2>About</h2>
-      {biz.description && <p>{biz.description}</p>}
-
-      <div class="info-grid">
-        {biz.address && (
-          <div class="info-row">
-            <i class="fa-solid fa-location-dot"></i>
-            <span>{biz.address}</span>
-          </div>
-        )}
-        {biz.timing && (
-          <div class="info-row">
-            <i class="fa-regular fa-clock"></i>
-            <span>{biz.timing}</span>
-          </div>
-        )}
-        {biz.email && (
-          <div class="info-row">
-            <i class="fa-solid fa-envelope"></i>
-            <a href={'mailto:' + biz.email}>{biz.email}</a>
-          </div>
-        )}
-      </div>
-    </section>
-
-    {biz.deals && (
-      <section class="biz-deal">
-        <i class="fa-solid fa-gift"></i>
-        <div>
-          <strong>Special Offer</strong>
-          <p>{biz.deals}</p>
-          {biz.dealCode && <code>Use code: {biz.dealCode}</code>}
-        </div>
-      </section>
-    )}
-
-    {!isVerified && (
-      <section class="biz-claim">
-        <h2>Is this your business?</h2>
-        <p>Claim this listing for free to add photos, update timings, and get a verified badge.</p>
-        <a href={'/claim/' + biz.businessId + '/'} class="btn btn-claim">
-          <i class="fa-solid fa-circle-check"></i> Claim this business — Free
-        </a>
-      </section>
-    )}
-
-    {isVerified && (
-      <section class="biz-verified-note">
-        <i class="fa-solid fa-circle-check"></i>
-        <div>
-          <strong>Verified Business</strong>
-          <p>This listing has been verified by PCMC Diary. Own this business? <a href={'/claim/' + biz.businessId + '/'}>Manage this listing</a></p>
-        </div>
-      </section>
-    )}
-
   </div>
-</div>
-
-<style>
-.biz-page { padding: 24px 16px 60px; background: #f8fafc; min-height: 100vh; }
-.biz-container { max-width: 900px; margin: 0 auto; }
-.breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 24px; color: #64748b; }
-.breadcrumb a { color: #64748b; text-decoration: none; }
-.breadcrumb a:hover { color: #dc2626; }
-.breadcrumb .sep { font-size: 9px; color: #cbd5e1; }
-
-.biz-header { display: flex; gap: 20px; align-items: flex-start; background: #fff; padding: 28px; border-radius: 16px; border: 1px solid #e8ecf1; margin-bottom: 20px; }
-.biz-avatar { width: 72px; height: 72px; border-radius: 16px; background: linear-gradient(135deg, #dc2626, #991b1b); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 32px; font-weight: 800; flex-shrink: 0; }
-.biz-head-text { flex: 1; }
-.biz-head-text h1 { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px; line-height: 1.2; }
-.biz-sub { color: #64748b; font-size: 14px; margin: 0 0 10px; }
-.biz-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-.badge i { font-size: 10px; }
-.badge-verified { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; border: 1px solid #6ee7b7; }
-.badge-featured { background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #78350f; }
-.badge-premium { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #854d0e; border: 1px solid #fcd34d; }
-.biz-rating { display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 5px 10px; border-radius: 8px; font-size: 13px; }
-.biz-rating i { color: #f59e0b; }
-
-.biz-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-.biz-actions .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; text-decoration: none; transition: all 0.2s; }
-.btn-call { background: linear-gradient(135deg, #dc2626, #b91c1c); color: #fff; }
-.btn-wa { background: linear-gradient(135deg, #25d366, #15803d); color: #fff; }
-.btn-map { background: #fff; color: #1e293b; border: 1px solid #e2e8f0; }
-.btn-web { background: #fff; color: #1e293b; border: 1px solid #e2e8f0; }
-.biz-actions .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(0,0,0,0.25); }
-
-.biz-info { background: #fff; padding: 28px; border-radius: 16px; border: 1px solid #e8ecf1; margin-bottom: 20px; }
-.biz-info h2 { font-size: 18px; font-weight: 800; margin: 0 0 14px; color: #0f172a; }
-.biz-info p { color: #334155; line-height: 1.6; margin-bottom: 16px; }
-.info-grid { display: flex; flex-direction: column; gap: 12px; }
-.info-row { display: flex; align-items: flex-start; gap: 12px; color: #475569; font-size: 14px; }
-.info-row i { color: #dc2626; margin-top: 3px; }
-.info-row a { color: #2563eb; text-decoration: none; }
-
-.biz-deal { display: flex; gap: 16px; align-items: flex-start; background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fde68a; padding: 20px 24px; border-radius: 16px; margin-bottom: 20px; }
-.biz-deal i { font-size: 24px; color: #d97706; }
-.biz-deal strong { display: block; color: #78350f; margin-bottom: 4px; }
-.biz-deal p { color: #78350f; margin: 0 0 6px; }
-.biz-deal code { background: #fff; padding: 3px 8px; border-radius: 6px; color: #92400e; font-size: 13px; }
-
-.biz-claim { background: #fff; padding: 28px; border-radius: 16px; border: 1px solid #e8ecf1; text-align: center; }
-.biz-claim h2 { font-size: 18px; font-weight: 800; margin: 0 0 8px; }
-.biz-claim p { color: #64748b; margin-bottom: 18px; font-size: 14px; }
-.btn-claim { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #059669, #047857); color: #fff; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; }
-
-.biz-verified-note { display: flex; gap: 16px; align-items: flex-start; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #bbf7d0; padding: 20px 24px; border-radius: 16px; }
-.biz-verified-note > i { font-size: 24px; color: #059669; }
-.biz-verified-note strong { display: block; color: #065f46; margin-bottom: 4px; }
-.biz-verified-note p { color: #065f46; margin: 0; font-size: 13.5px; }
-.biz-verified-note a { color: #047857; font-weight: 700; }
-
-@media (max-width: 640px) {
-  .biz-header { flex-direction: column; padding: 20px; }
-  .biz-head-text h1 { font-size: 20px; }
-  .biz-avatar { width: 56px; height: 56px; font-size: 24px; }
-}
-</style>
 
 </BaseLayout>
+
+<style is:global>
+.biz-page { background: #f8fafc; min-height: 100vh; padding: 24px 16px 80px; }
+.biz-container { max-width: 900px; margin: 0 auto; }
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  font-size: 13px; color: #64748b; margin-bottom: 24px;
+}
+.breadcrumb a { color: #64748b; text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: #dc2626; }
+.breadcrumb .sep { font-size: 9px; color: #cbd5e1; }
+.breadcrumb span { color: #0f172a; font-weight: 700; }
+
+/* HERO CARD */
+.biz-hero {
+  background: #fff;
+  border: 1px solid #e8ecf1;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.08);
+}
+.hero-top {
+  display: flex; align-items: flex-start; gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 24px;
+}
+.hero-avatar {
+  width: 80px; height: 80px; border-radius: 18px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 36px; font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: 0 12px 24px -10px rgba(220,38,38,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+  letter-spacing: -1px;
+}
+.hero-info { flex: 1; min-width: 0; }
+.hero-info h1 {
+  font-size: 30px; font-weight: 800; color: #0f172a;
+  letter-spacing: -0.8px; line-height: 1.15;
+  margin: 0 0 10px;
+}
+.hero-sub {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 14.5px; color: #64748b; font-weight: 500;
+  margin-bottom: 16px;
+}
+.hero-sub .dot { color: #cbd5e1; }
+
+.hero-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 8px;
+  font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  line-height: 1;
+}
+.badge i { font-size: 11px; }
+.tier-featured { background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #78350f; }
+.tier-premium { background: linear-gradient(135deg, #f3e8ff, #c084fc); color: #581c87; }
+.tier-verified { background: linear-gradient(135deg, #d1fae5, #6ee7b7); color: #065f46; }
+.badge-rating { background: #fef3c7; color: #92400e; padding: 6px 12px; }
+.badge-rating i { color: #f59e0b; }
+.rating-count { font-weight: 700; color: #a16207; margin-left: 1px; }
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.act {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 13px 22px; border-radius: 12px;
+  font-size: 14px; font-weight: 700;
+  text-decoration: none; transition: all 0.2s;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+.act i { font-size: 13px; }
+.act-primary {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #fff;
+  box-shadow: 0 10px 20px -8px rgba(220,38,38,0.5);
+}
+.act-primary:hover { transform: translateY(-1px); text-decoration: none; box-shadow: 0 14px 28px -8px rgba(220,38,38,0.6); }
+.act-wa {
+  background: linear-gradient(135deg, #25d366, #15803d);
+  color: #fff;
+  box-shadow: 0 10px 20px -8px rgba(37,211,102,0.5);
+}
+.act-wa:hover { transform: translateY(-1px); text-decoration: none; box-shadow: 0 14px 28px -8px rgba(37,211,102,0.6); }
+.act-neutral { background: #fff; color: #334155; border-color: #e2e8f0; }
+.act-neutral:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); text-decoration: none; }
+
+/* CARDS */
+.card {
+  background: #fff; border: 1px solid #e8ecf1;
+  border-radius: 20px; padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+}
+.card-title {
+  font-size: 18px; font-weight: 800; color: #0f172a;
+  margin: 0 0 20px; letter-spacing: -0.3px;
+  display: flex; align-items: center; gap: 12px;
+}
+.card-title::before {
+  content: ''; width: 4px; height: 20px;
+  background: linear-gradient(180deg, #dc2626, #991b1b);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.about-text {
+  font-size: 15px; color: #334155; line-height: 1.7; margin: 0;
+}
+
+/* INFO LIST */
+.info-list { display: flex; flex-direction: column; }
+.info-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.info-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.info-item:first-child { padding-top: 0; }
+.info-icon {
+  width: 42px; height: 42px; border-radius: 11px;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  color: #dc2626;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.info-body { flex: 1; min-width: 0; padding-top: 2px; }
+.info-label {
+  font-size: 10.5px; font-weight: 800; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 5px;
+}
+.info-value {
+  font-size: 14.5px; font-weight: 600; color: #0f172a;
+  line-height: 1.5; word-break: break-word;
+}
+.info-value.link { color: #2563eb; text-decoration: none; }
+.info-value.link:hover { text-decoration: underline; }
+
+/* DEAL CARD */
+.deal-card {
+  display: flex; gap: 18px; align-items: flex-start;
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1.5px solid #fde68a;
+  border-radius: 20px; padding: 24px;
+  margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.deal-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+}
+.deal-icon {
+  width: 50px; height: 50px; border-radius: 13px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 8px 16px -6px rgba(217,119,6,0.5);
+}
+.deal-content { flex: 1; min-width: 0; }
+.deal-tag {
+  font-size: 10.5px; font-weight: 800; color: #b45309;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 6px;
+}
+.deal-text {
+  font-size: 16px; font-weight: 700; color: #78350f;
+  line-height: 1.4; margin-bottom: 12px;
+}
+.deal-code {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 14px;
+  background: #fff; border: 1.5px dashed #d97706;
+  border-radius: 10px;
+}
+.code-label { font-size: 9px; font-weight: 800; color: #94a3b8; letter-spacing: 1px; }
+.code-value { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; }
+
+/* CLAIM / VERIFIED */
+.claim-card {
+  display: flex; align-items: center; gap: 20px;
+  background: #fff; border: 1px solid #e8ecf1;
+  border-radius: 20px; padding: 24px 28px;
+  margin-bottom: 20px;
+}
+.claim-icon {
+  width: 50px; height: 50px; border-radius: 13px;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  color: #dc2626; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.claim-body { flex: 1; min-width: 0; }
+.claim-body h3 { font-size: 16px; font-weight: 800; color: #0f172a; margin: 0 0 4px; letter-spacing: -0.2px; }
+.claim-body p { font-size: 13.5px; color: #64748b; margin: 0; line-height: 1.5; }
+.claim-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px; border-radius: 12px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #fff; font-size: 13.5px; font-weight: 800;
+  text-decoration: none; transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 10px 20px -8px rgba(220,38,38,0.5);
+}
+.claim-btn:hover { transform: translateY(-1px); text-decoration: none; box-shadow: 0 14px 28px -8px rgba(220,38,38,0.6); }
+.claim-btn i { font-size: 11px; }
+
+.verified-card {
+  display: flex; align-items: center; gap: 20px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #bbf7d0;
+  border-radius: 20px; padding: 24px 28px;
+  margin-bottom: 20px;
+}
+.verified-icon {
+  width: 50px; height: 50px; border-radius: 13px;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 8px 16px -6px rgba(5,150,105,0.5);
+}
+.verified-body { flex: 1; min-width: 0; }
+.verified-body h3 { font-size: 16px; font-weight: 800; color: #065f46; margin: 0 0 4px; letter-spacing: -0.2px; }
+.verified-body p { font-size: 13.5px; color: #065f46; margin: 0; line-height: 1.5; }
+.verified-body a { color: #047857; font-weight: 800; text-decoration: underline; }
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .biz-page { padding: 16px 12px 60px; }
+  .breadcrumb { font-size: 12px; margin-bottom: 16px; }
+
+  .biz-hero { padding: 22px 20px; border-radius: 16px; }
+  .hero-top { flex-direction: column; gap: 16px; padding-bottom: 20px; margin-bottom: 20px; }
+  .hero-avatar { width: 64px; height: 64px; font-size: 28px; border-radius: 14px; }
+  .hero-info h1 { font-size: 22px; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .hero-sub { font-size: 13px; margin-bottom: 12px; }
+  .hero-badges { gap: 6px; }
+  .badge { font-size: 10px; padding: 5px 10px; }
+  .hero-actions { gap: 8px; }
+  .act { padding: 11px 16px; font-size: 13px; gap: 7px; flex: 1; justify-content: center; min-width: calc(50% - 4px); }
+  .act i { font-size: 12px; }
+
+  .card { padding: 22px 20px; border-radius: 16px; margin-bottom: 14px; }
+  .card-title { font-size: 16px; margin-bottom: 16px; }
+  .about-text { font-size: 14px; }
+
+  .info-item { gap: 12px; padding: 14px 0; }
+  .info-icon { width: 38px; height: 38px; border-radius: 10px; font-size: 14px; }
+  .info-label { font-size: 10px; margin-bottom: 4px; }
+  .info-value { font-size: 13.5px; }
+
+  .deal-card { padding: 20px; gap: 14px; border-radius: 16px; }
+  .deal-icon { width: 44px; height: 44px; font-size: 18px; border-radius: 12px; }
+  .deal-text { font-size: 14.5px; margin-bottom: 10px; }
+
+  .claim-card, .verified-card { padding: 20px; gap: 14px; flex-wrap: wrap; border-radius: 16px; }
+  .claim-icon, .verified-icon { width: 44px; height: 44px; font-size: 18px; border-radius: 12px; }
+  .claim-btn { width: 100%; justify-content: center; margin-top: 4px; }
+  .claim-body h3, .verified-body h3 { font-size: 15px; }
+  .claim-body p, .verified-body p { font-size: 12.5px; }
+}
+</style>
