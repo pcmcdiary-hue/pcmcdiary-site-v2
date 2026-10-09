@@ -29,11 +29,10 @@ const plans = [
     name: 'Starter',
     price: 499,
     period: 'per year',
-    tagline: 'Most popular for growing shops',
-    badge: 'MOST POPULAR',
+    tagline: 'Perfect for growing shops',
+    badge: null,
     color: '#b45309',
     gradient: 'linear-gradient(135deg,#fbbf24,#b45309)',
-    featured: true,
     features: [
       { label: 'Everything in Free', included: true },
       { label: 'All 33 locations', included: true },
@@ -78,9 +77,10 @@ const plans = [
     price: 4999,
     period: 'one-time + 1+2 yr membership',
     tagline: 'Digital Booster + website & profile',
-    badge: 'BEST VALUE',
+    badge: 'MOST POPULAR',
     color: '#d97706',
     gradient: 'linear-gradient(135deg,#fbbf24,#d97706)',
+    featured: true,
     features: [
       { label: 'Everything in Standard', included: true },
       { label: 'Company Website', included: true },
@@ -257,9 +257,9 @@ const faqs = [
               <tr>
                 <th class="cmp-feature">Feature</th>
                 <th>Free</th>
-                <th class="cmp-popular">Starter<br><span>₹499</span></th>
+                <th>Starter<br><span>₹499</span></th>
                 <th>Standard<br><span>₹3,999</span></th>
-                <th>Gold<br><span>₹4,999</span></th>
+                <th class="cmp-popular">Gold<br><span>₹4,999</span></th>
                 <th>Diamond<br><span>₹9,999</span></th>
               </tr>
             </thead>
@@ -268,9 +268,9 @@ const faqs = [
                 <tr>
                   <td class="cmp-feature">{row.feature}</td>
                   <td>{row.free}</td>
-                  <td class="cmp-popular">{row.starter}</td>
+                  <td>{row.starter}</td>
                   <td>{row.standard}</td>
-                  <td>{row.gold}</td>
+                  <td class="cmp-popular">{row.gold}</td>
                   <td>{row.diamond}</td>
                 </tr>
               ))}
