@@ -25,52 +25,8 @@ const plans = [
     ctaHref: '/register',
   },
   {
-    id: 'vb',
-    name: 'Verified Basic',
-    price: 99,
-    period: 'per year',
-    tagline: 'Trust badge + more reach',
-    badge: null,
-    color: '#059669',
-    gradient: 'linear-gradient(135deg,#34d399,#059669)',
-    features: [
-      { label: 'Everything in Free', included: true },
-      { label: 'Verified badge', included: true },
-      { label: 'Visibility in 3 areas', included: true },
-      { label: 'Call button', included: true },
-      { label: 'Customer rating display', included: true },
-      { label: 'WhatsApp button', included: false },
-      { label: 'Dedicated Webpage', included: false },
-      { label: 'Coupon / deal badge', included: false },
-    ],
-    cta: 'Choose Verified Basic',
-    ctaHref: '/register?plan=vb',
-  },
-  {
-    id: 'vp',
-    name: 'Verified Pro',
-    price: 199,
-    period: 'per year',
-    tagline: 'Full PCMC coverage',
-    badge: null,
-    color: '#0891b2',
-    gradient: 'linear-gradient(135deg,#22d3ee,#0891b2)',
-    features: [
-      { label: 'Everything in Verified Basic', included: true },
-      { label: 'All 33 locations', included: true },
-      { label: 'Top 20 position', included: true },
-      { label: 'Review count display', included: true },
-      { label: 'Call button', included: true },
-      { label: 'WhatsApp button', included: false },
-      { label: 'Dedicated Webpage', included: false },
-      { label: 'Coupon / deal badge', included: false },
-    ],
-    cta: 'Choose Verified Pro',
-    ctaHref: '/register?plan=vp',
-  },
-  {
-    id: 'premium',
-    name: 'Premium',
+    id: 'starter',
+    name: 'Starter',
     price: 499,
     period: 'per year',
     tagline: 'Most popular for growing shops',
@@ -79,7 +35,7 @@ const plans = [
     gradient: 'linear-gradient(135deg,#fbbf24,#b45309)',
     featured: true,
     features: [
-      { label: 'Everything in Verified Pro', included: true },
+      { label: 'Everything in Free', included: true },
       { label: 'All 33 locations', included: true },
       { label: 'Top 10 position', included: true },
       { label: 'WhatsApp button', included: true },
@@ -88,8 +44,8 @@ const plans = [
       { label: 'Timing display', included: true },
       { label: 'Priority support', included: false },
     ],
-    cta: 'Choose Premium',
-    ctaHref: '/register?plan=premium',
+    cta: 'Choose Starter',
+    ctaHref: '/register?plan=starter',
   },
   {
     id: 'premium_pro',
@@ -101,7 +57,7 @@ const plans = [
     color: '#7c3aed',
     gradient: 'linear-gradient(135deg,#a78bfa,#7c3aed)',
     features: [
-      { label: 'Everything in Premium', included: true },
+      { label: 'Everything in Starter', included: true },
       { label: 'All 33 locations', included: true },
       { label: 'Top 5 position', included: true },
       { label: 'Email button', included: true },
@@ -140,33 +96,33 @@ const plans = [
 ];
 
 const comparison = [
-  { feature: 'Badge', free: '—', vb: '✓ Verified', vp: '✓ Verified', premium: '👑 + ✓', prem_pro: '👑 + ✓', featured: '⭐ + ✓' },
-  { feature: 'Locations', free: '1', vb: '3', vp: '33', premium: '33', prem_pro: '33', featured: '33' },
-  { feature: 'Position', free: 'Bottom', vb: 'Rotation', vp: 'Top 20', premium: 'Top 10', prem_pro: 'Top 5', featured: 'Top 3' },
-  { feature: 'Rating display', free: '✓', vb: '✓', vp: '✓', premium: '✓', prem_pro: '✓', featured: '✓' },
-  { feature: 'Review count', free: '—', vb: '—', vp: '✓', premium: '✓', prem_pro: '✓', featured: '✓' },
-  { feature: 'Call button', free: '✓', vb: '✓', vp: '✓', premium: '✓', prem_pro: '✓', featured: '✓' },
-  { feature: 'WhatsApp button', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
-  { feature: 'Dedicated Webpage', free: '—', vb: '—', vp: '—', premium: '—', prem_pro: '✓', featured: '✓' },
-  { feature: 'Google Maps link', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
-  { feature: 'Coupon / deal', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
-  { feature: 'Timing info', free: '—', vb: '—', vp: '—', premium: '✓', prem_pro: '✓', featured: '✓' },
-  { feature: 'Email button', free: '—', vb: '—', vp: '—', premium: '—', prem_pro: '✓', featured: '✓' },
-  { feature: 'Social links', free: '—', vb: '—', vp: '—', premium: '—', prem_pro: '✓', featured: '✓' },
-  { feature: 'Priority support', free: '—', vb: '—', vp: '—', premium: '—', prem_pro: '✓', featured: '✓' },
+  { feature: 'Badge', free: '—', starter: '👑 + ✓', prem_pro: '👑 + ✓', featured: '⭐ + ✓' },
+  { feature: 'Locations', free: '1', starter: '33', prem_pro: '33', featured: '33' },
+  { feature: 'Position', free: 'Bottom', starter: 'Top 10', prem_pro: 'Top 5', featured: 'Top 3' },
+  { feature: 'Rating display', free: '✓', starter: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Review count', free: '—', starter: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Call button', free: '✓', starter: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'WhatsApp button', free: '—', starter: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Dedicated Webpage', free: '—', starter: '—', prem_pro: '✓', featured: '✓' },
+  { feature: 'Google Maps link', free: '—', starter: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Coupon / deal', free: '—', starter: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Timing info', free: '—', starter: '✓', prem_pro: '✓', featured: '✓' },
+  { feature: 'Email button', free: '—', starter: '—', prem_pro: '✓', featured: '✓' },
+  { feature: 'Social links', free: '—', starter: '—', prem_pro: '✓', featured: '✓' },
+  { feature: 'Priority support', free: '—', starter: '—', prem_pro: '✓', featured: '✓' },
 ];
 
 const faqs = [
   { q: 'How do I pay?', a: 'After registering, you will be redirected to our secure payment page. You can pay via UPI, QR code, or bank transfer.' },
   { q: 'Can I upgrade later?', a: 'Yes, you can upgrade your plan anytime. The remaining amount from your current plan will be adjusted.' },
-  { q: 'What if I have multiple locations?', a: 'Choose Verified Pro, Premium, or Premium Pro — all three cover all 33 locations of PCMC automatically.' },
+  { q: 'What if I have multiple locations?', a: 'Choose Starter or Premium Pro — both cover all 33 locations of PCMC automatically.' },
   { q: 'Is there a refund policy?', a: 'Yes, refunds are available within 7 days if your listing has not gone live. See our Refund Policy for details.' },
   { q: 'Do paid plans guarantee sales?', a: 'No. Paid plans increase visibility and features, but actual sales depend on your business, pricing, and service.' },
   { q: 'Can I add my own images?', a: 'Image support is coming soon. Currently, listings use auto-generated avatar icons based on your business name.' },
 ];
 ---
 
-<BaseLayout title="Pricing & Plans" description="Choose the right plan for your business on PCMC Diary. Free, Verified, Premium & Premium Pro options.">
+<BaseLayout title="Pricing & Plans" description="Choose the right plan for your business on PCMC Diary. Free, Starter, Premium Pro & Featured options.">
 
   <div class="pl-page">
 
@@ -209,9 +165,7 @@ const faqs = [
                 <div class="plan-av" style={`background:${plan.gradient}`}>
                   <i class={`fa-solid ${
                     plan.id === 'free' ? 'fa-seedling' :
-                    plan.id === 'vb' ? 'fa-circle-check' :
-                    plan.id === 'vp' ? 'fa-shield-halved' :
-                    plan.id === 'premium' ? 'fa-crown' :
+                    plan.id === 'starter' ? 'fa-rocket' :
                     plan.id === 'premium_pro' ? 'fa-gem' :
                     'fa-star'
                   }`}></i>
@@ -272,9 +226,7 @@ const faqs = [
               <tr>
                 <th class="cmp-feature">Feature</th>
                 <th>Free</th>
-                <th>VB<br><span>₹99</span></th>
-                <th>VP<br><span>₹199</span></th>
-                <th class="cmp-popular">Premium<br><span>₹499</span></th>
+                <th class="cmp-popular">Starter<br><span>₹499</span></th>
                 <th>Prem Pro<br><span>₹999</span></th>
                 <th>Featured<br><span>₹2,999</span></th>
               </tr>
@@ -284,9 +236,7 @@ const faqs = [
                 <tr>
                   <td class="cmp-feature">{row.feature}</td>
                   <td>{row.free}</td>
-                  <td>{row.vb}</td>
-                  <td>{row.vp}</td>
-                  <td class="cmp-popular">{row.premium}</td>
+                  <td class="cmp-popular">{row.starter}</td>
                   <td>{row.prem_pro}</td>
                   <td>{row.featured}</td>
                 </tr>
@@ -417,7 +367,7 @@ const faqs = [
 
 .plans-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   align-items: stretch;
 }
@@ -665,7 +615,7 @@ const faqs = [
 }
 .compare-table {
   width: 100%;
-  min-width: 780px;
+  min-width: 560px;
   border-collapse: collapse;
   font-size: 13px;
 }
