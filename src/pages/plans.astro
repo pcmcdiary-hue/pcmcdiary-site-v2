@@ -9,20 +9,11 @@ const plans = [
     period: 'forever',
     tagline: 'Get listed, get found',
     badge: null,
-    color: '#64748b',
     gradient: 'linear-gradient(135deg,#94a3b8,#64748b)',
     features: [
-      { label: 'Basic business listing', included: true },
-      { label: '1 location visibility', included: true },
-      { label: 'Call button', included: true },
-      { label: 'Customer rating display', included: true },
-      { label: 'Review count display', included: false },
-      { label: 'Verified badge', included: false },
-      { label: 'WhatsApp button', included: false },
-      { label: 'Google Maps link', included: false },
-      { label: 'Coupon / deal badge', included: false },
-      { label: 'Timing display', included: false },
-      { label: 'Dedicated Webpage', included: false },
+      'Basic business listing',
+      '1 location visibility',
+      'Call button',
     ],
     cta: 'Start Free',
     ctaHref: '/register',
@@ -35,23 +26,21 @@ const plans = [
     priceNote: 'Just ₹83 / month',
     tagline: 'Perfect for growing shops',
     badge: 'FOUNDING OFFER',
-    color: '#b45309',
     gradient: 'linear-gradient(135deg,#fbbf24,#b45309)',
     features: [
-      { label: 'Everything in Free', included: true },
-      { label: 'All 33 locations', included: true },
-      { label: 'Top 10 position', included: true },
-      { label: 'Verified badge', included: true },
-      { label: 'Review count display', included: true },
-      { label: 'WhatsApp button', included: true },
-      { label: 'Google Maps link', included: true },
-      { label: 'Coupon / deal badge', included: true },
-      { label: 'Timing display', included: true },
-      { label: 'Customer Engagement Pack — Web App', included: true, highlight: true },
-      { label: 'Easy Invoice Generator — Web App', included: true, highlight: true },
-      { label: 'Apps worth ₹6,500 — FREE', included: true, highlight: true, value: true },
-      { label: 'Dedicated Webpage', included: false },
-      { label: 'Company Website', included: false },
+      'Everything in Free',
+      'All 33 locations',
+      'Top 10 position',
+      'Verified badge',
+      'Customer rating display',
+      'Review count display',
+      'WhatsApp button',
+      'Google Maps link',
+      'Coupon / deal badge',
+      'Timing display',
+      { label: 'Customer Engagement Pack — Web App', highlight: true },
+      { label: 'Easy Invoice Generator — Web App', highlight: true },
+      { label: 'Apps worth ₹6,500 — FREE', value: true },
     ],
     cta: 'Choose Starter',
     ctaHref: '/register?plan=starter',
@@ -63,19 +52,16 @@ const plans = [
     period: 'one-time + 1+1 yr membership',
     tagline: 'Digital Booster — social setup & content',
     badge: null,
-    color: '#0891b2',
     gradient: 'linear-gradient(135deg,#22d3ee,#0891b2)',
     features: [
-      { label: 'Everything in Starter', included: true },
-      { label: 'Facebook Page Setup', included: true },
-      { label: 'Instagram Account Creation', included: true },
-      { label: 'YouTube Channel Creation', included: true },
-      { label: 'Pinterest Account Setup', included: true },
-      { label: '7 Creative Posts', included: true },
-      { label: '2 Promotional Videos', included: true },
-      { label: 'Premium Membership — 1 + 1 Year', included: true },
-      { label: 'Dedicated Webpage', included: false },
-      { label: 'Company Website', included: false },
+      'Everything in Starter',
+      'Facebook Page Setup',
+      'Instagram Account Creation',
+      'YouTube Channel Creation',
+      'Pinterest Account Setup',
+      '7 Creative Posts',
+      '2 Promotional Videos',
+      'Premium Membership — 1 + 1 Year',
     ],
     cta: 'Choose Standard',
     ctaHref: '/register?plan=standard',
@@ -87,18 +73,15 @@ const plans = [
     period: 'one-time + 1+2 yr membership',
     tagline: 'Digital Booster + website & profile',
     badge: 'MOST POPULAR',
-    color: '#d97706',
-    gradient: 'linear-gradient(135deg,#fbbf24,#d97706)',
     featured: true,
+    gradient: 'linear-gradient(135deg,#fbbf24,#d97706)',
     features: [
-      { label: 'Everything in Standard', included: true },
-      { label: 'Dedicated Webpage', included: true },
-      { label: 'Company Website', included: true },
-      { label: 'Company Profile', included: true },
-      { label: 'Attractive Company Presentation', included: true },
-      { label: 'Premium Membership — 1 + 2 Years', included: true },
-      { label: 'Company Brochure', included: false },
-      { label: '20 Posters + 10 Videos', included: false },
+      'Everything in Standard',
+      'Dedicated Webpage',
+      'Company Website',
+      'Company Profile',
+      'Attractive Company Presentation',
+      'Premium Membership — 1 + 2 Years',
     ],
     cta: 'Choose Gold',
     ctaHref: '/register?plan=gold',
@@ -110,14 +93,13 @@ const plans = [
     period: 'one-time + 1+3 yr membership',
     tagline: 'Complete business booster',
     badge: null,
-    color: '#2563eb',
     gradient: 'linear-gradient(135deg,#60a5fa,#2563eb)',
     features: [
-      { label: 'Everything in Gold', included: true },
-      { label: '20 Posters', included: true },
-      { label: '10 Videos', included: true },
-      { label: 'Company Brochure', included: true },
-      { label: 'Premium Membership — 1 + 3 Years', included: true },
+      'Everything in Gold',
+      '20 Posters',
+      '10 Videos',
+      'Company Brochure',
+      'Premium Membership — 1 + 3 Years',
     ],
     cta: 'Choose Diamond',
     ctaHref: '/register?plan=diamond',
@@ -125,37 +107,37 @@ const plans = [
 ];
 
 const comparison = [
-  { feature: 'Business listing', free: 'Basic', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Locations', free: '1', starter: '33', standard: '33', gold: '33', diamond: '33' },
-  { feature: 'Position', free: 'Bottom', starter: 'Top 10', standard: 'Top 10', gold: 'Top 10', diamond: 'Top 10' },
-  { feature: 'Verified badge', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Rating display', free: '✓', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Review count display', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Call button', free: '✓', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'WhatsApp button', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Google Maps link', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Coupon / deal badge', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Timing display', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Dedicated Webpage', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
+  { feature: 'Business listing',   free: '✓', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Locations',          free: '1', starter: '33', standard: '33', gold: '33', diamond: '33' },
+  { feature: 'Search position',    free: 'Bottom', starter: 'Top 10', standard: 'Top 10', gold: 'Top 10', diamond: 'Top 10' },
+  { feature: 'Call button',        free: '✓', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Verified badge',     free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Customer rating',    free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Review count',       free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'WhatsApp button',    free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Google Maps link',   free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Coupon / deal badge',free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Timing display',     free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
   { feature: 'Customer Engagement Pack', free: '—', starter: '✓ Web App', standard: '✓ Web App', gold: '✓ Web App', diamond: '✓ Web App' },
-  { feature: 'Easy Invoice Generator', free: '—', starter: '✓ Web App', standard: '✓ Web App', gold: '✓ Web App', diamond: '✓ Web App' },
-  { feature: 'Web Apps Value', free: '—', starter: '₹6,500 FREE', standard: '₹6,500 FREE', gold: '₹6,500 FREE', diamond: '₹6,500 FREE' },
-  { feature: 'Facebook Page Setup', free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Instagram Account', free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'YouTube Channel', free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Pinterest Setup', free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Creative Posts', free: '—', starter: '—', standard: '7', gold: '7', diamond: '20 Posters + 7 Posts' },
+  { feature: 'Easy Invoice Generator',   free: '—', starter: '✓ Web App', standard: '✓ Web App', gold: '✓ Web App', diamond: '✓ Web App' },
+  { feature: 'Web Apps value',     free: '—', starter: '₹6,500 FREE', standard: '₹6,500 FREE', gold: '₹6,500 FREE', diamond: '₹6,500 FREE' },
+  { feature: 'Dedicated Webpage',  free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
+  { feature: 'Facebook Page Setup',free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Instagram Account',  free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'YouTube Channel',    free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Pinterest Setup',    free: '—', starter: '—', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Creative Posts',     free: '—', starter: '—', standard: '7', gold: '7', diamond: '20 Posters + 7 Posts' },
   { feature: 'Promotional Videos', free: '—', starter: '—', standard: '2', gold: '2', diamond: '10' },
-  { feature: 'Company Website', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
-  { feature: 'Company Profile', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
+  { feature: 'Company Website',    free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
+  { feature: 'Company Profile',    free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
   { feature: 'Company Presentation', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
-  { feature: 'Company Brochure', free: '—', starter: '—', standard: '—', gold: '—', diamond: '✓' },
+  { feature: 'Company Brochure',   free: '—', starter: '—', standard: '—', gold: '—', diamond: '✓' },
   { feature: 'Premium Membership', free: '—', starter: '2 Years', standard: '1 + 1 Year', gold: '1 + 2 Years', diamond: '1 + 3 Years' },
 ];
 
 const faqs = [
   { q: 'How do I pay?', a: 'After registering, you will be redirected to our secure payment page. You can pay via UPI, QR code, or bank transfer.' },
-  { q: 'What is the Founding Offer on Starter?', a: 'Starter is available at ₹1,999 for 2 years as a limited founding offer for early businesses on PCMC Diary. This works out to just ₹83 per month. Once the founding slots are filled, the price will move to the regular rate.' },
+  { q: 'What is the Founding Offer on Starter?', a: 'Starter is available at ₹1,999 for 2 years as a limited founding offer for early businesses on PCMC Diary. This works out to just ₹83 per month. Once the founding slots are filled, the price moves to the regular rate.' },
   { q: 'Can I upgrade later?', a: 'Yes, you can upgrade your plan anytime. The remaining value from your current plan will be adjusted against the new plan.' },
   { q: 'What if I have multiple locations?', a: 'Choose Starter, Standard, Gold, or Diamond — all cover all 33 locations of PCMC automatically.' },
   { q: 'What are the two web apps included in Starter?', a: 'Starter includes full access to our Customer Engagement Pack and Easy Invoice Generator — both web applications worth ₹6,500, completely free with your plan.' },
@@ -197,7 +179,11 @@ const faqs = [
           {plans.map(plan => (
             <div class={`plan-card ${plan.featured ? 'plan-featured' : ''}`}>
               {plan.badge && (
-                <div class={`plan-badge ${plan.featured ? 'plan-badge-popular' : (plan.badge === 'FOUNDING OFFER' ? 'plan-badge-founding' : '')}`}>
+                <div class={`plan-badge ${
+                  plan.featured ? 'plan-badge-popular'
+                  : plan.badge === 'FOUNDING OFFER' ? 'plan-badge-founding'
+                  : ''
+                }`}>
                   {plan.badge}
                 </div>
               )}
@@ -239,12 +225,18 @@ const faqs = [
               )}
 
               <ul class="plan-features">
-                {plan.features.map(f => (
-                  <li class={`${f.included ? 'feat-in' : 'feat-out'} ${f.highlight ? 'feat-hl' : ''} ${f.value ? 'feat-value' : ''}`}>
-                    <i class={`fa-solid ${f.included ? (f.highlight ? 'fa-star' : 'fa-circle-check') : 'fa-circle-xmark'}`}></i>
-                    <span>{f.label}</span>
-                  </li>
-                ))}
+                {plan.features.map(f => {
+                  const isObj = typeof f === 'object';
+                  const label = isObj ? f.label : f;
+                  const highlight = isObj && f.highlight;
+                  const value = isObj && f.value;
+                  return (
+                    <li class={`${highlight ? 'feat-hl' : ''} ${value ? 'feat-value' : ''}`}>
+                      <i class={`fa-solid ${value ? 'fa-star' : highlight ? 'fa-star' : 'fa-circle-check'}`}></i>
+                      <span>{label}</span>
+                    </li>
+                  );
+                })}
               </ul>
 
               <a href={plan.ctaHref} class={`plan-cta ${plan.featured ? 'plan-cta-primary' : ''}`}>
@@ -504,13 +496,15 @@ const faqs = [
   font-weight: 600; line-height: 1.45;
 }
 
+/* PRICE BLOCK — consistent height across all cards */
 .plan-price {
-  padding: 20px 0 6px;
-  border-top: 1px solid #f1f5f9;
   display: flex;
   align-items: baseline;
   gap: 4px;
   flex-wrap: wrap;
+  min-height: 54px;
+  padding: 18px 0 0;
+  border-top: 1px solid #f1f5f9;
 }
 .price-free {
   font-size: 34px;
@@ -541,12 +535,15 @@ const faqs = [
   font-weight: 600;
   margin-left: auto;
   align-self: center;
+  text-align: right;
 }
+
+/* Fixed-height note slot so all cards align */
 .price-note {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin: 0 0 14px;
+  margin: 8px 0 4px;
   padding: 5px 10px;
   background: #ecfdf5;
   color: #047857;
@@ -555,13 +552,21 @@ const faqs = [
   font-size: 11.5px;
   font-weight: 800;
   letter-spacing: -0.1px;
+  min-height: 26px;
+  visibility: visible;
 }
 .price-note i { font-size: 10px; }
+
+/* Reserve the space even when a card has no note */
+.plan-card .price-note-empty {
+  margin: 8px 0 4px;
+  min-height: 26px;
+}
 
 .plan-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 22px;
+  margin: 8px 0 22px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -573,16 +578,14 @@ const faqs = [
   font-size: 13px;
   line-height: 1.5;
   font-weight: 600;
+  color: #334155;
 }
 .plan-features li i {
   font-size: 13px;
-  margin-top: 1px;
+  margin-top: 2px;
   flex-shrink: 0;
+  color: #16a34a;
 }
-.feat-in { color: #334155; }
-.feat-in i { color: #16a34a; }
-.feat-out { color: #94a3b8; }
-.feat-out i { color: #cbd5e1; }
 
 /* Highlighted feature rows (web apps) */
 .feat-hl {
@@ -591,9 +594,8 @@ const faqs = [
   border-radius: 10px;
   background: linear-gradient(90deg, #ecfeff, #f0fdfa);
   border: 1px dashed #67e8f9;
-  color: #0e7490;
 }
-.feat-hl i { color: #0891b2; }
+.feat-hl i { color: #0891b2 !important; }
 .feat-hl span { color: #0e7490; }
 
 /* Value badge row */
@@ -602,12 +604,11 @@ const faqs = [
   margin: 2px -10px 0 -8px;
   border-radius: 10px;
   background: linear-gradient(135deg, #059669, #047857);
-  color: #fff !important;
   font-weight: 800;
   letter-spacing: -0.1px;
   box-shadow: 0 8px 18px -8px rgba(5,150,105,0.7);
 }
-.feat-value i { color: #fde047; }
+.feat-value i { color: #fde047 !important; }
 .feat-value span { color: #fff; }
 
 .plan-cta {
@@ -700,7 +701,7 @@ const faqs = [
 }
 .compare-table {
   width: 100%;
-  min-width: 760px;
+  min-width: 780px;
   border-collapse: collapse;
   font-size: 13px;
 }
