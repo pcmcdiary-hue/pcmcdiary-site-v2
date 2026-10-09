@@ -179,14 +179,12 @@ const locations = [
             <textarea id="address" name="address" rows="2" placeholder="Shop / building name, street, landmark, pincode" required></textarea>
           </div>
 
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Service Area (comma separated)</label>
-              <input type="text" id="serviceArea" name="serviceArea" placeholder="Akurdi,Nigdi,Chinchwad" />
-            </div>
-            <div class="rg-field">
-              <label>Service Pincodes (comma separated)</label>
-              <input type="text" id="servicePincodes" name="servicePincodes" placeholder="411035,411044,411033" />
+          <div class="rg-field">
+            <label>Service Area (comma separated areas)</label>
+            <input type="text" id="serviceArea" name="serviceArea" placeholder="Akurdi,Nigdi,Chinchwad" />
+            <div class="rg-hint">
+              <i class="fa-solid fa-circle-info"></i>
+              Pincodes will be auto-detected from these areas.
             </div>
           </div>
 
@@ -222,17 +220,21 @@ const locations = [
           <div class="rg-row">
             <div class="rg-field">
               <label>Website (if any)</label>
-              <input type="url" id="website" name="website" placeholder="https://yourwebsite.com" />
+              <input type="text" id="website" name="website" placeholder="yourbusiness.in" />
             </div>
             <div class="rg-field">
               <label>Google Maps Link (if any)</label>
-              <input type="url" id="googleMap" name="googleMap" placeholder="https://maps.google.com/..." />
+              <input type="text" id="googleMap" name="googleMap" placeholder="maps.google.com/..." />
             </div>
           </div>
 
           <div class="rg-field">
             <label>Social Links (comma separated, prefix type: insta:, fb:, yt:)</label>
-            <input type="text" id="socialLinks" name="socialLinks" placeholder="insta:https://instagram.com/...,fb:https://facebook.com/..." />
+            <input type="text" id="socialLinks" name="socialLinks" placeholder="insta:instagram.com/yourbrand,fb:facebook.com/yourbrand" />
+            <div class="rg-hint">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              No need to type https:// — the system adds it automatically.
+            </div>
           </div>
 
           <!-- Description & tags -->
@@ -312,7 +314,115 @@ const locations = [
   </div>
 
   <script define:vars={{ locations }}>
-    // ---- Auto-fill pincode / lat / lng when location changes ----
+    // ================================================================
+    // 1. LOCATION LOOKUP (name → pincode)
+    // ================================================================
+    const locationMap = {};
+    locations.forEach(l => {
+      locationMap[l.name.toLowerCase()] = l.pincode;
+    });
+
+    function lookupPincode(name) {
+      if (!name) return '';
+      return locationMap[name.trim().toLowerCase()] || '';
+    }
+
+    // Build servicePincodes from serviceArea string
+    function detectServicePincodes(serviceArea, primaryPincode) {
+      // If service area is empty, fall back to the primary pincode
+      if (!serviceArea || !serviceArea.trim()) {
+        return primaryPincode || '';
+      }
+
+      const names = serviceArea.split(',').map(s => s.trim()).filter(Boolean);
+      const pincodes = [];
+
+      for (const name of names) {
+        const pc = lookupPincode(name);
+        if (pc && !pincodes.includes(pc)) {
+          pincodes.push(pc);
+        }
+      }
+
+      // If nothing matched (user typed unknown areas), fall back to primary
+      if (pincodes.length === 0 && primaryPincode) {
+        return primaryPincode;
+      }
+
+      return pincodes.join(',');
+    }
+
+    // ================================================================
+    // 2. URL NORMALIZATION
+    // ================================================================
+    // Adds https:// if missing, strips spaces, keeps existing http(s):// intact.
+    function normalizeUrl(val) {
+      if (!val) return '';
+      val = String(val).trim();
+      if (!val) return '';
+      // Remove accidental internal spaces
+      val = val.replace(/\s+/g, '');
+      // Already has a protocol?
+      if (!/^https?:\/\//i.test(val)) {
+        val = 'https://' + val;
+      }
+      return val;
+    }
+
+    // Normalize social links: "insta:user,fb:page" → "insta:https://instagram.com/...,fb:https://facebook.com/..."
+    // Handles: missing protocol, plain URLs without prefix, "www." prefix.
+    function normalizeSocialLinks(val) {
+      if (!val) return '';
+      const parts = String(val).split(',');
+
+      return parts
+        .map(part => {
+          part = part.trim();
+          if (!part) return '';
+
+          // If it already starts with http(s)://, treat the whole thing as a URL
+          if (/^https?:\/\//i.test(part)) {
+            return normalizeUrl(part);
+          }
+
+          // Otherwise check for "type:url" — but only if the prefix isn't a protocol
+          const idx = part.indexOf(':');
+          if (idx > 0 && idx < 20) {
+            const prefix = part.slice(0, idx).trim().toLowerCase();
+            // Skip if prefix itself looks like a protocol
+            if (['http', 'https', 'ftp', 'mailto', 'tel'].includes(prefix)) {
+              return normalizeUrl(part);
+            }
+            const url = part.slice(idx + 1).trim();
+            return prefix + ':' + normalizeUrl(url);
+          }
+
+          // No prefix — just normalize the URL
+          return normalizeUrl(part);
+        })
+        .filter(Boolean)
+        .join(',');
+    }
+
+    // ================================================================
+    // 3. BUSINESS ID GENERATOR (letters only, no & or other symbols)
+    // ================================================================
+    function makeBusinessId(cat) {
+      const catCode = (cat || 'GEN')
+        .replace(/[^A-Za-z\s]/g, ' ')   // strip &, /, -, digits
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(w => w[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 3) || 'GEN';
+      const num = String(Date.now()).slice(-4);
+      return catCode + num;
+    }
+
+    // ================================================================
+    // 4. AUTO-FILL from location select
+    // ================================================================
     const locSel   = document.getElementById('location');
     const pincodeI = document.getElementById('pincode');
     const latI     = document.getElementById('latitude');
@@ -327,17 +437,12 @@ const locations = [
       updateJson();
     });
 
-    // ---- Build JSON payload ----
+    // ================================================================
+    // 5. BUILD JSON PAYLOAD
+    // ================================================================
     const form = document.getElementById('registerForm');
     const jsonField = document.getElementById('jsonDataField');
     const jsonPreview = document.getElementById('jsonPreview');
-
-    // Generate a simple businessId from category initials + timestamp
-    function makeBusinessId(cat) {
-      const catCode = (cat || 'GEN').split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0,3);
-      const num = String(Date.now()).slice(-4);
-      return catCode + num;
-    }
 
     function buildJson() {
       const get = id => {
@@ -346,26 +451,28 @@ const locations = [
       };
 
       const cat = get('subCategory');
+      const serviceArea = get('serviceArea');
+      const primaryPincode = get('pincode');
 
       const data = {
         businessId:      makeBusinessId(cat),
         businessName:    get('businessName'),
         subCategory:     get('service') ? `${cat} / ${get('service')}` : cat,
         location:        get('location'),
-        pincode:         get('pincode'),
+        pincode:         primaryPincode,
         address:         get('address'),
         phone:           get('phone'),
         email:           get('email'),
-        website:         get('website'),
-        googleMap:       get('googleMap'),
+        website:         normalizeUrl(get('website')),
+        googleMap:       normalizeUrl(get('googleMap')),
         latitude:        get('latitude'),
         longitude:       get('longitude'),
-        serviceArea:     get('serviceArea'),
-        servicePincodes: get('servicePincodes'),
+        serviceArea:     serviceArea,
+        servicePincodes: detectServicePincodes(serviceArea, primaryPincode),
         locationCount:   get('locationCount') || '1',
         description:     get('description'),
         tier:            'free',
-        socialLinks:     get('socialLinks'),
+        socialLinks:     normalizeSocialLinks(get('socialLinks')),
         timing:          get('timing'),
         featured:        'FALSE',
         premium:         'FALSE',
@@ -545,6 +652,15 @@ const locations = [
   background-repeat: no-repeat; background-position: right 12px center;
   background-size: 18px; padding-right: 42px;
 }
+
+/* Hint text below fields */
+.rg-hint {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11.5px; color: #0891b2;
+  font-weight: 600; line-height: 1.4;
+  margin-top: -2px;
+}
+.rg-hint i { font-size: 11px; color: #0891b2; }
 
 /* TERMS */
 .rg-terms {
