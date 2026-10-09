@@ -73,48 +73,53 @@ const DATA = {
 
             <div class="plan-grid" id="planGrid">
 
-              <!-- Starter -->
-              <label class="plan-card" data-plan="starter" data-name="Starter" data-price="499" data-price-label="₹499">
-                <input type="radio" name="pcmc-plan" class="plan-radio" value="499">
+              <!-- Starter — ₹1,999 / 2 years -->
+              <label class="plan-card" data-plan="starter" data-name="Starter" data-price="1999" data-price-label="₹1,999">
+                <input type="radio" name="pcmc-plan" class="plan-radio" value="1999">
                 <span class="plan-check">✓</span>
+                <div class="plan-tag plan-tag-founding">Founding Offer</div>
                 <div class="plan-av plan-av-starter"><i class="fa-solid fa-rocket"></i></div>
                 <div class="plan-name">Starter</div>
-                <div class="plan-price">₹499</div>
-                <div class="plan-meta">per year · All 33 locations · Top 10 · 2 Web Apps FREE (worth ₹6,500)</div>
+                <div class="plan-price">₹1,999</div>
+                <div class="plan-period">for 2 years · ₹83/month</div>
+                <div class="plan-meta">All 33 locations · Top 10 · WhatsApp · Coupon · 2 Web Apps FREE (worth ₹6,500)</div>
                 <span class="plan-pick">Select this plan</span>
               </label>
 
-              <!-- Standard -->
+              <!-- Standard — ₹3,999 -->
               <label class="plan-card" data-plan="standard" data-name="Standard" data-price="3999" data-price-label="₹3,999">
                 <input type="radio" name="pcmc-plan" class="plan-radio" value="3999">
                 <span class="plan-check">✓</span>
                 <div class="plan-av plan-av-standard"><i class="fa-solid fa-bullhorn"></i></div>
                 <div class="plan-name">Standard</div>
                 <div class="plan-price">₹3,999</div>
-                <div class="plan-meta">Digital Booster · Social setup + 7 posts + 2 videos · 1+1 yr membership</div>
+                <div class="plan-period">one-time + 1+1 yr membership</div>
+                <div class="plan-meta">Everything in Starter · Social setup · 7 posts · 2 videos · 1+1 yr premium</div>
                 <span class="plan-pick">Select this plan</span>
               </label>
 
-              <!-- Gold (default + Most Popular) -->
+              <!-- Gold — ₹4,999 (default + Most Popular) -->
               <label class="plan-card is-selected" data-plan="gold" data-name="Gold" data-price="4999" data-price-label="₹4,999">
                 <input type="radio" name="pcmc-plan" class="plan-radio" value="4999" checked>
                 <span class="plan-check">✓</span>
-                <div class="plan-popular">Most Popular</div>
+                <div class="plan-tag plan-tag-popular">Most Popular</div>
                 <div class="plan-av plan-av-gold"><i class="fa-solid fa-crown"></i></div>
                 <div class="plan-name">Gold</div>
                 <div class="plan-price">₹4,999</div>
-                <div class="plan-meta">Everything in Standard + Website + Profile + Presentation · 1+2 yr membership</div>
+                <div class="plan-period">one-time + 1+2 yr membership</div>
+                <div class="plan-meta">Everything in Standard · Website · Profile · Presentation · 1+2 yr premium</div>
                 <span class="plan-pick">Selected</span>
               </label>
 
-              <!-- Diamond -->
+              <!-- Diamond — ₹9,999 -->
               <label class="plan-card" data-plan="diamond" data-name="Diamond" data-price="9999" data-price-label="₹9,999">
                 <input type="radio" name="pcmc-plan" class="plan-radio" value="9999">
                 <span class="plan-check">✓</span>
                 <div class="plan-av plan-av-diamond"><i class="fa-solid fa-gem"></i></div>
                 <div class="plan-name">Diamond</div>
                 <div class="plan-price">₹9,999</div>
-                <div class="plan-meta">Everything in Gold + 20 Posters + 10 Videos + Brochure · 1+3 yr membership</div>
+                <div class="plan-period">one-time + 1+3 yr membership</div>
+                <div class="plan-meta">Everything in Gold · 20 Posters · 10 Videos · Brochure · 1+3 yr premium</div>
                 <span class="plan-pick">Select this plan</span>
               </label>
 
@@ -233,7 +238,7 @@ const DATA = {
     if (payLabel) payLabel.textContent = 'Proceed to Secure Payment — ' + label + ' →';
     if (payBtn)   payBtn.href = paymentLink;
 
-    showToast('✓ ' + name + ' selected');
+    showToast('✓ ' + name + ' selected — ' + label);
   }
 
   cards.forEach(card => {
@@ -400,14 +405,16 @@ const DATA = {
 }
 .plan-card {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
   border: 2px solid #e2e8f0;
   border-radius: 14px;
-  padding: 22px 14px 16px;
+  padding: 26px 14px 16px;
   text-align: center;
   background: #fff;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
+  min-height: 250px;
 }
 .plan-card:hover {
   border-color: #fecaca;
@@ -438,14 +445,25 @@ const DATA = {
 }
 .plan-card.is-selected .plan-check { display: block; }
 
-.plan-popular {
+/* Top tags */
+.plan-tag {
   position: absolute; top: -10px; left: 50%;
   transform: translateX(-50%);
-  background: #b91c1c; color: #fff;
   font-size: 9px; font-weight: 800;
   text-transform: uppercase; letter-spacing: 0.08em;
   padding: 4px 12px; border-radius: 100px;
   white-space: nowrap;
+  border: 1px solid transparent;
+}
+.plan-tag-popular {
+  background: #b91c1c; color: #fff;
+  box-shadow: 0 6px 14px -6px rgba(185,28,28,0.6);
+}
+.plan-tag-founding {
+  background: linear-gradient(135deg, #d1fae5, #10b981);
+  color: #064e3b;
+  border-color: #10b981;
+  box-shadow: 0 6px 14px -6px rgba(16,185,129,0.6);
 }
 
 .plan-av {
@@ -470,9 +488,17 @@ const DATA = {
   color: #0f172a; letter-spacing: -0.02em;
   line-height: 1.1;
 }
+.plan-period {
+  font-size: 11px;
+  color: #b45309;
+  font-weight: 800;
+  margin-top: 5px;
+  letter-spacing: -0.1px;
+}
 .plan-meta {
   font-size: 11.5px; color: #64748b;
   margin-top: 8px; line-height: 1.45;
+  flex-grow: 1;
 }
 .plan-pick {
   display: inline-block; margin-top: 12px;
@@ -646,7 +672,7 @@ const DATA = {
   .payee-name { font-size: 16px; }
   .plan-section { padding: 0 14px 18px; }
   .plan-grid { grid-template-columns: 1fr; gap: 12px; }
-  .plan-card { padding: 20px 14px; }
+  .plan-card { padding: 24px 14px 16px; min-height: auto; }
   .btn-proceed { margin: 0 14px 18px; font-size: 15px; padding: 16px 20px; }
   .pay-how { margin: 0 14px 18px; padding: 18px; }
   .how-grid { grid-template-columns: 1fr; }
