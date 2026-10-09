@@ -153,5 +153,41 @@
     "deals": "Free pre-wedding shoot",
     "dealCode": "CHHAYA",
     "dealExpiry": "2026-09-30"
-  }
+  },
+
+
+
+
+
+  {
+  "businessId": "I&D0943",
+  "businessName": "Sachin Ambekar Consulting",
+  "subCategory": "IT & Digital Services / IT Services",
+  "location": "Nigdi-Pradhikaran",
+  "pincode": "411044",
+  "address": "Nigdi, Yamunanagar , Pune 411044",
+  "phone": "9284157202",
+  "email": "equimedia3@gmail.com",
+  "website": "https://www.pcmcdiary.com",
+  "googleMap": "https://googlemaps.com",
+  "latitude": "18.6162",
+  "longitude": "73.7534",
+  "serviceArea": "All PCMC",
+  "servicePincodes": "",
+  "locationCount": "ALL",
+  "description": "Digital Markeitng",
+  "tier": "free",
+  "socialLinks": "",
+  "timing": "9 to",
+  "featured": "FALSE",
+  "premium": "FALSE",
+  "verified": "FALSE",
+  "unclaimed": "FALSE",
+  "tags": "Websit Desing",
+  "rating": "0",
+  "reviews": "0",
+  "deals": "-",
+  "dealCode": "-",
+  "dealExpiry": "-"
+}
 ]
