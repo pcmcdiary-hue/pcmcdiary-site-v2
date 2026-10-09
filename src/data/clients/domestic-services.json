@@ -1,14 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const plans = [
-  { id: 'free',     name: 'Free',     price: 0,    tier: 'free',     desc: 'Basic listing · 1 location · Call button' },
-  { id: 'starter',  name: 'Starter',  price: 499,  tier: 'starter',  desc: 'All 33 locations · Top 10 · WhatsApp · 2 Web Apps FREE (worth ₹6,500)', popular: true },
-  { id: 'standard', name: 'Standard', price: 3999, tier: 'standard', desc: 'Digital Booster · Social setup + 7 posts + 2 videos · 1+1 yr membership' },
-  { id: 'gold',     name: 'Gold',     price: 4999, tier: 'gold',     desc: 'Everything in Standard + Website + Profile + Presentation · 1+2 yr membership' },
-  { id: 'diamond',  name: 'Diamond',  price: 9999, tier: 'diamond',  desc: 'Everything in Gold + 20 Posters + 10 Videos + Brochure · 1+3 yr membership' },
-];
-
 const categories = [
   'Food & Dining', 'Grocery & Kirana', 'Health & Medical', 'Beauty & Personal Care',
   'Fitness & Wellness', 'Education & Learning', 'Fashion & Apparel', 'Jewelry & Gold',
@@ -275,27 +267,6 @@ const locations = [
             <input type="date" id="dealExpiry" name="dealExpiry" />
           </div>
 
-          <!-- Plan -->
-          <div class="rg-section-title"><i class="fa-solid fa-crown"></i> Choose Your Plan <span style="color:#dc2626">*</span></div>
-
-          <div class="rg-field">
-            <div class="rg-plans">
-              {plans.map(p => (
-                <label class="rg-plan-opt">
-                  <input type="radio" name="tier" value={p.tier} data-name={p.name} data-price={p.price} required checked={p.popular} />
-                  <div class="rg-plan-card">
-                    {p.popular && <div class="rg-plan-pop">Most Popular</div>}
-                    <div class="rg-plan-name">{p.name}</div>
-                    <div class="rg-plan-price">
-                      {p.price === 0 ? 'Free' : `₹${p.price}`}
-                    </div>
-                    <div class="rg-plan-desc">{p.desc}</div>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-
           <!-- Terms -->
           <label class="rg-terms">
             <input type="checkbox" required />
@@ -361,14 +332,8 @@ const locations = [
     const jsonField = document.getElementById('jsonDataField');
     const jsonPreview = document.getElementById('jsonPreview');
 
-    const ids = [
-      'businessName','subCategory','service','location','pincode','address','phone','email',
-      'website','googleMap','latitude','longitude','serviceArea','servicePincodes','locationCount',
-      'description','socialLinks','timing','tags','deals','dealCode','dealExpiry'
-    ];
-
     // Generate a simple businessId from category initials + timestamp
-    function makeBusinessId(cat, name) {
+    function makeBusinessId(cat) {
       const catCode = (cat || 'GEN').split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0,3);
       const num = String(Date.now()).slice(-4);
       return catCode + num;
@@ -380,13 +345,10 @@ const locations = [
         return el ? (el.value || '').trim() : '';
       };
 
-      const tierRadio = form.querySelector('input[name="tier"]:checked');
-      const tier = tierRadio ? tierRadio.value : 'free';
-
       const cat = get('subCategory');
 
       const data = {
-        businessId:      makeBusinessId(cat, get('businessName')),
+        businessId:      makeBusinessId(cat),
         businessName:    get('businessName'),
         subCategory:     get('service') ? `${cat} / ${get('service')}` : cat,
         location:        get('location'),
@@ -402,12 +364,12 @@ const locations = [
         servicePincodes: get('servicePincodes'),
         locationCount:   get('locationCount') || '1',
         description:     get('description'),
-        tier:            tier,
+        tier:            'free',
         socialLinks:     get('socialLinks'),
         timing:          get('timing'),
         featured:        'FALSE',
-        premium:         ['standard','gold','diamond'].includes(tier) ? 'TRUE' : 'FALSE',
-        verified:        tier !== 'free' ? 'TRUE' : 'FALSE',
+        premium:         'FALSE',
+        verified:        'FALSE',
         unclaimed:       'FALSE',
         tags:            get('tags'),
         rating:          '0',
@@ -433,12 +395,11 @@ const locations = [
     form.addEventListener('change', updateJson);
 
     // Ensure JSON is set right before submit
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', () => {
       const data = buildJson();
       const pretty = JSON.stringify(data, null, 2);
       jsonField.value = pretty;
       jsonPreview.textContent = pretty;
-      // Let it submit naturally (formsubmit will email json_data)
     });
 
     // Initial render
@@ -585,40 +546,6 @@ const locations = [
   background-size: 18px; padding-right: 42px;
 }
 
-/* PLANS */
-.rg-plans {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 10px;
-}
-.rg-plan-opt { cursor: pointer; position: relative; }
-.rg-plan-opt input { position: absolute; opacity: 0; pointer-events: none; }
-.rg-plan-card {
-  position: relative;
-  padding: 16px 14px 14px;
-  background: #fff; border: 1.5px solid #e2e8f0;
-  border-radius: 12px; transition: all 0.2s; height: 100%;
-}
-.rg-plan-opt:hover .rg-plan-card { border-color: #fca5a5; transform: translateY(-2px); }
-.rg-plan-opt input:checked + .rg-plan-card {
-  border-color: #b91c1c;
-  background: linear-gradient(135deg,#fff,#fef2f2);
-  box-shadow: 0 8px 20px -8px rgba(185,28,28,0.25);
-}
-.rg-plan-pop {
-  position: absolute; top: -8px; left: 50%;
-  transform: translateX(-50%);
-  background: #b91c1c; color: #fff;
-  font-size: 8.5px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  padding: 3px 10px; border-radius: 100px;
-  white-space: nowrap;
-}
-.rg-plan-name { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 4px; letter-spacing: -0.1px; }
-.rg-plan-price { font-size: 17px; font-weight: 800; color: #b91c1c; margin-bottom: 6px; }
-.rg-plan-opt input:checked + .rg-plan-card .rg-plan-price { color: #991b1b; }
-.rg-plan-desc { font-size: 11px; color: #64748b; line-height: 1.45; font-weight: 500; }
-
 /* TERMS */
 .rg-terms {
   display: flex; align-items: flex-start; gap: 11px;
@@ -742,13 +669,9 @@ const locations = [
   .rg-form-head p { font-size: 13px; }
   .rg-row { grid-template-columns: 1fr; gap: 14px; }
   .rg-form { gap: 16px; }
-  .rg-plans { grid-template-columns: 1fr 1fr; }
   .rg-submit { width: 100%; }
   .rg-help { text-align: center; justify-content: center; padding: 20px; border-radius: 16px; }
   .rg-help-btn { width: 100%; justify-content: center; }
   .rg-json { font-size: 11px; padding: 14px; }
-}
-@media (max-width: 400px) {
-  .rg-plans { grid-template-columns: 1fr; }
 }
 </style>
