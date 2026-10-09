@@ -182,7 +182,7 @@
   "featured": "TRUE",
   "premium": "TRUE",
   "verified": "TRUE",
-  "unclaimed": "TRUE",
+  "unclaimed": "FALSE",
   "tags": "Websit Desing",
   "rating": "0",
   "reviews": "0",
