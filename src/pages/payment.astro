@@ -73,16 +73,15 @@ const DATA = {
 
             <div class="plan-grid" id="planGrid">
 
-              <!-- Starter (default) -->
-              <label class="plan-card is-selected" data-plan="starter" data-name="Starter" data-price="499" data-price-label="₹499">
-                <input type="radio" name="pcmc-plan" class="plan-radio" value="499" checked>
+              <!-- Starter -->
+              <label class="plan-card" data-plan="starter" data-name="Starter" data-price="499" data-price-label="₹499">
+                <input type="radio" name="pcmc-plan" class="plan-radio" value="499">
                 <span class="plan-check">✓</span>
-                <div class="plan-popular">Most Popular</div>
                 <div class="plan-av plan-av-starter"><i class="fa-solid fa-rocket"></i></div>
                 <div class="plan-name">Starter</div>
                 <div class="plan-price">₹499</div>
                 <div class="plan-meta">per year · All 33 locations · Top 10 · 2 Web Apps FREE (worth ₹6,500)</div>
-                <span class="plan-pick">Selected</span>
+                <span class="plan-pick">Select this plan</span>
               </label>
 
               <!-- Standard -->
@@ -96,15 +95,16 @@ const DATA = {
                 <span class="plan-pick">Select this plan</span>
               </label>
 
-              <!-- Gold -->
-              <label class="plan-card" data-plan="gold" data-name="Gold" data-price="4999" data-price-label="₹4,999">
-                <input type="radio" name="pcmc-plan" class="plan-radio" value="4999">
+              <!-- Gold (default + Most Popular) -->
+              <label class="plan-card is-selected" data-plan="gold" data-name="Gold" data-price="4999" data-price-label="₹4,999">
+                <input type="radio" name="pcmc-plan" class="plan-radio" value="4999" checked>
                 <span class="plan-check">✓</span>
+                <div class="plan-popular">Most Popular</div>
                 <div class="plan-av plan-av-gold"><i class="fa-solid fa-crown"></i></div>
                 <div class="plan-name">Gold</div>
                 <div class="plan-price">₹4,999</div>
                 <div class="plan-meta">Everything in Standard + Website + Profile + Presentation · 1+2 yr membership</div>
-                <span class="plan-pick">Select this plan</span>
+                <span class="plan-pick">Selected</span>
               </label>
 
               <!-- Diamond -->
@@ -123,9 +123,9 @@ const DATA = {
             <!-- Selected summary -->
             <div class="plan-summary" id="planSummary">
               <div class="summary-label">
-                Selected plan: <strong id="sumName">Starter</strong>
+                Selected plan: <strong id="sumName">Gold</strong>
               </div>
-              <div class="summary-price" id="sumPrice">₹499</div>
+              <div class="summary-price" id="sumPrice">₹4,999</div>
             </div>
           </div>
         </div>
@@ -162,7 +162,7 @@ const DATA = {
 
         <!-- CTA Button -->
         <a id="payBtn" href={DATA.paymentLink} class="btn-proceed" target="_blank" rel="noopener">
-          <span id="payBtnLabel">Proceed to Secure Payment — ₹499 →</span>
+          <span id="payBtnLabel">Proceed to Secure Payment — ₹4,999 →</span>
         </a>
 
         <!-- Footer note -->
