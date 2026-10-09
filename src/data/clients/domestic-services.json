@@ -1,677 +1,374 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
-
-const categories = [
-  'Food & Dining', 'Grocery & Kirana', 'Health & Medical', 'Beauty & Personal Care',
-  'Fitness & Wellness', 'Education & Learning', 'Fashion & Apparel', 'Jewelry & Gold',
-  'Electronics & Gadgets', 'Home & Interior', 'Automotive', 'Domestic Services',
-  'IT & Digital Services', 'Logistics & Movers', 'Hospitality & Travel', 'Entertainment & Events',
-  'Kids & Baby', 'Books & Stationery', 'Gardening & Outdoor', 'Pet Care',
-  'Real Estate & Property', 'Finance & Legal', 'Packaging & Printing', 'Cafes & Quick Bites',
-  'Shopping & Retail', 'Communication & Internet', 'Security Services', 'Alternative Medicine',
-  'Photography & Video', 'Celebrations & Gifts', 'Government Services', 'Utilities',
-  'Daily Use Services', 'Fitness Equipment', 'Ayurveda & Wellness', 'Coaches & Trainers',
-  'Interior & Exterior Design', 'Consulting Services', 'Specialty Stores'
-];
-
-const locations = [
-  { name: 'Akurdi', pincode: '411035', lat: '18.6198', lng: '73.7635' },
-  { name: 'Alandi', pincode: '412105', lat: '18.6776', lng: '73.8921' },
-  { name: 'Balewadi', pincode: '411045', lat: '18.5803', lng: '73.7624' },
-  { name: 'Baner', pincode: '411045', lat: '18.5613', lng: '73.7833' },
-  { name: 'Bhosari', pincode: '411039', lat: '18.6407', lng: '73.8460' },
-  { name: 'Bopkhel', pincode: '411031', lat: '18.6632', lng: '73.8885' },
-  { name: 'Chakan', pincode: '410501', lat: '18.7605', lng: '73.8672' },
-  { name: 'Charholi Budruk', pincode: '412105', lat: '18.6824', lng: '73.9105' },
-  { name: 'Chikhali', pincode: '411062', lat: '18.6506', lng: '73.8554' },
-  { name: 'Chinchwad', pincode: '411033', lat: '18.6298', lng: '73.7792' },
-  { name: 'Dapodi', pincode: '411012', lat: '18.6055', lng: '73.8017' },
-  { name: 'Dehu Gaon', pincode: '412101', lat: '18.6977', lng: '73.8223' },
-  { name: 'Dehu Road', pincode: '412101', lat: '18.6872', lng: '73.8355' },
-  { name: 'Dighi', pincode: '411035', lat: '18.6215', lng: '73.8857' },
-  { name: 'Dudulgaon', pincode: '410501', lat: '18.7802', lng: '73.8456' },
-  { name: 'Hinjawadi', pincode: '411057', lat: '18.5942', lng: '73.7455' },
-  { name: 'Kalewadi', pincode: '411057', lat: '18.6004', lng: '73.7523' },
-  { name: 'Kiwale', pincode: '411046', lat: '18.5806', lng: '73.7288' },
-  { name: 'Moshi', pincode: '411062', lat: '18.6754', lng: '73.8621' },
-  { name: 'Nigdi', pincode: '411044', lat: '18.6205', lng: '73.7508' },
-  { name: 'Nigdi-Pradhikaran', pincode: '411044', lat: '18.6162', lng: '73.7534' },
-  { name: 'Pimpri', pincode: '411018', lat: '18.6300', lng: '73.8000' },
-  { name: 'Punawale', pincode: '411046', lat: '18.5752', lng: '73.7321' },
-  { name: 'Rahatani', pincode: '411017', lat: '18.5995', lng: '73.7555' },
-  { name: 'Rajgurunagar', pincode: '410505', lat: '18.8342', lng: '73.8754' },
-  { name: 'Ravet', pincode: '411046', lat: '18.5699', lng: '73.7188' },
-  { name: 'Sanghavi', pincode: '411027', lat: '18.6402', lng: '73.8192' },
-  { name: 'Talawade', pincode: '411062', lat: '18.6254', lng: '73.8456' },
-  { name: 'Talegaon Dabhade', pincode: '410506', lat: '18.7523', lng: '73.6799' },
-  { name: 'Tathawade', pincode: '411057', lat: '18.5804', lng: '73.7388' },
-  { name: 'Thergaon', pincode: '411033', lat: '18.6034', lng: '73.7567' },
-  { name: 'Wadgaon Maval', pincode: '410506', lat: '18.7756', lng: '73.6688' },
-  { name: 'Wakad', pincode: '411057', lat: '18.5905', lng: '73.7626' }
-];
----
-
-<BaseLayout title="Register Your Business" description="List your business on PCMC Diary — free registration for local businesses in Pimpri-Chinchwad.">
-
-  <div class="rg-page">
-    <div class="rg-wrap">
-
-      <!-- Hero -->
-      <div class="rg-hero">
-        <div class="rg-hero-bg"></div>
-        <div class="rg-hero-inner">
-          <div class="rg-hero-badge">
-            <i class="fa-solid fa-circle-plus"></i>
-            Free Listing
-          </div>
-          <h1>List your business on PCMC Diary</h1>
-          <p>Reach thousands of local customers across Pimpri-Chinchwad. Free listing, upgrade anytime.</p>
-        </div>
-      </div>
-
-      <!-- Info grid -->
-      <div class="rg-info">
-        <div class="rg-info-card">
-          <div class="rg-info-icon" style="background:linear-gradient(135deg,#dc2626,#991b1b)">
-            <i class="fa-solid fa-bolt"></i>
-          </div>
-          <h3>Quick & Simple</h3>
-          <p>Fill the form once. Our team verifies and lists your business within 24 hours.</p>
-        </div>
-        <div class="rg-info-card">
-          <div class="rg-info-icon" style="background:linear-gradient(135deg,#059669,#047857)">
-            <i class="fa-solid fa-indian-rupee-sign"></i>
-          </div>
-          <h3>Start Free</h3>
-          <p>Free listing is always available. Upgrade to paid plans only when ready.</p>
-        </div>
-        <div class="rg-info-card">
-          <div class="rg-info-icon" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">
-            <i class="fa-solid fa-headset"></i>
-          </div>
-          <h3>Dedicated Support</h3>
-          <p>Our team helps you complete the listing and choose the right plan.</p>
-        </div>
-      </div>
-
-      <!-- Form section -->
-      <div class="rg-form-wrap">
-        <div class="rg-form-head">
-          <div class="rg-form-eyebrow">
-            <i class="fa-solid fa-pen-to-square"></i>
-            Registration Form
-          </div>
-          <h2>Tell us about your business</h2>
-          <p>Fill in the details below. We will contact you on WhatsApp to confirm and activate your listing.</p>
-        </div>
-
-        <form
-          class="rg-form"
-          id="registerForm"
-          action="https://formsubmit.co/info@pcmcdiary.com"
-          method="POST"
-        >
-          <!-- Hidden fields -->
-          <input type="hidden" name="_subject" value="New Business Registration — PCMC Diary" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="text"   name="_honey" style="display:none" />
-          <input type="hidden" name="json_data" id="jsonDataField" />
-
-          <!-- Business identity -->
-          <div class="rg-section-title"><i class="fa-solid fa-store"></i> Business Identity</div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Business Name <span>*</span></label>
-              <input type="text" id="businessName" name="businessName" placeholder="e.g. Shubh Griha Housekeeping" required />
-            </div>
-            <div class="rg-field">
-              <label>Owner Name <span>*</span></label>
-              <input type="text" name="ownerName" placeholder="Your full name" required />
-            </div>
-          </div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Phone / WhatsApp <span>*</span></label>
-              <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required />
-            </div>
-            <div class="rg-field">
-              <label>Email</label>
-              <input type="email" id="email" name="email" placeholder="your@email.com" />
-            </div>
-          </div>
-
-          <!-- Category & location -->
-          <div class="rg-section-title"><i class="fa-solid fa-location-dot"></i> Category & Location</div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Category <span>*</span></label>
-              <select id="subCategory" name="subCategory" required>
-                <option value="">Select category</option>
-                {categories.map(c => <option value={c}>{c}</option>)}
-              </select>
-            </div>
-            <div class="rg-field">
-              <label>Sub-Category / Service</label>
-              <input type="text" id="service" name="service" placeholder="e.g. Housekeeping, Deep Cleaning" />
-            </div>
-          </div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Primary Location <span>*</span></label>
-              <select id="location" name="location" required>
-                <option value="">Select area</option>
-                {locations.map(l => <option value={l.name} data-pincode={l.pincode} data-lat={l.lat} data-lng={l.lng}>{l.name}</option>)}
-              </select>
-            </div>
-            <div class="rg-field">
-              <label>Pincode <span>*</span></label>
-              <input type="text" id="pincode" name="pincode" placeholder="411035" required />
-            </div>
-          </div>
-
-          <div class="rg-field">
-            <label>Full Address <span>*</span></label>
-            <textarea id="address" name="address" rows="2" placeholder="Shop / building name, street, landmark, pincode" required></textarea>
-          </div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Service Area (comma separated)</label>
-              <input type="text" id="serviceArea" name="serviceArea" placeholder="Akurdi,Nigdi,Chinchwad" />
-            </div>
-            <div class="rg-field">
-              <label>Service Pincodes (comma separated)</label>
-              <input type="text" id="servicePincodes" name="servicePincodes" placeholder="411035,411044,411033" />
-            </div>
-          </div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Location Count</label>
-              <select id="locationCount" name="locationCount">
-                <option value="1">1 location</option>
-                <option value="3">3 locations</option>
-                <option value="ALL">All PCMC (ALL)</option>
-              </select>
-            </div>
-            <div class="rg-field">
-              <label>Timing</label>
-              <input type="text" id="timing" name="timing" placeholder="Mon-Sun 9AM-9PM" />
-            </div>
-          </div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Latitude</label>
-              <input type="text" id="latitude" name="latitude" placeholder="18.6198" />
-            </div>
-            <div class="rg-field">
-              <label>Longitude</label>
-              <input type="text" id="longitude" name="longitude" placeholder="73.7635" />
-            </div>
-          </div>
-
-          <!-- Online presence -->
-          <div class="rg-section-title"><i class="fa-solid fa-globe"></i> Online Presence</div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Website (if any)</label>
-              <input type="url" id="website" name="website" placeholder="https://yourwebsite.com" />
-            </div>
-            <div class="rg-field">
-              <label>Google Maps Link (if any)</label>
-              <input type="url" id="googleMap" name="googleMap" placeholder="https://maps.google.com/..." />
-            </div>
-          </div>
-
-          <div class="rg-field">
-            <label>Social Links (comma separated, prefix type: insta:, fb:, yt:)</label>
-            <input type="text" id="socialLinks" name="socialLinks" placeholder="insta:https://instagram.com/...,fb:https://facebook.com/..." />
-          </div>
-
-          <!-- Description & tags -->
-          <div class="rg-section-title"><i class="fa-solid fa-tags"></i> Description & Tags</div>
-
-          <div class="rg-field">
-            <label>Short Description (max 200 chars)</label>
-            <textarea id="description" name="description" rows="3" maxlength="200" placeholder="What does your business do? What makes it special?"></textarea>
-          </div>
-
-          <div class="rg-field">
-            <label>Tags (comma separated)</label>
-            <input type="text" id="tags" name="tags" placeholder="Housekeeping,Cleaning,Home" />
-          </div>
-
-          <!-- Deals -->
-          <div class="rg-section-title"><i class="fa-solid fa-gift"></i> Deal / Offer (optional)</div>
-
-          <div class="rg-row">
-            <div class="rg-field">
-              <label>Deal / Offer</label>
-              <input type="text" id="deals" name="deals" placeholder="10% OFF on deep cleaning" />
-            </div>
-            <div class="rg-field">
-              <label>Deal Code</label>
-              <input type="text" id="dealCode" name="dealCode" placeholder="SHUBH10" />
-            </div>
-          </div>
-
-          <div class="rg-field">
-            <label>Deal Expiry</label>
-            <input type="date" id="dealExpiry" name="dealExpiry" />
-          </div>
-
-          <!-- Terms -->
-          <label class="rg-terms">
-            <input type="checkbox" required />
-            <span>I agree to the <a href="/terms" target="_blank">Terms &amp; Conditions</a> and <a href="/privacy" target="_blank">Privacy Policy</a> of PCMC Diary.</span>
-          </label>
-
-          <!-- Submit -->
-          <button type="submit" class="rg-submit">
-            <i class="fa-solid fa-paper-plane"></i>
-            Submit Registration
-          </button>
-
-          <div class="rg-form-note">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>We'll contact you within 24 hours on WhatsApp. Your data is safe with us.</span>
-          </div>
-        </form>
-
-        <!-- JSON Preview -->
-        <div class="rg-json-wrap">
-          <div class="rg-json-head">
-            <div><i class="fa-solid fa-code"></i> JSON Preview (submitted with your form)</div>
-            <button type="button" class="rg-json-copy" id="copyJson"><i class="fa-solid fa-copy"></i> Copy</button>
-          </div>
-          <pre class="rg-json" id="jsonPreview">{}</pre>
-        </div>
-      </div>
-
-      <!-- Help card -->
-      <div class="rg-help">
-        <div class="rg-help-icon"><i class="fa-solid fa-circle-question"></i></div>
-        <div class="rg-help-text">
-          <h4>Need help with registration?</h4>
-          <p>Message us on WhatsApp — we'll help you complete the form.</p>
-        </div>
-        <a href="https://wa.me/918793932827" target="_blank" rel="noopener" class="rg-help-btn">
-          <i class="fa-brands fa-whatsapp"></i>
-          WhatsApp us
-        </a>
-      </div>
-
-    </div>
-  </div>
-
-  <script define:vars={{ locations }}>
-    // ---- Auto-fill pincode / lat / lng when location changes ----
-    const locSel   = document.getElementById('location');
-    const pincodeI = document.getElementById('pincode');
-    const latI     = document.getElementById('latitude');
-    const lngI     = document.getElementById('longitude');
-
-    locSel.addEventListener('change', () => {
-      const opt = locSel.options[locSel.selectedIndex];
-      if (!opt || !opt.value) return;
-      pincodeI.value = opt.dataset.pincode || '';
-      latI.value     = opt.dataset.lat || '';
-      lngI.value     = opt.dataset.lng || '';
-      updateJson();
-    });
-
-    // ---- Build JSON payload ----
-    const form = document.getElementById('registerForm');
-    const jsonField = document.getElementById('jsonDataField');
-    const jsonPreview = document.getElementById('jsonPreview');
-
-    // Generate a simple businessId from category initials + timestamp
-    function makeBusinessId(cat) {
-      const catCode = (cat || 'GEN').split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0,3);
-      const num = String(Date.now()).slice(-4);
-      return catCode + num;
-    }
-
-    function buildJson() {
-      const get = id => {
-        const el = document.getElementById(id);
-        return el ? (el.value || '').trim() : '';
-      };
-
-      const cat = get('subCategory');
-
-      const data = {
-        businessId:      makeBusinessId(cat),
-        businessName:    get('businessName'),
-        subCategory:     get('service') ? `${cat} / ${get('service')}` : cat,
-        location:        get('location'),
-        pincode:         get('pincode'),
-        address:         get('address'),
-        phone:           get('phone'),
-        email:           get('email'),
-        website:         get('website'),
-        googleMap:       get('googleMap'),
-        latitude:        get('latitude'),
-        longitude:       get('longitude'),
-        serviceArea:     get('serviceArea'),
-        servicePincodes: get('servicePincodes'),
-        locationCount:   get('locationCount') || '1',
-        description:     get('description'),
-        tier:            'free',
-        socialLinks:     get('socialLinks'),
-        timing:          get('timing'),
-        featured:        'FALSE',
-        premium:         'FALSE',
-        verified:        'FALSE',
-        unclaimed:       'FALSE',
-        tags:            get('tags'),
-        rating:          '0',
-        reviews:         '0',
-        deals:           get('deals') || '-',
-        dealCode:        get('dealCode') || '-',
-        dealExpiry:      get('dealExpiry') || '-'
-      };
-
-      return data;
-    }
-
-    function updateJson() {
-      const data = buildJson();
-      const pretty = JSON.stringify(data, null, 2);
-      if (jsonPreview) jsonPreview.textContent = pretty;
-      if (jsonField) jsonField.value = pretty;
-      return data;
-    }
-
-    // Live update on every input/change
-    form.addEventListener('input', updateJson);
-    form.addEventListener('change', updateJson);
-
-    // Ensure JSON is set right before submit
-    form.addEventListener('submit', () => {
-      const data = buildJson();
-      const pretty = JSON.stringify(data, null, 2);
-      jsonField.value = pretty;
-      jsonPreview.textContent = pretty;
-    });
-
-    // Initial render
-    updateJson();
-
-    // Copy JSON
-    const copyBtn = document.getElementById('copyJson');
-    copyBtn?.addEventListener('click', () => {
-      const txt = jsonPreview.textContent || '';
-      navigator.clipboard.writeText(txt).then(() => {
-        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
-        setTimeout(() => {
-          copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
-        }, 1600);
-      });
-    });
-  </script>
-
-</BaseLayout>
-
-<style is:global>
-.rg-page { background: #f8fafc; min-height: 60vh; padding: 0 0 72px; }
-.rg-wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
-
-/* HERO */
-.rg-hero {
-  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
-  color: #fff;
-  padding: 48px 32px 80px;
-  border-radius: 0 0 28px 28px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  margin: 0 -20px 0;
-}
-.rg-hero-bg {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 1px, transparent 1px),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 1px, transparent 1px);
-  background-size: 60px 60px, 80px 80px;
-  opacity: 0.6;
-}
-.rg-hero-inner { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; }
-.rg-hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 7px 16px;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 50px;
-  font-size: 11px; font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: #fde047; margin-bottom: 16px;
-  backdrop-filter: blur(10px);
-}
-.rg-hero h1 {
-  font-size: 36px; font-weight: 800;
-  letter-spacing: -1px; line-height: 1.15;
-  margin: 0 0 12px;
-}
-.rg-hero p { font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.6; margin: 0; }
-
-/* INFO CARDS */
-.rg-info {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 16px; margin-top: -44px; margin-bottom: 40px;
-  position: relative; z-index: 3;
-}
-.rg-info-card {
-  background: #fff; border: 1px solid #e2e8f0;
-  border-radius: 16px; padding: 22px; text-align: center;
-  box-shadow: 0 12px 32px -16px rgba(15,23,42,0.15);
-}
-.rg-info-icon {
-  width: 48px; height: 48px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 14px; color: #fff; font-size: 20px;
-  box-shadow: 0 8px 20px -8px rgba(15,23,42,0.3);
-}
-.rg-info-card h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 8px; letter-spacing: -0.2px; }
-.rg-info-card p { font-size: 12.5px; color: #64748b; line-height: 1.55; margin: 0; }
-
-/* FORM WRAP */
-.rg-form-wrap {
-  background: #fff; border: 1px solid #e2e8f0;
-  border-radius: 22px; padding: 40px 44px;
-  box-shadow: 0 20px 48px -24px rgba(15,23,42,0.12);
-}
-.rg-form-head { margin-bottom: 32px; }
-.rg-form-eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 5px 12px;
-  background: #fef2f2; border: 1px solid #fecaca;
-  border-radius: 50px;
-  font-size: 10.5px; font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: #b91c1c; margin-bottom: 14px;
-}
-.rg-form-head h2 { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -0.6px; margin: 0 0 8px; }
-.rg-form-head p { font-size: 14px; color: #64748b; line-height: 1.6; margin: 0; max-width: 560px; }
-
-/* SECTION TITLES */
-.rg-section-title {
-  display: flex; align-items: center; gap: 9px;
-  font-size: 12.5px; font-weight: 800;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  color: #b91c1c;
-  padding: 6px 0 4px;
-  border-bottom: 1px dashed #fecaca;
-  margin-top: 6px;
-}
-.rg-section-title i { font-size: 13px; }
-
-/* FORM */
-.rg-form { display: flex; flex-direction: column; gap: 20px; }
-.rg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.rg-field { display: flex; flex-direction: column; gap: 8px; }
-.rg-field label { font-size: 12.5px; font-weight: 800; color: #334155; letter-spacing: -0.1px; }
-.rg-field label span { color: #dc2626; }
-
-.rg-field input[type="text"],
-.rg-field input[type="tel"],
-.rg-field input[type="email"],
-.rg-field input[type="url"],
-.rg-field input[type="date"],
-.rg-field select,
-.rg-field textarea {
-  width: 100%; padding: 12px 14px;
-  border: 1.5px solid #e2e8f0; border-radius: 10px;
-  font-size: 14px; font-family: inherit;
-  color: #0f172a; background: #fff; outline: none;
-  transition: all 0.2s; font-weight: 500;
-}
-.rg-field input::placeholder, .rg-field textarea::placeholder { color: #94a3b8; }
-.rg-field input:focus, .rg-field select:focus, .rg-field textarea:focus {
-  border-color: #b91c1c;
-  box-shadow: 0 0 0 3px rgba(185,28,28,0.08);
-}
-.rg-field textarea { resize: vertical; min-height: 60px; line-height: 1.55; }
-.rg-field select {
-  cursor: pointer; appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
-  background-repeat: no-repeat; background-position: right 12px center;
-  background-size: 18px; padding-right: 42px;
-}
-
-/* TERMS */
-.rg-terms {
-  display: flex; align-items: flex-start; gap: 11px;
-  padding: 14px 16px; background: #f8fafc;
-  border: 1px solid #e2e8f0; border-radius: 10px;
-  cursor: pointer; font-size: 13px; color: #475569;
-  line-height: 1.55; font-weight: 500;
-}
-.rg-terms input { margin-top: 2px; width: 16px; height: 16px; accent-color: #b91c1c; flex-shrink: 0; cursor: pointer; }
-.rg-terms a { color: #b91c1c; font-weight: 700; text-decoration: none; }
-.rg-terms a:hover { text-decoration: underline; }
-
-/* SUBMIT */
-.rg-submit {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 10px; padding: 15px 28px;
-  background: linear-gradient(135deg, #b91c1c, #991b1b);
-  color: #fff; border: 0; border-radius: 12px;
-  font-size: 15px; font-weight: 800;
-  cursor: pointer; font-family: inherit;
-  letter-spacing: -0.1px;
-  box-shadow: 0 14px 30px -10px rgba(185,28,28,0.5);
-  transition: all 0.2s; margin-top: 4px;
-}
-.rg-submit:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -10px rgba(185,28,28,0.6); }
-.rg-submit i { font-size: 14px; }
-
-.rg-form-note {
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; font-size: 12px; color: #64748b;
-  font-weight: 600; text-align: center;
-}
-.rg-form-note i { color: #059669; font-size: 12px; }
-
-/* JSON PREVIEW */
-.rg-json-wrap {
-  margin-top: 32px;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #0f172a;
-}
-.rg-json-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 18px;
-  background: #1e293b;
-  color: #cbd5e1;
-  font-size: 12px; font-weight: 800;
-  letter-spacing: 0.04em; text-transform: uppercase;
-}
-.rg-json-head i { color: #fbbf24; margin-right: 6px; }
-.rg-json-copy {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 12px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #cbd5e1; border-radius: 8px;
-  font-size: 11px; font-weight: 800;
-  cursor: pointer; transition: all 0.2s;
-  font-family: inherit;
-}
-.rg-json-copy:hover { background: rgba(255,255,255,0.15); color: #fff; }
-.rg-json {
-  margin: 0;
-  padding: 18px 20px;
-  color: #a5f3fc;
-  font-size: 12px;
-  line-height: 1.6;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  max-height: 420px;
-  overflow: auto;
-  white-space: pre;
-  background: #0f172a;
-}
-.rg-json::-webkit-scrollbar { width: 8px; height: 8px; }
-.rg-json::-webkit-scrollbar-thumb { background: #334155; border-radius: 6px; }
-
-/* HELP */
-.rg-help {
-  display: flex; align-items: center; gap: 18px;
-  margin-top: 24px; padding: 22px 24px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border-radius: 18px; color: #fff;
-  flex-wrap: wrap;
-  box-shadow: 0 16px 32px -16px rgba(15,23,42,0.3);
-}
-.rg-help-icon {
-  width: 52px; height: 52px; border-radius: 14px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  display: flex; align-items: center; justify-content: center;
-  color: #fbbf24; font-size: 22px; flex-shrink: 0;
-}
-.rg-help-text { flex: 1; min-width: 200px; }
-.rg-help-text h4 { font-size: 15px; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.2px; }
-.rg-help-text p { font-size: 12.5px; opacity: 0.75; margin: 0; line-height: 1.5; }
-.rg-help-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 22px;
-  background: linear-gradient(135deg, #25d366, #15803d);
-  color: #fff; border-radius: 11px;
-  font-size: 13px; font-weight: 800;
-  text-decoration: none; transition: all 0.2s;
-  box-shadow: 0 10px 22px -8px rgba(37,211,102,0.5);
-  white-space: nowrap;
-}
-.rg-help-btn:hover { transform: translateY(-2px); text-decoration: none; box-shadow: 0 14px 28px -8px rgba(37,211,102,0.6); }
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .rg-wrap { padding: 0 16px; }
-  .rg-hero { padding: 32px 20px 64px; border-radius: 0 0 20px 20px; margin: 0 -16px 0; }
-  .rg-hero h1 { font-size: 24px; letter-spacing: -0.5px; }
-  .rg-hero p { font-size: 13.5px; }
-  .rg-hero-badge { font-size: 10px; padding: 6px 12px; }
-  .rg-info { grid-template-columns: 1fr; gap: 10px; margin-top: -36px; margin-bottom: 28px; }
-  .rg-info-card { padding: 18px; }
-  .rg-info-icon { width: 42px; height: 42px; font-size: 18px; margin-bottom: 10px; }
-  .rg-form-wrap { padding: 24px 20px; border-radius: 18px; }
-  .rg-form-head h2 { font-size: 20px; }
-  .rg-form-head p { font-size: 13px; }
-  .rg-row { grid-template-columns: 1fr; gap: 14px; }
-  .rg-form { gap: 16px; }
-  .rg-submit { width: 100%; }
-  .rg-help { text-align: center; justify-content: center; padding: 20px; border-radius: 16px; }
-  .rg-help-btn { width: 100%; justify-content: center; }
-  .rg-json { font-size: 11px; padding: 14px; }
-}
-</style>
+[
+  {
+    "businessId": "DS1",
+    "businessName": "Shubh Griha Housekeeping",
+    "subCategory": "Housekeeping",
+    "location": "Akurdi",
+    "pincode": "411035",
+    "address": "Akurdi Gaon, Pune",
+    "phone": "91 9822102001",
+    "email": "shubhgriha.hk@gmail.com",
+    "website": "https://shubhgrihahousekeeping.in",
+    "googleMap": "https://maps.google.com/?q=Shubh+Griha+Housekeeping+Akurdi",
+    "latitude": "18.6198",
+    "longitude": "73.7635",
+    "serviceArea": "Akurdi,Nigdi,Chinchwad",
+    "servicePincodes": "411,035,411,044",
+    "locationCount": "1",
+    "description": "Home cleaning & housekeeping since 2015",
+    "tier": "free",
+    "socialLinks": "",
+    "timing": "",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "FALSE",
+    "unclaimed": "FALSE",
+    "tags": "Housekeeping,Cleaning,Home",
+    "rating": "4.2",
+    "reviews": "140",
+    "deals": "10% OFF on deep cleaning",
+    "dealCode": "SHUBH10",
+    "dealExpiry": "2026-12-31"
+  },
+  {
+    "businessId": "DS2",
+    "businessName": "Rasoi Cook Services",
+    "subCategory": "Cook Services",
+    "location": "Baner",
+    "pincode": "411045",
+    "address": "Baner Road, Pune",
+    "phone": "91 9822102002",
+    "email": "rasoi.cook@gmail.com",
+    "website": "https://rasoicookservices.in",
+    "googleMap": "https://maps.google.com/?q=Rasoi+Cook+Services+Baner",
+    "latitude": "18.5613",
+    "longitude": "73.7833",
+    "serviceArea": "Baner,Balewadi,Wakad",
+    "servicePincodes": "411,045,411,057",
+    "locationCount": "3",
+    "description": "Experienced cooks for home & parties",
+    "tier": "vb",
+    "socialLinks": "",
+    "timing": "",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "TRUE",
+    "unclaimed": "FALSE",
+    "tags": "Cook,Chef,Party Cooking",
+    "rating": "4.5",
+    "reviews": "180",
+    "deals": "Free trial cooking",
+    "dealCode": "RASOIFREE",
+    "dealExpiry": "2026-11-30"
+  },
+  {
+    "businessId": "DS3",
+    "businessName": "Mamta Baby Care",
+    "subCategory": "Baby Care",
+    "location": "Hinjawadi",
+    "pincode": "411057",
+    "address": "Phase 1, Hinjawadi, Pune",
+    "phone": "91 9822102003",
+    "email": "mamta.babycare@gmail.com",
+    "website": "https://mamt babycare.in",
+    "googleMap": "https://maps.google.com/?q=Mamta+Baby+Care+Hinjawadi",
+    "latitude": "18.5942",
+    "longitude": "73.7455",
+    "serviceArea": "Hinjawadi,Wakad,Tathawade",
+    "servicePincodes": "411,057,411,046",
+    "locationCount": "ALL",
+    "description": "Trusted babysitting & nanny services",
+    "tier": "premium_pro",
+    "socialLinks": "insta:https://instagram.com/mamt babycare|fb:https://facebook.com/mamt babycare",
+    "timing": "Mon-Sun 7AM-9PM",
+    "featured": "FALSE",
+    "premium": "TRUE",
+    "verified": "TRUE",
+    "unclaimed": "FALSE",
+    "tags": "Baby Care,Nanny,Babysitting",
+    "rating": "4.7",
+    "reviews": "220",
+    "deals": "15% OFF on monthly package",
+    "dealCode": "MAMTA15",
+    "dealExpiry": "2026-10-31"
+  },
+  {
+    "businessId": "DS4",
+    "businessName": "Elder Care Seva",
+    "subCategory": "Elderly Care",
+    "location": "Wakad",
+    "pincode": "411057",
+    "address": "Wakad Square, Pune",
+    "phone": "91 9822102004",
+    "email": "eldercare.seva@gmail.com",
+    "website": "https://eldercareseva.in",
+    "googleMap": "https://maps.google.com/?q=Elder+Care+Seva+Wakad",
+    "latitude": "18.5905",
+    "longitude": "73.7626",
+    "serviceArea": "Wakad,Hinjawadi,Baner",
+    "servicePincodes": "411,057,411,045",
+    "locationCount": "ALL",
+    "description": "Elderly care & companionship services",
+    "tier": "vp",
+    "socialLinks": "",
+    "timing": "",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "TRUE",
+    "unclaimed": "FALSE",
+    "tags": "Elderly Care,Companion,Senior",
+    "rating": "4.6",
+    "reviews": "160",
+    "deals": "Free initial assessment",
+    "dealCode": "ELDERFREE",
+    "dealExpiry": "2026-12-15"
+  },
+  {
+    "businessId": "DS5",
+    "businessName": "Keet Nashak Pest Control",
+    "subCategory": "Pest Control",
+    "location": "Pimpri",
+    "pincode": "411018",
+    "address": "Pimpri Market, Pune",
+    "phone": "91 9822102005",
+    "email": "keetnashak.pest@gmail.com",
+    "website": "-",
+    "googleMap": "https://maps.google.com/?q=Keet+Nashak+Pest+Control+Pimpri",
+    "latitude": "18.63",
+    "longitude": "73.8",
+    "serviceArea": "Pimpri,Chinchwad,Sanghavi",
+    "servicePincodes": "411,018,411,033",
+    "locationCount": "3",
+    "description": "Safe & eco-friendly pest control",
+    "tier": "vb",
+    "socialLinks": "",
+    "timing": "",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "TRUE",
+    "unclaimed": "FALSE",
+    "tags": "Pest Control,Eco Friendly,Termite",
+    "rating": "4.4",
+    "reviews": "170",
+    "deals": "20% OFF on first treatment",
+    "dealCode": "KEET20",
+    "dealExpiry": "2026-09-30"
+  },
+  {
+    "businessId": "DS11",
+    "businessName": "M K G Pest Control Services",
+    "subCategory": "Pest Control Services",
+    "location": "Thergaon",
+    "pincode": "411033",
+    "address": "Flat no. 2 matoshree nivas near matoshree hospital Thergaon Pimpri-Chinchwad Maharashtra 411033",
+    "phone": "91 75192 9555",
+    "email": "mkgpestcontrol555@gmail.com",
+    "website": "www.mkgpestcontrol.com",
+    "googleMap": "https://www.google.com/maps?q=Flat+no.+2+matoshree+nivas+near+matoshree+hospital+Thergaon+Pimpri-Chinchwad+Maharashtra+411033",
+    "latitude": "18.6034",
+    "longitude": "73.7567",
+    "serviceArea": "Akurdi, Alandi, Balewadi, Baner, Bhosari, Bopkhel, Chakan, Charholi Budruk, Chikhali, Chinchwad, Dapodi, Dehu Gaon, Dehu Road, Dighi, Dudulgaon, Hinjawadi, Kalewadi, Kiwale, Moshi, Nigdi, Nigdi-Pradhikaran, Pimpri, Punawale, Rahatani, Rajgurunagar, Ravet, Sanghavi, Talawade, Talegaon Dabhade, Tathawade, Thergaon, Wadgaon Maval, Wakad",
+    "servicePincodes": "411,035,412,105,411,045,411,045,411,039,411,031,410,501,412,105,411,062,411,033,411,012,412,101,412,101,411,035,410,501,411,057,411,057,411,046,411,062,411,044,411,044,411,018,411,046,411,017,410,505,411,046,411,027,411,062,410,506,411,057,411,033,410,506,411,057",
+    "locationCount": "ALL",
+    "description": "Safe & eco-friendly pest control for homes. 15+ years experience. Ants, bed bugs, termites, rodents. Same-day service in PCMC.",
+    "tier": "premium_pro",
+    "socialLinks": "insta:https://instagram.com/mamt babycare|fb:https://facebook.com/mamt babycare",
+    "timing": "Mon-Sun 7AM-9PM",
+    "featured": "FALSE",
+    "premium": "TRUE",
+    "verified": "TRUE",
+    "unclaimed": "FALSE",
+    "tags": "Domestic,Pest Control",
+    "rating": "5",
+    "reviews": "50",
+    "deals": "20% OFF on first order",
+    "dealCode": "20OFF",
+    "dealExpiry": "2026-10-15"
+  },
+  {
+    "businessId": "DS12",
+    "businessName": "Jay Ganesh Pest Control and Home Cleaning Services",
+    "subCategory": "Pest Control & Deep Cleaning",
+    "location": "Chinchwad",
+    "pincode": "411033",
+    "address": "Divya park, Omkar Colony, Ganesh Nagar, Valhekar wadi, Chinchwad, Pimpri-Chinchwad, Maharashtra 411033",
+    "phone": "91 79722 64715",
+    "email": "sachinjadhav1994@gmail.com",
+    "website": "www.jayganeshpestcontrol.com",
+    "googleMap": "https://www.google.com/maps?q=Divya+park+Omkar+Colony+Ganesh+Nagar+Valhekar+wad+Chinchwad+Pimpri-Chinchwad+Maharashtra+411033",
+    "latitude": "18.6034",
+    "longitude": "73.7567",
+    "serviceArea": "Akurdi, Alandi, Balewadi, Baner, Bhosari, Bopkhel, Chakan, Charholi Budruk, Chikhali, Chinchwad, Dapodi, Dehu Gaon, Dehu Road, Dighi, Dudulgaon, Hinjawadi, Kalewadi, Kiwale, Moshi, Nigdi, Nigdi-Pradhikaran, Pimpri, Punawale, Rahatani, Rajgurunagar, Ravet, Sanghavi, Talawade, Talegaon Dabhade, Tathawade, Thergaon, Wadgaon Maval, Wakad",
+    "servicePincodes": "411,035,412,105,411,045,411,045,411,039,411,031,410,501,412,105,411,062,411,033,411,012,412,101,412,101,411,035,410,501,411,057,411,057,411,046,411,062,411,044,411,044,411,018,411,046,411,017,410,505,411,046,411,027,411,062,410,506,411,057,411,033,410,506,411,057",
+    "locationCount": "ALL",
+    "description": "Safe & eco-friendly pest control for homes. 15+ years experience. Ants, bed bugs, termites, rodents. Same-day service in PCMC.",
+    "tier": "premium_pro",
+    "socialLinks": "insta:https://instagram.com/mamt babycare|fb:https://facebook.com/mamt babycare",
+    "timing": "Mon-Sun 7AM-9PM",
+    "featured": "FALSE",
+    "premium": "TRUE",
+    "verified": "TRUE",
+    "unclaimed": "FALSE",
+    "tags": "Cleaning, Domestic, Pest-Control",
+    "rating": "5",
+    "reviews": "50",
+    "deals": "20% OFF on Deep Cleaning Services",
+    "dealCode": "CLEAN20; COMBO15; FREE",
+    "dealExpiry": "2026-10-16"
+  },
+  {
+    "businessId": "DS13",
+    "businessName": "Nidhi Pest Control Services",
+    "subCategory": "Pest Control Services",
+    "location": "Chinchwad",
+    "pincode": "411033",
+    "address": "Kakde Corner, Chinchwad Gaon, Chinchwad, Pimpri-Chinchwad, Maharashtra 411033",
+    "phone": "91 99601 52536",
+    "email": "nidhipestcontrol@rediffmail.com",
+    "website": "-",
+    "googleMap": "https://maps.app.goo.gl/TKpN7sdwUmySj9p16",
+    "latitude": "18.6298",
+    "longitude": "73.7792",
+    "serviceArea": "Akurdi, Alandi, Balewadi, Baner, Bhosari, Bopkhel, Chakan, Charholi Budruk, Chikhali, Chinchwad, Dapodi, Dehu Gaon, Dehu Road, Dighi, Dudulgaon, Hinjawadi, Kalewadi, Kiwale, Moshi, Nigdi, Nigdi-Pradhikaran, Pimpri, Punawale, Rahatani, Rajgurunagar, Ravet, Sanghavi, Talawade, Talegaon Dabhade, Tathawade, Thergaon, Wadgaon Maval, Wakad",
+    "servicePincodes": "411,035,412,105,411,045,411,045,411,039,411,031,410,501,412,105,411,062,411,033,411,012,412,101,412,101,411,035,410,501,411,057,411,057,411,046,411,062,411,044,411,044,411,018,411,046,411,017,410,505,411,046,411,027,411,062,410,506,411,057,411,033,410,506,411,057",
+    "locationCount": "ALL",
+    "description": "Safe & eco-friendly pest control for homes. 15+ years experience. Ants, bed bugs, termites, rodents. Same-day service in PCMC.",
+    "tier": "premium_pro",
+    "socialLinks": "insta:https://instagram.com/mamt babycare|fb:https://facebook.com/mamt babycare",
+    "timing": "Mon-Sun 7AM-9PM",
+    "featured": "FALSE",
+    "premium": "TRUE",
+    "verified": "TRUE",
+    "unclaimed": "FALSE",
+    "tags": "Domestic,Pest Control",
+    "rating": "5",
+    "reviews": "50",
+    "deals": "20% OFF on Selected Services; Free Home Inspection; 10% OFF First Treatment",
+    "dealCode": "PEST20; INSPECT1; WELCOME10",
+    "dealExpiry": "2026-10-17"
+  },
+  {
+    "businessId": "DS14",
+    "businessName": "GANRAJ HERBAL PEST CONTROL SERVICES",
+    "subCategory": "Pest Control Services",
+    "location": "Pimple Saudagar",
+    "pincode": "411027",
+    "address": "Harshada co of hsg NAVALE RESIDENCY C 11 PIMPLE SAUDAGAR, Pimpri-Chinchwad, Maharashtra 411027",
+    "phone": "91 98500 01563",
+    "email": "ganrajpestcontrol.ser@gmail.com",
+    "website": "https://www.ganrajpestcontrol.com/",
+    "googleMap": "https://www.google.com/maps/search/?api=1&query=GANRAJ+HERBAL+PEST+CONTROL+SERVICES+PIMPLE+SAUDAGAR",
+    "latitude": "18.59",
+    "longitude": "73.793",
+    "serviceArea": "Pimple Saudagar, Akurdi, Alandi, Balewadi, Baner, Bhosari, Bopkhel, Chakan, Charholi Budruk, Chikhali, Chinchwad, Dapodi, Dehu Gaon, Dehu Road, Dighi, Dudulgaon, Hinjawadi, Kalewadi, Kiwale, Moshi, Nigdi, Nigdi-Pradhikaran, Pimpri, Punawale, Rahatani, Rajgurunagar, Ravet, Sanghavi, Talawade, Talegaon Dabhade, Tathawade, Thergaon, Wadgaon Maval, Wakad",
+    "servicePincodes": "411,027,411,035,412,105,411,045,411,045,411,039,411,031,410,501,412,105,411,062,411,033,411,012,412,101,412,101,411,035,410,501,411,057,411,057,411,046,411,062,411,044,411,044,411,018,411,046,411,017,410,505,411,046,411,027,411,062,410,506,411,057,411,033,410,506,411,057",
+    "locationCount": "ALL",
+    "description": "All type pest control services. Herbal pest control for homes and offices.",
+    "tier": "premium_pro",
+    "socialLinks": "insta:https://instagram.com/mamt babycare|fb:https://facebook.com/mamt babycare",
+    "timing": "Mon-Sun 8AM-5PM",
+    "featured": "FALSE",
+    "premium": "TRUE",
+    "verified": "TRUE",
+    "unclaimed": "TRUE",
+    "tags": "Domestic,Pest Control",
+    "rating": "5",
+    "reviews": "500",
+    "deals": "20% OFF on Selected Services; Free Home Inspection; 10% OFF First Treatment",
+    "dealCode": "PEST20; INSPECT1; WELCOME10",
+    "dealExpiry": "2026-10-17"
+  },
+  {
+    "businessId": "DS15",
+    "businessName": "Eradicates Pest Control",
+    "subCategory": "Pest Control",
+    "location": "Chinchwad",
+    "pincode": "411033",
+    "address": "B5 building, Ganga Raj Park, Kakade Park Rd, Kakade Park, Chinchwad Gaon, Chinchwad, Pimpri-Chinchwad, Maharashtra 411033",
+    "phone": "91 99216 17942",
+    "email": "-",
+    "website": "-",
+    "googleMap": "-",
+    "latitude": "18.6298",
+    "longitude": "73.7792",
+    "serviceArea": "Chinchwad",
+    "servicePincodes": "",
+    "locationCount": "1",
+    "description": "All types of pest control service provider in PCMC. Residential, commercial and industrial pest control.",
+    "tier": "free",
+    "socialLinks": "",
+    "timing": "",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "FALSE",
+    "unclaimed": "FALSE",
+    "tags": "",
+    "rating": "",
+    "reviews": "",
+    "deals": "-",
+    "dealCode": "-",
+    "dealExpiry": "-"
+  },
+  {
+    "businessId": "DS16",
+    "businessName": "Vidydhar Pest Control Services",
+    "subCategory": "Pest Control",
+    "location": "Pimpri",
+    "pincode": "411018",
+    "address": "JRG5+9R3, Kharalwadi Rd, Kharalwadi, Pimpri Colony, Pimpri-Chinchwad, Maharashtra 411018",
+    "phone": "91 90113 45075",
+    "email": "-",
+    "website": "-",
+    "googleMap": "-",
+    "latitude": "18.63",
+    "longitude": "73.8",
+    "serviceArea": "Pimpri",
+    "servicePincodes": "",
+    "locationCount": "1",
+    "description": "Pest control services in Wakad, Hinjawadi, Pimple Saudagar, Pimple Nilakh, Aundh, Pimpri-Chinchwad and Ravet. Residential and commercial pest control.",
+    "tier": "free",
+    "socialLinks": "",
+    "timing": "",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "FALSE",
+    "unclaimed": "FALSE",
+    "tags": "",
+    "rating": "",
+    "reviews": "",
+    "deals": "-",
+    "dealCode": "-",
+    "dealExpiry": "-"
+  },
+  {
+    "businessId": "DS17",
+    "businessName": "Pest Control Clinic",
+    "subCategory": "Pest Control",
+    "location": "Thergaon",
+    "pincode": "411033",
+    "address": "Shop No-7, Koyna Nivas, Sr. No 22/5, near Sancheti School, Krantiveer Nagar, Pawar Nagar, Thergaon, Pimpri-Chinchwad, Maharashtra 411033",
+    "phone": "91 98349 03107",
+    "email": "-",
+    "website": "-",
+    "googleMap": "-",
+    "latitude": "18.6034",
+    "longitude": "73.7567",
+    "serviceArea": "Chinchwad",
+    "servicePincodes": "",
+    "locationCount": "1",
+    "description": "Pest control clinic for residential, commercial and industrial sectors. Services: cockroach control, bed bug treatment, termite control, rodent control.",
+    "tier": "free",
+    "socialLinks": "",
+    "timing": "",
+    "featured": "FALSE",
+    "premium": "FALSE",
+    "verified": "FALSE",
+    "unclaimed": "FALSE",
+    "tags": "",
+    "rating": "",
+    "reviews": "",
+    "deals": "-",
+    "dealCode": "-",
+    "dealExpiry": "-"
+  }
+]
