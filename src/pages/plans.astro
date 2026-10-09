@@ -16,10 +16,13 @@ const plans = [
       { label: '1 location visibility', included: true },
       { label: 'Call button', included: true },
       { label: 'Customer rating display', included: true },
+      { label: 'Review count display', included: false },
+      { label: 'Verified badge', included: false },
       { label: 'WhatsApp button', included: false },
-      { label: 'Dedicated Webpage', included: false },
+      { label: 'Google Maps link', included: false },
       { label: 'Coupon / deal badge', included: false },
       { label: 'Timing display', included: false },
+      { label: 'Dedicated Webpage', included: false },
     ],
     cta: 'Start Free',
     ctaHref: '/register',
@@ -27,24 +30,28 @@ const plans = [
   {
     id: 'starter',
     name: 'Starter',
-    price: 499,
-    period: 'per year',
+    price: 1999,
+    period: 'for 2 years',
+    priceNote: 'Just ₹83 / month',
     tagline: 'Perfect for growing shops',
-    badge: null,
+    badge: 'FOUNDING OFFER',
     color: '#b45309',
     gradient: 'linear-gradient(135deg,#fbbf24,#b45309)',
     features: [
       { label: 'Everything in Free', included: true },
       { label: 'All 33 locations', included: true },
       { label: 'Top 10 position', included: true },
+      { label: 'Verified badge', included: true },
+      { label: 'Review count display', included: true },
       { label: 'WhatsApp button', included: true },
+      { label: 'Google Maps link', included: true },
       { label: 'Coupon / deal badge', included: true },
       { label: 'Timing display', included: true },
       { label: 'Customer Engagement Pack — Web App', included: true, highlight: true },
       { label: 'Easy Invoice Generator — Web App', included: true, highlight: true },
       { label: 'Apps worth ₹6,500 — FREE', included: true, highlight: true, value: true },
       { label: 'Dedicated Webpage', included: false },
-      { label: 'Priority support', included: false },
+      { label: 'Company Website', included: false },
     ],
     cta: 'Choose Starter',
     ctaHref: '/register?plan=starter',
@@ -67,6 +74,8 @@ const plans = [
       { label: '7 Creative Posts', included: true },
       { label: '2 Promotional Videos', included: true },
       { label: 'Premium Membership — 1 + 1 Year', included: true },
+      { label: 'Dedicated Webpage', included: false },
+      { label: 'Company Website', included: false },
     ],
     cta: 'Choose Standard',
     ctaHref: '/register?plan=standard',
@@ -83,10 +92,13 @@ const plans = [
     featured: true,
     features: [
       { label: 'Everything in Standard', included: true },
+      { label: 'Dedicated Webpage', included: true },
       { label: 'Company Website', included: true },
       { label: 'Company Profile', included: true },
       { label: 'Attractive Company Presentation', included: true },
       { label: 'Premium Membership — 1 + 2 Years', included: true },
+      { label: 'Company Brochure', included: false },
+      { label: '20 Posters + 10 Videos', included: false },
     ],
     cta: 'Choose Gold',
     ctaHref: '/register?plan=gold',
@@ -113,17 +125,18 @@ const plans = [
 ];
 
 const comparison = [
-  { feature: 'Badge', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Business listing', free: 'Basic', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
   { feature: 'Locations', free: '1', starter: '33', standard: '33', gold: '33', diamond: '33' },
   { feature: 'Position', free: 'Bottom', starter: 'Top 10', standard: 'Top 10', gold: 'Top 10', diamond: 'Top 10' },
+  { feature: 'Verified badge', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
   { feature: 'Rating display', free: '✓', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Review count', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Review count display', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
   { feature: 'Call button', free: '✓', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
   { feature: 'WhatsApp button', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Dedicated Webpage', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
   { feature: 'Google Maps link', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Coupon / deal', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
-  { feature: 'Timing info', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Coupon / deal badge', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Timing display', free: '—', starter: '✓', standard: '✓', gold: '✓', diamond: '✓' },
+  { feature: 'Dedicated Webpage', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
   { feature: 'Customer Engagement Pack', free: '—', starter: '✓ Web App', standard: '✓ Web App', gold: '✓ Web App', diamond: '✓ Web App' },
   { feature: 'Easy Invoice Generator', free: '—', starter: '✓ Web App', standard: '✓ Web App', gold: '✓ Web App', diamond: '✓ Web App' },
   { feature: 'Web Apps Value', free: '—', starter: '₹6,500 FREE', standard: '₹6,500 FREE', gold: '₹6,500 FREE', diamond: '₹6,500 FREE' },
@@ -137,12 +150,13 @@ const comparison = [
   { feature: 'Company Profile', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
   { feature: 'Company Presentation', free: '—', starter: '—', standard: '—', gold: '✓', diamond: '✓' },
   { feature: 'Company Brochure', free: '—', starter: '—', standard: '—', gold: '—', diamond: '✓' },
-  { feature: 'Premium Membership', free: '—', starter: '—', standard: '1 + 1 Year', gold: '1 + 2 Years', diamond: '1 + 3 Years' },
+  { feature: 'Premium Membership', free: '—', starter: '2 Years', standard: '1 + 1 Year', gold: '1 + 2 Years', diamond: '1 + 3 Years' },
 ];
 
 const faqs = [
   { q: 'How do I pay?', a: 'After registering, you will be redirected to our secure payment page. You can pay via UPI, QR code, or bank transfer.' },
-  { q: 'Can I upgrade later?', a: 'Yes, you can upgrade your plan anytime. The remaining amount from your current plan will be adjusted.' },
+  { q: 'What is the Founding Offer on Starter?', a: 'Starter is available at ₹1,999 for 2 years as a limited founding offer for early businesses on PCMC Diary. This works out to just ₹83 per month. Once the founding slots are filled, the price will move to the regular rate.' },
+  { q: 'Can I upgrade later?', a: 'Yes, you can upgrade your plan anytime. The remaining value from your current plan will be adjusted against the new plan.' },
   { q: 'What if I have multiple locations?', a: 'Choose Starter, Standard, Gold, or Diamond — all cover all 33 locations of PCMC automatically.' },
   { q: 'What are the two web apps included in Starter?', a: 'Starter includes full access to our Customer Engagement Pack and Easy Invoice Generator — both web applications worth ₹6,500, completely free with your plan.' },
   { q: 'Is there a refund policy?', a: 'Yes, refunds are available within 7 days if your listing has not gone live. See our Refund Policy for details.' },
@@ -168,10 +182,10 @@ const faqs = [
         <div class="pl-hero-inner">
           <div class="pl-hero-badge">
             <i class="fa-solid fa-crown"></i>
-            Pricing
+            Founding Offer Live
           </div>
           <h1>Simple plans. <em>Serious reach.</em></h1>
-          <p>Choose the plan that fits your business. Upgrade anytime, cancel anytime. All prices in INR.</p>
+          <p>Choose the plan that fits your business. Upgrade anytime. All prices in INR. Starter is available at a limited founding price — ₹1,999 for 2 years.</p>
         </div>
       </div>
     </section>
@@ -181,9 +195,9 @@ const faqs = [
       <div class="pl-container">
         <div class="plans-grid">
           {plans.map(plan => (
-            <div class={`plan-card ${plan.featured ? 'plan-featured' : ''} ${plan.disabled ? 'plan-disabled' : ''}`}>
+            <div class={`plan-card ${plan.featured ? 'plan-featured' : ''}`}>
               {plan.badge && (
-                <div class={`plan-badge ${plan.featured ? 'plan-badge-popular' : ''}`}>
+                <div class={`plan-badge ${plan.featured ? 'plan-badge-popular' : (plan.badge === 'FOUNDING OFFER' ? 'plan-badge-founding' : '')}`}>
                   {plan.badge}
                 </div>
               )}
@@ -211,11 +225,18 @@ const faqs = [
                 ) : (
                   <>
                     <span class="price-cur">₹</span>
-                    <span class="price-num">{plan.price}</span>
+                    <span class="price-num">{plan.price.toLocaleString('en-IN')}</span>
                   </>
                 )}
                 <div class="price-period">{plan.period}</div>
               </div>
+
+              {plan.priceNote && (
+                <div class="price-note">
+                  <i class="fa-solid fa-tag"></i>
+                  {plan.priceNote}
+                </div>
+              )}
 
               <ul class="plan-features">
                 {plan.features.map(f => (
@@ -226,7 +247,7 @@ const faqs = [
                 ))}
               </ul>
 
-              <a href={plan.ctaHref} class={`plan-cta ${plan.featured ? 'plan-cta-primary' : ''} ${plan.disabled ? 'plan-cta-disabled' : ''}`}>
+              <a href={plan.ctaHref} class={`plan-cta ${plan.featured ? 'plan-cta-primary' : ''}`}>
                 {plan.cta}
                 <i class="fa-solid fa-arrow-right"></i>
               </a>
@@ -237,7 +258,7 @@ const faqs = [
         <!-- Note -->
         <div class="pl-note">
           <i class="fa-solid fa-circle-info"></i>
-          <span>All paid plans are billed annually. GST applicable as per Indian regulations.</span>
+          <span>Starter is a one-time payment for a 2-year membership. Standard, Gold, and Diamond include a one-time setup fee plus premium membership as described. GST applicable as per Indian regulations.</span>
         </div>
       </div>
     </section>
@@ -257,7 +278,7 @@ const faqs = [
               <tr>
                 <th class="cmp-feature">Feature</th>
                 <th>Free</th>
-                <th>Starter<br><span>₹499</span></th>
+                <th>Starter<br><span>₹1,999 / 2 yrs</span></th>
                 <th>Standard<br><span>₹3,999</span></th>
                 <th class="cmp-popular">Gold<br><span>₹4,999</span></th>
                 <th>Diamond<br><span>₹9,999</span></th>
@@ -365,7 +386,7 @@ const faqs = [
 .breadcrumb .sep { font-size: 9px; opacity: 0.5; }
 .breadcrumb span { color: #fde047; font-weight: 700; }
 
-.pl-hero-inner { text-align: center; max-width: 700px; margin: 0 auto; }
+.pl-hero-inner { text-align: center; max-width: 720px; margin: 0 auto; }
 .pl-hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 7px 16px; border-radius: 50px;
@@ -391,7 +412,7 @@ const faqs = [
 }
 .pl-hero p {
   font-size: 16px; color: rgba(255,255,255,0.85);
-  line-height: 1.6; max-width: 560px; margin: 0 auto;
+  line-height: 1.6; max-width: 620px; margin: 0 auto;
   font-weight: 500;
 }
 
@@ -432,8 +453,6 @@ const faqs = [
   box-shadow: 0 28px 56px -20px rgba(217,119,6,0.4), 0 12px 24px -8px rgba(217,119,6,0.18);
 }
 
-.plan-disabled { opacity: 0.85; }
-
 .plan-accent {
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -459,6 +478,12 @@ const faqs = [
   border-color: #fbbf24;
   box-shadow: 0 4px 12px -4px rgba(251,191,36,0.5);
 }
+.plan-badge-founding {
+  background: linear-gradient(135deg, #d1fae5, #10b981);
+  color: #064e3b;
+  border-color: #10b981;
+  box-shadow: 0 4px 12px -4px rgba(16,185,129,0.5);
+}
 
 .plan-head { margin-bottom: 20px; padding-top: 6px; }
 .plan-av {
@@ -480,10 +505,8 @@ const faqs = [
 }
 
 .plan-price {
-  padding: 20px 0;
+  padding: 20px 0 6px;
   border-top: 1px solid #f1f5f9;
-  border-bottom: 1px solid #f1f5f9;
-  margin-bottom: 20px;
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -519,6 +542,21 @@ const faqs = [
   margin-left: auto;
   align-self: center;
 }
+.price-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 5px 10px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px dashed #6ee7b7;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: -0.1px;
+}
+.price-note i { font-size: 10px; }
 
 .plan-features {
   list-style: none;
@@ -611,19 +649,6 @@ const faqs = [
   border-color: #7f1d1d;
   box-shadow: 0 14px 32px -8px rgba(185,28,28,0.6);
 }
-.plan-cta-disabled {
-  background: #f8fafc;
-  color: #94a3b8;
-  border-color: #e2e8f0;
-  cursor: not-allowed;
-}
-.plan-cta-disabled:hover {
-  background: #f8fafc;
-  color: #94a3b8;
-  border-color: #e2e8f0;
-  transform: none;
-  box-shadow: none;
-}
 
 .pl-note {
   display: flex;
@@ -631,18 +656,19 @@ const faqs = [
   justify-content: center;
   gap: 10px;
   margin-top: 28px;
-  padding: 12px 20px;
+  padding: 14px 22px;
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 50px;
   font-size: 12.5px;
   color: #64748b;
   font-weight: 600;
-  max-width: fit-content;
+  max-width: 860px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.5;
 }
-.pl-note i { color: #0891b2; font-size: 13px; }
+.pl-note i { color: #0891b2; font-size: 13px; flex-shrink: 0; }
 
 /* COMPARE */
 .pl-compare { padding: 72px 0; background: #fff; }
@@ -674,7 +700,7 @@ const faqs = [
 }
 .compare-table {
   width: 100%;
-  min-width: 700px;
+  min-width: 760px;
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -699,7 +725,7 @@ const faqs = [
 .compare-table th.cmp-feature {
   text-align: left;
   padding-left: 22px;
-  min-width: 200px;
+  min-width: 220px;
 }
 .compare-table th.cmp-popular {
   background: linear-gradient(180deg, #fef3c7, #fde68a);
@@ -883,6 +909,8 @@ const faqs = [
   .pl-cta p { font-size: 14px; }
   .pl-cta-icon { width: 56px; height: 56px; font-size: 22px; border-radius: 16px; }
   .pl-btn { padding: 13px 22px; font-size: 13.5px; width: 100%; justify-content: center; }
+
+  .pl-note { border-radius: 16px; padding: 12px 16px; font-size: 12px; }
 }
 @media (max-width: 480px) {
   .pl-hero h1 { font-size: 26px; }
